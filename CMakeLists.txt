@@ -12,9 +12,9 @@ option(ASSIMP_BUILD_TESTS OFF)
 add_subdirectory(Glitter/Vendor/assimp)
 
 if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /std:c++17")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -std=c++17")
     if(NOT WIN32)
         set(GLAD_LIBRARIES dl)
     endif()
@@ -26,7 +26,8 @@ include_directories(Glitter/Headers/
                     Glitter/Vendor/glfw/include/
                     Glitter/Vendor/glm/
                     Glitter/Vendor/stb/
-					Glitter/Vendor/imgui)
+					Glitter/Vendor/imgui/
+					Glitter/Vendor/json/)
 
 file(GLOB VENDORS_SOURCES Glitter/Vendor/glad/src/glad.c
 						  Glitter/Vendor/imgui/*.cpp)

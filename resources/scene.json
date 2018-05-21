@@ -1,0 +1,7 @@
+{
+  "objects": [
+    { "model": "models/sheep.obj" },
+    { "model": "models/teapot/teapot.obj" },
+    { "model": "models/mitsuba/mitsuba.obj" }
+  ]
+}

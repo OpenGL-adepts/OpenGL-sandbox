@@ -1,10 +1,13 @@
 #include "glitter.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 #include <imgui_impl_glfw_gl3.h>
 #include <cstdio>
 #include <cstdlib>
+#include "shader.hpp"
+#include "mesh.hpp"
 
 
 int main()
@@ -36,6 +39,17 @@ int main()
 	ImGui_ImplGlfwGL3_Init(mWindow, true);
 	glfwSwapInterval(1);
 
+	glViewport(0, 0, mWidth, mHeight);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	Shader shader;
+	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/camera.vert");
+	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/camera.frag");
+	shader.link();
+
+	Mesh model(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj");
+
 	// Rendering Loop
 	while (!glfwWindowShouldClose(mWindow))
 	{
@@ -44,8 +58,10 @@ int main()
 
 		// Background Fill Color
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		model.draw(shader.get());
+
 		ImGui_ImplGlfwGL3_NewFrame();
 		ImGui::Text("Hello, word!");
 		ImGui::Render();
