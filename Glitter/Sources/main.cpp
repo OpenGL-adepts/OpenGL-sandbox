@@ -60,6 +60,7 @@ int main()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		shader.activate();
 		model.draw(shader.get());
 
 		ImGui_ImplGlfwGL3_NewFrame();
