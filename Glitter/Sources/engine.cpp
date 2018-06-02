@@ -105,6 +105,9 @@ int Engine::run()
 	lastFrame = glfwGetTime();
 
 	float ambientStrength = 0.1f;
+	float diffuseStrength = 0.8f;
+	float specularStrength = 0.5f;
+	int specularExponent = 32;
 
 	// Rendering Loop
 	while (!glfwWindowShouldClose(m_window))
@@ -124,12 +127,19 @@ int Engine::run()
 		shader.bind("uView", camera.getViewMatrix());
 		shader.bind("uModel", glm::rotate(glm::mat4(1.f), (float)glfwGetTime() * 0.3f, glm::vec3(0, 1, 0)));
 		shader.bind("uAmbientStrength", ambientStrength);
+		shader.bind("uDiffuseStrength", diffuseStrength);
+		shader.bind("uSpecularStrength", specularStrength);
+		shader.bind("uSpecularExponent", specularExponent);
 		shader.bind("uLightPos", glm::vec3(5.f, 0, 0));
+		shader.bind("uViewPos", camera.getPosition());
 		model.draw(shader.get());
 
 		ImGui_ImplGlfwGL3_NewFrame();
 		ImGui::Text("Hello, word!");
 		ImGui::SliderFloat("Ambient", &ambientStrength, 0.f, 1.f);
+		ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.f, 1.f);
+		ImGui::SliderFloat("Specular", &specularStrength, 0.f, 1.f);
+		ImGui::SliderInt("Specular exponent", &specularExponent, 2, 256);
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 

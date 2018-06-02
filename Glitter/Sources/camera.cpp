@@ -28,6 +28,12 @@ glm::mat4 Camera::getViewMatrix() const
 }
 
 
+glm::vec3 Camera::getPosition() const
+{
+	return cameraPosition;
+}
+
+
 GLfloat Camera::getFOV() const
 {
 	return cameraFOV;
