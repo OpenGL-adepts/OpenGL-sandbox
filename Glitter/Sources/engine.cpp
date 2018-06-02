@@ -104,6 +104,8 @@ int Engine::run()
 
 	lastFrame = glfwGetTime();
 
+	float ambientStrength = 0.1f;
+
 	// Rendering Loop
 	while (!glfwWindowShouldClose(m_window))
 	{
@@ -118,13 +120,16 @@ int Engine::run()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shader.activate();
-		shader.bind("projection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
-		shader.bind("view", camera.getViewMatrix());
-		shader.bind("model", glm::rotate(glm::mat4(1.f), (float)glfwGetTime() * 0.3f, glm::vec3(0, 1, 0)));
+		shader.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
+		shader.bind("uView", camera.getViewMatrix());
+		shader.bind("uModel", glm::rotate(glm::mat4(1.f), (float)glfwGetTime() * 0.3f, glm::vec3(0, 1, 0)));
+		shader.bind("uAmbientStrength", ambientStrength);
+		shader.bind("uLightPos", glm::vec3(5.f, 0, 0));
 		model.draw(shader.get());
 
 		ImGui_ImplGlfwGL3_NewFrame();
 		ImGui::Text("Hello, word!");
+		ImGui::SliderFloat("Ambient", &ambientStrength, 0.f, 1.f);
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
