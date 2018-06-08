@@ -23,6 +23,8 @@ public:
 
 	// Wrap Calls to glUniform
 	void bind(unsigned int location, float value);
+	void bind(unsigned int location, int value);
+	void bind(unsigned int location, glm::vec3 const & vector);
 	void bind(unsigned int location, glm::mat4 const & matrix);
 
 	template<typename T>

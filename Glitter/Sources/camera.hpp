@@ -33,6 +33,7 @@ public:
 			GLfloat pitch		= defaultPitch);
 
 	glm::mat4 getViewMatrix() const;
+	glm::vec3 getPosition() const;
 	GLfloat getFOV() const;
 	void handleKeyboard(Camera_Movement direction, GLfloat deltaTime);
 	void handleMouseMove(GLfloat xoffset, GLfloat yoffset, GLboolean constrainPitch = true);
