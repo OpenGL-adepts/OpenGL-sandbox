@@ -44,7 +44,7 @@ bool Scene::loadFromFile(const std::string& _path)
 }
 
 
-bool Scene::saveToFile(const std::string& _path)
+bool Scene::saveToFile(const std::string& _path) const
 {
 	nlohmann::json json;
 	auto& objArr = json["objects"];
@@ -76,7 +76,7 @@ std::shared_ptr<SceneObject> Scene::addObject(const std::string& _modelPath)
 }
 
 
-void Scene::draw(Shader& _shader)
+void Scene::draw(const Shader& _shader) const
 {
 	for (auto& obj : m_objects)
 	{

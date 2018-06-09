@@ -2,6 +2,10 @@
 #include "shader.hpp"
 #include "mesh.hpp"
 #include "scene.hpp"
+#include "effects/effectmanager.hpp"
+#include "effects/phong.hpp"
+#include "effects/depth.hpp"
+#include "effects/normal.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -95,39 +99,18 @@ int Engine::run()
 	glViewport(0, 0, mWidth, mHeight);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-
-	Shader shaderPhong;
-	shaderPhong.attach(PROJECT_SOURCE_DIR "/resources/shaders/phong.vert");
-	shaderPhong.attach(PROJECT_SOURCE_DIR "/resources/shaders/phong.frag");
-	shaderPhong.link();
-
-	Shader shaderNormal;
-	shaderNormal.attach(PROJECT_SOURCE_DIR "/resources/shaders/normals.vert");
-	shaderNormal.attach(PROJECT_SOURCE_DIR "/resources/shaders/normals.frag");
-	shaderNormal.link();
-
-	Shader shaderDepth;
-	shaderDepth.attach(PROJECT_SOURCE_DIR "/resources/shaders/depth.vert");
-	shaderDepth.attach(PROJECT_SOURCE_DIR "/resources/shaders/depth.frag");
-	shaderDepth.link();
-
+	
 	Scene scene;
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj")->setPosition(glm::vec3(1.f, 0.f, 0.f));
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/sheep.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
 
+	EffectManager effects;
+	effects.registerEffect(std::make_shared<Phong>());
+	effects.registerEffect(std::make_shared<Normal>());
+	effects.registerEffect(std::make_shared<Depth>());
+
 	lastFrame = glfwGetTime();
-
-	// Phong parameters
-	float ambientStrength = 0.1f;
-	float diffuseStrength = 0.8f;
-	float specularStrength = 0.5f;
-	int specularExponent = 32;
-
-	int depthExponent = 4;
-
-	const char* const modes[] = { "Phong", "Normals", "Depth" };
-	int currentMode = 0;
 
 	// Rendering Loop
 	while (!glfwWindowShouldClose(m_window))
@@ -142,72 +125,11 @@ int Engine::run()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		switch(currentMode)
-		{
-		case 0: // Phong
-			shaderPhong.activate();
-			shaderPhong.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
-			shaderPhong.bind("uView", camera.getViewMatrix());
-			shaderPhong.bind("uAmbientStrength", ambientStrength);
-			shaderPhong.bind("uDiffuseStrength", diffuseStrength);
-			shaderPhong.bind("uSpecularStrength", specularStrength);
-			shaderPhong.bind("uSpecularExponent", specularExponent);
-			shaderPhong.bind("uLightPos", glm::vec3(5.f, 0, 0));
-			shaderPhong.bind("uViewPos", camera.getPosition());
-			scene.draw(shaderPhong);
-			break;
-
-		case 1: // Normals
-			shaderNormal.activate();
-			shaderNormal.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
-			shaderNormal.bind("uView", camera.getViewMatrix());
-			scene.draw(shaderNormal);
-			break;
-
-		case 2: // Depth
-			shaderDepth.activate();
-			shaderDepth.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
-			shaderDepth.bind("uView", camera.getViewMatrix());
-			shaderDepth.bind("uDepthExponent", depthExponent);
-			scene.draw(shaderDepth);
-			break;
-		}
+		//TODO: put perspective matrix in camera
+		effects.render(scene, camera, glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
 
 		ImGui_ImplGlfwGL3_NewFrame();
-		ImGui::Text("Phong lighting");
-		
-		const char* currentModeStr = modes[currentMode];
-
-		if(ImGui::BeginCombo("Mode", currentModeStr))
-		{
-			for(int i = 0; i < IM_ARRAYSIZE(modes); ++i)
-			{
-				bool selected = currentModeStr == modes[currentMode];
-
-				if(ImGui::Selectable(modes[i], selected))
-					currentMode = i;
-
-				if(selected)
-					ImGui::SetItemDefaultFocus();
-			}
-
-			ImGui::EndCombo();
-		}
-		
-		switch(currentMode)
-		{
-		case 0:
-			ImGui::SliderFloat("Ambient", &ambientStrength, 0.f, 1.f);
-			ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.f, 1.f);
-			ImGui::SliderFloat("Specular", &specularStrength, 0.f, 1.f);
-			ImGui::SliderInt("Specular exponent", &specularExponent, 2, 256);
-			break;
-
-		case 2:
-			ImGui::SliderInt("Depth exponent", &depthExponent, 1, 32);
-			break;
-		}
-
+		effects.config();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
