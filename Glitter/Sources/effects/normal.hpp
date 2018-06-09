@@ -8,9 +8,11 @@ class Normal
 public:
 	Normal();
 	const char* getName() const override;
+	void config() override;
 	void render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const override;
 
 protected:
 	Shader m_shader;
+	bool m_bEnableNormalMapping;
 
 };
