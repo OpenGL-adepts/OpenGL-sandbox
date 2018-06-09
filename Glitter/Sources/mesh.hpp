@@ -9,12 +9,14 @@
 #include <memory>
 #include <vector>
 
+
 // Vertex Format
 struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 uv; // texture coords
 };
+
 
 class Mesh
 {
@@ -24,8 +26,12 @@ public:
 	Mesh(const std::string& filename);
 	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<std::pair<Texture, std::string>> textures);
 
-	// Public Member Functions
+	bool loadFromFile(const std::string& _filename);
 	void draw(GLuint shader);
+
+	glm::vec3 getCenter() const;
+	float getMaxAxisSize() const;
+	glm::mat4 centerAtAndNormalize(const glm::vec3& _pos) const;
 
 private:
 	// Disable Copying and Assignment
@@ -47,5 +53,8 @@ private:
 	GLuint mVertexArray;
 	GLuint mVertexBuffer;
 	GLuint mElementBuffer;
+
+	glm::vec3 mMaxCoord;
+	glm::vec3 mMinCoord;
 };
 
