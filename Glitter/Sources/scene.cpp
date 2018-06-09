@@ -62,12 +62,17 @@ bool Scene::saveToFile(const std::string& _path)
 }
 
 
-void Scene::addObject(const std::string& _modelPath)
+std::shared_ptr<SceneObject> Scene::addObject(const std::string& _modelPath)
 {
 	auto obj = std::make_shared<SceneObject>();
 
 	if(obj->loadFromFile(_modelPath))
+	{
 		m_objects.push_back(obj);
+		return obj;
+	}
+
+	return nullptr;
 }
 
 

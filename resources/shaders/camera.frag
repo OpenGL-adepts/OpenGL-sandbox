@@ -32,7 +32,7 @@ void main()
 	
 	// Specular
 	vec3 viewDir = normalize(uViewPos - FragPos);
-	vec3 reflectDir = reflect(lightDir, norm);
+	vec3 reflectDir = reflect(-lightDir, norm);
 	float specularStrength = pow(max(0.0, dot(viewDir, reflectDir)), uSpecularExponent) * uSpecularStrength;
 	vec3 specular = vec3(specularStrength);
 	

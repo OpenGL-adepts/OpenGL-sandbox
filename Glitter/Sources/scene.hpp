@@ -12,7 +12,7 @@ public:
 	bool loadFromFile(const std::string& _path);
 	bool saveToFile(const std::string& _path);
 
-	void addObject(const std::string& _modelPath);
+	std::shared_ptr<SceneObject> addObject(const std::string& _modelPath);
 
 	void draw(Shader& _shader);
 
