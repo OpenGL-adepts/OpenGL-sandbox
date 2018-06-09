@@ -97,14 +97,14 @@ int Engine::run()
 	glDepthFunc(GL_LESS);
 
 	Shader shader;
-	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/camera.vert");
-	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/camera.frag");
+	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/phong.vert");
+	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/phong.frag");
 	shader.link();
 
 
 	Scene scene;
-	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj");
-	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj")->setPosition(glm::vec3(1.f, 0.f, 0.f));
+	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj")->setPosition(glm::vec3(1.f, 0.f, 0.f));
+	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/sheep.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
 
 	//Mesh model(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj");
