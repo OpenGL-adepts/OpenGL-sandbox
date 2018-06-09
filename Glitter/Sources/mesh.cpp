@@ -46,9 +46,13 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vecto
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, position));
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, normal));
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, uv));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, tangent));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, bitangent));
 	glEnableVertexAttribArray(0); // Vertex Positions
 	glEnableVertexAttribArray(1); // Vertex Normals
 	glEnableVertexAttribArray(2); // Vertex UVs
+	glEnableVertexAttribArray(3); // Vertex Tangents
+	glEnableVertexAttribArray(4); // Vertex Bitangents
 
 	// Cleanup Buffers
 	glBindVertexArray(0);
@@ -61,7 +65,7 @@ bool Mesh::loadFromFile(const std::string& _filename)
 {
 	Assimp::Importer loader;
 	
-	if(const aiScene* scene = loader.ReadFile(_filename, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_OptimizeGraph | aiProcess_FlipUVs))
+	if(const aiScene* scene = loader.ReadFile(_filename, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_OptimizeGraph | aiProcess_FlipUVs | aiProcess_CalcTangentSpace))
 	{
 		// Walk the Tree of Scene Nodes
 		auto index = _filename.find_last_of("/");
@@ -80,23 +84,34 @@ bool Mesh::loadFromFile(const std::string& _filename)
 
 void Mesh::draw(GLuint shader)
 {
-	unsigned int unit = 0, diffuse = 0, specular = 0;
+	unsigned int unit = 0, diffuse = 0, specular = 0, normal = 0;
 
 	for (auto& i : mSubMeshes)
 		i->draw(shader);
 
+	for(int i = 0; i < 16; ++i)
+	{
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
 	for (auto &i : mTextures)
 	{
 		// Set Correct Uniform Names Using Texture Type (Omit ID for 0th Texture)
-		std::string uniform = i.second;
+		std::string uniform = "texture_" + i.second;
 
 			 if (i.second == "diffuse")	 uniform += (diffuse++	> 0) ? std::to_string(diffuse)	: "";
 		else if (i.second == "specular") uniform += (specular++ > 0) ? std::to_string(specular) : "";
+		else if (i.second == "normal")	 uniform += (normal++	> 0) ? std::to_string(normal)	: "";
 
 		// Bind Correct Textures and Vertex Array Before Drawing
 		glActiveTexture(GL_TEXTURE0 + unit);
 		i.first.bind();
-		glUniform1f(glGetUniformLocation(shader, uniform.c_str()), ++unit);
+
+		auto uniformloc = glGetUniformLocation(shader, uniform.c_str());
+
+		if(uniformloc != -1)
+			glUniform1i(uniformloc, unit++);
 	}
 
 	if(diffuse == 0)
@@ -109,11 +124,12 @@ void Mesh::draw(GLuint shader)
 
 		glActiveTexture(GL_TEXTURE0 + unit);
 		m_solidColor->bind();
-		glUniform1f(glGetUniformLocation(shader, "texture_diffuse"), unit + 1);
+		glUniform1f(glGetUniformLocation(shader, "texture_diffuse"), unit);
 	}
 	
 	glBindVertexArray(mVertexArray);
 	glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
+	glActiveTexture(GL_TEXTURE0);
 }
 
 
@@ -157,11 +173,18 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
-		if (mesh->mTextureCoords[0])
-			vertex.uv		= glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+		vertex.uv		 = mesh->mTextureCoords[0] ? glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y) : glm::vec2(0.f);
+		vertex.position  = glm::vec3(mesh->mVertices[i].x,	 mesh->mVertices[i].y,	 mesh->mVertices[i].z);
+		vertex.normal	 = glm::vec3(mesh->mNormals[i].x,	 mesh->mNormals[i].y,	 mesh->mNormals[i].z);
 
-		vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
-		vertex.normal	= glm::vec3(mesh->mNormals[i].x,  mesh->mNormals[i].y,	mesh->mNormals[i].z);
+		if(mesh->mTangents && mesh->mBitangents)
+		{
+			vertex.tangent	 = glm::vec3(mesh->mTangents[i].x,	 mesh->mTangents[i].y,	 mesh->mTangents[i].z);
+			vertex.bitangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+		}
+		else
+			vertex.tangent = vertex.bitangent = glm::vec3(0.f);
+
 		vertices.push_back(vertex);
 
 		mMaxCoord.x = std::max(mMaxCoord.x, vertex.position.x);
@@ -184,6 +207,7 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
 	std::vector<std::pair<Texture, std::string>> textures;
 	process(path, scene->mMaterials[mesh->mMaterialIndex], aiTextureType_DIFFUSE, textures);
 	process(path, scene->mMaterials[mesh->mMaterialIndex], aiTextureType_SPECULAR, textures);
+	process(path, scene->mMaterials[mesh->mMaterialIndex], aiTextureType_HEIGHT, textures);
 	mSubMeshes.push_back(std::make_unique<Mesh>(std::move(vertices), std::move(indices), std::move(textures)));
 }
 
@@ -203,6 +227,7 @@ void Mesh::process(const std::string& path, aiMaterial* material, aiTextureType 
 		{
 		case aiTextureType_DIFFUSE:  mode = "diffuse";	break;
 		case aiTextureType_SPECULAR: mode = "specular"; break;
+		case aiTextureType_HEIGHT:	 mode = "normal";	break;
 		}
 
 		outTextures.emplace_back(std::move(texture), std::move(mode));

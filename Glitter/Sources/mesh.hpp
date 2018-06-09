@@ -15,6 +15,8 @@ struct Vertex {
 	glm::vec3 position;
 	glm::vec3 normal;
 	glm::vec2 uv; // texture coords
+	glm::vec3 tangent; // for normal mapping
+	glm::vec3 bitangent; // for normal mapping
 };
 
 

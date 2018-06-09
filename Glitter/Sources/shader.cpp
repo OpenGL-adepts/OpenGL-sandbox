@@ -37,8 +37,9 @@ void Shader::bind(unsigned int location, glm::mat4 const & matrix) const
 Shader& Shader::attach(std::string const & filename)
 {
 	// Load GLSL Shader Source from File
-	std::string path = ""; //PROJECT_SOURCE_DIR "/Mirage/Shaders/";
+	std::string path = "";
 	std::ifstream fd(path + filename);
+
 	auto src = std::string(std::istreambuf_iterator<char>(fd),
 						  (std::istreambuf_iterator<char>()));
 
@@ -52,9 +53,10 @@ Shader& Shader::attach(std::string const & filename)
 	// Display the Build Log on Error
 	if (mStatus == false)
 	{
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, & mLength);
-		std::unique_ptr<char[]> buffer(new char[mLength]);
-		glGetShaderInfoLog(shader, mLength, nullptr, buffer.get());
+		GLint length;
+		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
+		std::unique_ptr<char[]> buffer(new char[length]);
+		glGetShaderInfoLog(shader, length, nullptr, buffer.get());
 		fprintf(stderr, "%s\n%s", filename.c_str(), buffer.get());
 	}
 
@@ -85,9 +87,10 @@ Shader& Shader::link()
 
 	if(mStatus == false)
 	{
-		glGetProgramiv(mProgram, GL_INFO_LOG_LENGTH, &mLength);
-		std::unique_ptr<char[]> buffer(new char[mLength]);
-		glGetProgramInfoLog(mProgram, mLength, nullptr, buffer.get());
+		GLint length;
+		glGetProgramiv(mProgram, GL_INFO_LOG_LENGTH, &length);
+		std::unique_ptr<char[]> buffer(new char[length]);
+		glGetProgramInfoLog(mProgram, length, nullptr, buffer.get());
 		fprintf(stderr, "%s", buffer.get());
 	}
 

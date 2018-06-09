@@ -48,6 +48,5 @@ private:
 	// Private Member Variables
 	GLuint mProgram;
 	GLint  mStatus;
-	GLint  mLength;
 
 };

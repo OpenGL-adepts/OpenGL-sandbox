@@ -103,7 +103,7 @@ int Engine::run()
 	Scene scene;
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj")->setPosition(glm::vec3(1.f, 0.f, 0.f));
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
-	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/sheep.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
+	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/cyborg/cyborg.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
 
 	EffectManager effects;
 	effects.registerEffect(std::make_shared<Phong>());
