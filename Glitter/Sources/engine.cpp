@@ -1,6 +1,7 @@
 #include "engine.hpp"
 #include "shader.hpp"
 #include "mesh.hpp"
+#include "scene.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -100,7 +101,13 @@ int Engine::run()
 	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/camera.frag");
 	shader.link();
 
-	Mesh model(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj");
+
+	Scene scene;
+	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj");
+	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
+	scene[1].setPosition(glm::vec3(1.f, 0.f, 0.f));
+
+	//Mesh model(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj");
 
 	lastFrame = glfwGetTime();
 
@@ -125,17 +132,18 @@ int Engine::run()
 		shader.activate();
 		shader.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
 		shader.bind("uView", camera.getViewMatrix());
-		shader.bind("uModel", glm::rotate(model.centerAtAndNormalize(glm::vec3(sin(glfwGetTime()), 0.f, 0.f)), (float)glfwGetTime() * 0.3f, glm::vec3(0, 1, 0)));
+//		shader.bind("uModel", glm::rotate(model.centerAtAndNormalize(glm::vec3(sin(glfwGetTime()), 0.f, 0.f)), (float)glfwGetTime() * 0.3f, glm::vec3(0, 1, 0)));
 		shader.bind("uAmbientStrength", ambientStrength);
 		shader.bind("uDiffuseStrength", diffuseStrength);
 		shader.bind("uSpecularStrength", specularStrength);
 		shader.bind("uSpecularExponent", specularExponent);
 		shader.bind("uLightPos", glm::vec3(5.f, 0, 0));
 		shader.bind("uViewPos", camera.getPosition());
-		model.draw(shader.get());
+		scene.draw(shader);
+		//model.draw(shader.get());
 
 		ImGui_ImplGlfwGL3_NewFrame();
-		ImGui::Text("Hello, word!");
+		ImGui::Text("Phong lighting");
 		ImGui::SliderFloat("Ambient", &ambientStrength, 0.f, 1.f);
 		ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.f, 1.f);
 		ImGui::SliderFloat("Specular", &specularStrength, 0.f, 1.f);

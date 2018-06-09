@@ -19,23 +19,7 @@ Mesh::~Mesh()
 Mesh::Mesh(const std::string& filename)
 	: Mesh()
 {
-	// Load a Model from File
-	Assimp::Importer loader;
-	const aiScene* scene = loader.ReadFile(
-		filename,
-		aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_OptimizeGraph | aiProcess_FlipUVs);
-
-	// Walk the Tree of Scene Nodes
-	auto index = filename.find_last_of("/");
-
-	constexpr float posInf = std::numeric_limits<float>::infinity();
-	mMinCoord = glm::vec3(posInf);
-	mMaxCoord = glm::vec3(-posInf);
-
-	if (!scene)
-		fprintf(stderr, "%s\n", loader.GetErrorString());
-	else
-		parse(filename.substr(0, index), scene->mRootNode, scene);
+	loadFromFile(filename);
 }
 
 
@@ -70,6 +54,27 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vecto
 	glBindVertexArray(0);
 	glDeleteBuffers(1, &mVertexBuffer);
 	glDeleteBuffers(1, &mElementBuffer);
+}
+
+
+bool Mesh::loadFromFile(const std::string& _filename)
+{
+	Assimp::Importer loader;
+	
+	if(const aiScene* scene = loader.ReadFile(_filename, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_OptimizeGraph | aiProcess_FlipUVs))
+	{
+		// Walk the Tree of Scene Nodes
+		auto index = _filename.find_last_of("/");
+
+		constexpr float posInf = std::numeric_limits<float>::infinity();
+		mMinCoord = glm::vec3(posInf);
+		mMaxCoord = glm::vec3(-posInf);
+		parse(_filename.substr(0, index), scene->mRootNode, scene);
+		return true;
+	}
+
+	fprintf(stderr, "%s\n", loader.GetErrorString());
+	return false;
 }
 
 

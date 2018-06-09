@@ -26,7 +26,7 @@ public:
 	Mesh(const std::string& filename);
 	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<std::pair<Texture, std::string>> textures);
 
-	// Public Member Functions
+	bool loadFromFile(const std::string& _filename);
 	void draw(GLuint shader);
 
 	glm::vec3 getCenter() const;
