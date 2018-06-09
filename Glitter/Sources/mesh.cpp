@@ -98,6 +98,19 @@ void Mesh::draw(GLuint shader)
 		i.first.bind();
 		glUniform1f(glGetUniformLocation(shader, uniform.c_str()), ++unit);
 	}
+
+	if(diffuse == 0)
+	{
+		if(!m_solidColor)
+		{
+			m_solidColor = std::make_unique<Texture>();
+			m_solidColor->createColorPlaceholder();
+		}
+
+		glActiveTexture(GL_TEXTURE0 + unit);
+		m_solidColor->bind();
+		glUniform1f(glGetUniformLocation(shader, "texture_diffuse"), unit + 1);
+	}
 	
 	glBindVertexArray(mVertexArray);
 	glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);

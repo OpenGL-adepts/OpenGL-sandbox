@@ -33,7 +33,8 @@ file(GLOB VENDORS_SOURCES Glitter/Vendor/glad/src/glad.c
 						  Glitter/Vendor/imgui/*.cpp)
 						  
 file(GLOB PROJECT_HEADERS Glitter/Headers/*.hpp)
-file(GLOB PROJECT_SOURCES Glitter/Sources/*.cpp)
+file(GLOB PROJECT_SOURCES Glitter/Sources/*.cpp
+						  Glitter/Sources/effects/*.cpp)
 file(GLOB PROJECT_SHADERS Glitter/Shaders/*.comp
                           Glitter/Shaders/*.frag
                           Glitter/Shaders/*.geom

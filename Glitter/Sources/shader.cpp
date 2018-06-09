@@ -4,32 +4,31 @@
 #include <memory>
 
 
-Shader& Shader::activate()
+void Shader::activate() const
 {
 	glUseProgram(mProgram);
-	return *this;
 }
 
 
-void Shader::bind(unsigned int location, float value)
+void Shader::bind(unsigned int location, float value) const
 {
 	glUniform1f(location, value);
 }
 
 
-void Shader::bind(unsigned int location, int value)
+void Shader::bind(unsigned int location, int value) const
 {
 	glUniform1i(location, value);
 }
 
 
-void Shader::bind(unsigned int location, glm::vec3 const & vector)
+void Shader::bind(unsigned int location, glm::vec3 const & vector) const
 {
 	glUniform3f(location, vector.x, vector.y, vector.z);
 }
 
 
-void Shader::bind(unsigned int location, glm::mat4 const & matrix)
+void Shader::bind(unsigned int location, glm::mat4 const & matrix) const
 {
 	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(matrix));
 }
