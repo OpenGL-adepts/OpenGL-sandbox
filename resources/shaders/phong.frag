@@ -16,9 +16,6 @@ out vec4 FragColor;
 
 void main()
 {
-	// 'Limbo' effect
-	//FragColor = vec4(vec3(gl_FragCoord.z), 1.0);
-	
 	vec3 norm = normalize(Normal);
 	vec4 objectColor = texture(texture_diffuse, TexCoords);
 	

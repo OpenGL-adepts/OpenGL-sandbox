@@ -96,25 +96,36 @@ int Engine::run()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	Shader shader;
-	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/phong.vert");
-	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/phong.frag");
-	shader.link();
+	Shader shaderPhong;
+	shaderPhong.attach(PROJECT_SOURCE_DIR "/resources/shaders/phong.vert");
+	shaderPhong.attach(PROJECT_SOURCE_DIR "/resources/shaders/phong.frag");
+	shaderPhong.link();
 
+	Shader shaderNormal;
+	shaderNormal.attach(PROJECT_SOURCE_DIR "/resources/shaders/normals.vert");
+	shaderNormal.attach(PROJECT_SOURCE_DIR "/resources/shaders/normals.frag");
+	shaderNormal.link();
+
+	Shader shaderDepth;
+	shaderDepth.attach(PROJECT_SOURCE_DIR "/resources/shaders/depth.vert");
+	shaderDepth.attach(PROJECT_SOURCE_DIR "/resources/shaders/depth.frag");
+	shaderDepth.link();
 
 	Scene scene;
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj")->setPosition(glm::vec3(1.f, 0.f, 0.f));
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/sheep.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
 
-	//Mesh model(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj");
-
 	lastFrame = glfwGetTime();
 
+	// Phong parameters
 	float ambientStrength = 0.1f;
 	float diffuseStrength = 0.8f;
 	float specularStrength = 0.5f;
 	int specularExponent = 32;
+
+	const char* const modes[] = { "Phong", "Normals", "Depth" };
+	int currentMode = 0;
 
 	// Rendering Loop
 	while (!glfwWindowShouldClose(m_window))
@@ -129,25 +140,65 @@ int Engine::run()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader.activate();
-		shader.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
-		shader.bind("uView", camera.getViewMatrix());
-//		shader.bind("uModel", glm::rotate(model.centerAtAndNormalize(glm::vec3(sin(glfwGetTime()), 0.f, 0.f)), (float)glfwGetTime() * 0.3f, glm::vec3(0, 1, 0)));
-		shader.bind("uAmbientStrength", ambientStrength);
-		shader.bind("uDiffuseStrength", diffuseStrength);
-		shader.bind("uSpecularStrength", specularStrength);
-		shader.bind("uSpecularExponent", specularExponent);
-		shader.bind("uLightPos", glm::vec3(5.f, 0, 0));
-		shader.bind("uViewPos", camera.getPosition());
-		scene.draw(shader);
-		//model.draw(shader.get());
+		switch(currentMode)
+		{
+		case 0: // Phong
+			shaderPhong.activate();
+			shaderPhong.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
+			shaderPhong.bind("uView", camera.getViewMatrix());
+			shaderPhong.bind("uAmbientStrength", ambientStrength);
+			shaderPhong.bind("uDiffuseStrength", diffuseStrength);
+			shaderPhong.bind("uSpecularStrength", specularStrength);
+			shaderPhong.bind("uSpecularExponent", specularExponent);
+			shaderPhong.bind("uLightPos", glm::vec3(5.f, 0, 0));
+			shaderPhong.bind("uViewPos", camera.getPosition());
+			scene.draw(shaderPhong);
+			break;
+
+		case 1: // Normals
+			shaderNormal.activate();
+			shaderNormal.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
+			shaderNormal.bind("uView", camera.getViewMatrix());
+			scene.draw(shaderNormal);
+			break;
+
+		case 2: // Depth
+			shaderDepth.activate();
+			shaderDepth.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
+			shaderDepth.bind("uView", camera.getViewMatrix());
+			scene.draw(shaderDepth);
+			break;
+		}
 
 		ImGui_ImplGlfwGL3_NewFrame();
 		ImGui::Text("Phong lighting");
-		ImGui::SliderFloat("Ambient", &ambientStrength, 0.f, 1.f);
-		ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.f, 1.f);
-		ImGui::SliderFloat("Specular", &specularStrength, 0.f, 1.f);
-		ImGui::SliderInt("Specular exponent", &specularExponent, 2, 256);
+		
+		const char* currentModeStr = modes[currentMode];
+
+		if(ImGui::BeginCombo("Mode", currentModeStr))
+		{
+			for(int i = 0; i < IM_ARRAYSIZE(modes); ++i)
+			{
+				bool selected = currentModeStr == modes[currentMode];
+
+				if(ImGui::Selectable(modes[i], selected))
+					currentMode = i;
+
+				if(selected)
+					ImGui::SetItemDefaultFocus();
+			}
+
+			ImGui::EndCombo();
+		}
+		
+		if(currentMode == 0)
+		{
+			ImGui::SliderFloat("Ambient", &ambientStrength, 0.f, 1.f);
+			ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.f, 1.f);
+			ImGui::SliderFloat("Specular", &specularStrength, 0.f, 1.f);
+			ImGui::SliderInt("Specular exponent", &specularExponent, 2, 256);
+		}
+
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
