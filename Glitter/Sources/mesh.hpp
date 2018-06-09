@@ -1,4 +1,5 @@
 #pragma once
+#include "texture.hpp"
 #include <assimp/importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
@@ -21,13 +22,12 @@ public:
 	Mesh();
 	~Mesh();
 	Mesh(const std::string& filename);
-	Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::vector<std::pair<GLuint, std::string>>& textures);
+	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<std::pair<Texture, std::string>> textures);
 
 	// Public Member Functions
 	void draw(GLuint shader);
 
 private:
-
 	// Disable Copying and Assignment
 	Mesh(Mesh const &) = delete;
 	Mesh & operator=(Mesh const &) = delete;
@@ -35,13 +35,13 @@ private:
 	// Private Member Functions
 	void parse(const std::string& path, const aiNode* node, const aiScene* scene);
 	void parse(const std::string& path, const aiMesh* mesh, const aiScene* scene);
-	void process(const std::string& path, aiMaterial* material, aiTextureType type, std::vector<std::pair<GLuint, std::string>>& outTextures);
+	void process(const std::string& path, aiMaterial* material, aiTextureType type, std::vector<std::pair<Texture, std::string>>& outTextures);
 
 	// Private Member Containers
 	std::vector<std::unique_ptr<Mesh>> mSubMeshes;
 	std::vector<GLuint> mIndices;
 	std::vector<Vertex> mVertices;
-	std::vector<std::pair<GLuint, std::string>> mTextures;
+	std::vector<std::pair<Texture, std::string>> mTextures;
 
 	// Private Member Variables
 	GLuint mVertexArray;

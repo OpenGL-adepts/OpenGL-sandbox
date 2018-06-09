@@ -19,11 +19,9 @@ Mesh::Mesh(const std::string& filename)
 {
 	// Load a Model from File
 	Assimp::Importer loader;
-	aiScene const * scene = loader.ReadFile(
+	const aiScene* scene = loader.ReadFile(
 		filename,
-		aiProcessPreset_TargetRealtime_MaxQuality |
-		aiProcess_OptimizeGraph					  |
-		aiProcess_FlipUVs);
+		aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_OptimizeGraph | aiProcess_FlipUVs);
 
 	// Walk the Tree of Scene Nodes
 	auto index = filename.find_last_of("/");
@@ -34,10 +32,11 @@ Mesh::Mesh(const std::string& filename)
 		parse(filename.substr(0, index), scene->mRootNode, scene);
 }
 
-Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::vector<std::pair<GLuint, std::string>>& textures)
-	: mIndices(indices)
-	, mVertices(vertices)
-	, mTextures(textures)
+
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<std::pair<Texture, std::string>> textures)
+	: mIndices(std::move(indices))
+	, mVertices(std::move(vertices))
+	, mTextures(std::move(textures))
 {
 	// Bind a Vertex Array Object
 	glGenVertexArrays(1, & mVertexArray);
@@ -46,21 +45,17 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indic
 	// Copy Vertex Buffer Data
 	glGenBuffers(1, & mVertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, mVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER,
-				 mVertices.size() * sizeof(Vertex),
-			   & mVertices.front(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeof(Vertex), &mVertices.front(), GL_STATIC_DRAW);
 
 	// Copy Index Buffer Data
 	glGenBuffers(1, & mElementBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mElementBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-				 mIndices.size() * sizeof(GLuint),
-			   & mIndices.front(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndices.size() * sizeof(GLuint), &mIndices.front(), GL_STATIC_DRAW);
 
 	// Set Shader Attributes
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, position));
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, normal));
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *) offsetof(Vertex, uv));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, position));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, normal));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*) offsetof(Vertex, uv));
 	glEnableVertexAttribArray(0); // Vertex Positions
 	glEnableVertexAttribArray(1); // Vertex Normals
 	glEnableVertexAttribArray(2); // Vertex UVs
@@ -70,6 +65,7 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indic
 	glDeleteBuffers(1, &mVertexBuffer);
 	glDeleteBuffers(1, &mElementBuffer);
 }
+
 
 void Mesh::draw(GLuint shader)
 {
@@ -88,13 +84,14 @@ void Mesh::draw(GLuint shader)
 
 		// Bind Correct Textures and Vertex Array Before Drawing
 		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(GL_TEXTURE_2D, i.first);
+		i.first.bind();
 		glUniform1f(glGetUniformLocation(shader, uniform.c_str()), ++unit);
 	}
 	
 	glBindVertexArray(mVertexArray);
 	glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
 }
+
 
 void Mesh::parse(std::string const & path, aiNode const * node, aiScene const * scene)
 {
@@ -104,6 +101,7 @@ void Mesh::parse(std::string const & path, aiNode const * node, aiScene const * 
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 		parse(path, node->mChildren[i], scene);
 }
+
 
 void Mesh::parse(std::string const & path, aiMesh const * mesh, aiScene const * scene)
 {
@@ -128,57 +126,30 @@ void Mesh::parse(std::string const & path, aiMesh const * mesh, aiScene const * 
 		indices.push_back(mesh->mFaces[i].mIndices[j]);
 
 	// Load Mesh Textures into VRAM
-	std::vector<std::pair<GLuint, std::string>> textures;
+	std::vector<std::pair<Texture, std::string>> textures;
 	process(path, scene->mMaterials[mesh->mMaterialIndex], aiTextureType_DIFFUSE, textures);
 	process(path, scene->mMaterials[mesh->mMaterialIndex], aiTextureType_SPECULAR, textures);
-	mSubMeshes.push_back(std::make_unique<Mesh>(vertices, indices, textures));
+	mSubMeshes.push_back(std::make_unique<Mesh>(std::move(vertices), std::move(indices), std::move(textures)));
 }
 
-void Mesh::process(const std::string& path, aiMaterial* material, aiTextureType type, std::vector<std::pair<GLuint, std::string>>& outTextures)
-{
-	std::map<GLuint, std::string> textures;
 
+void Mesh::process(const std::string& path, aiMaterial* material, aiTextureType type, std::vector<std::pair<Texture, std::string>>& outTextures)
+{
 	for(unsigned int i = 0; i < material->GetTextureCount(type); i++)
 	{
-		GLenum format;
-		GLuint texture;
+		// Load the Texture Image from File
+		aiString str;
+		material->GetTexture(type, i, &str);
+
+		Texture texture(path + "/" + str.C_Str());
 		std::string mode;
 
-		// Load the Texture Image from File
-		aiString str; material->GetTexture(type, i, & str);
-		std::string filename = str.C_Str(); int width, height, channels;
-		filename = path + "/" + filename;
-
-		unsigned char * image = stbi_load(filename.c_str(), & width, & height, & channels, 0);
-
-		if (!image)
-			fprintf(stderr, "%s %s\n", "Failed to Load Texture", filename.c_str());
-
-		// Set the Correct Channel Format
-		switch (channels)
+		switch(type)
 		{
-			case 1 : format = GL_ALPHA;		break;
-			case 2 : format = GL_LUMINANCE; break;
-			case 3 : format = GL_RGB;		break;
-			case 4 : format = GL_RGBA;		break;
+		case aiTextureType_DIFFUSE:  mode = "diffuse";	break;
+		case aiTextureType_SPECULAR: mode = "specular"; break;
 		}
 
-		// Bind Texture and Set Filtering Levels
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, image);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		// Release Image Pointer and Store the Texture
-		stbi_image_free(image);
-
-			 if (type == aiTextureType_DIFFUSE)	 mode = "diffuse";
-		else if (type == aiTextureType_SPECULAR) mode = "specular";
-
-		outTextures.push_back(std::make_pair(texture, mode));
+		outTextures.emplace_back(std::move(texture), std::move(mode));
 	}
 }
