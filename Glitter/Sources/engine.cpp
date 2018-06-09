@@ -100,7 +100,7 @@ int Engine::run()
 	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/camera.frag");
 	shader.link();
 
-	Mesh model(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj");
+	Mesh model(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
 
 	lastFrame = glfwGetTime();
 
