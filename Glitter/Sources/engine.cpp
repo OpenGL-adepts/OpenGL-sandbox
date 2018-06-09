@@ -100,7 +100,7 @@ int Engine::run()
 	shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/camera.frag");
 	shader.link();
 
-	Mesh model(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
+	Mesh model(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj");
 
 	lastFrame = glfwGetTime();
 
@@ -125,7 +125,7 @@ int Engine::run()
 		shader.activate();
 		shader.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
 		shader.bind("uView", camera.getViewMatrix());
-		shader.bind("uModel", glm::rotate(glm::mat4(1.f), (float)glfwGetTime() * 0.3f, glm::vec3(0, 1, 0)));
+		shader.bind("uModel", glm::rotate(model.centerAtAndNormalize(glm::vec3(sin(glfwGetTime()), 0.f, 0.f)), (float)glfwGetTime() * 0.3f, glm::vec3(0, 1, 0)));
 		shader.bind("uAmbientStrength", ambientStrength);
 		shader.bind("uDiffuseStrength", diffuseStrength);
 		shader.bind("uSpecularStrength", specularStrength);

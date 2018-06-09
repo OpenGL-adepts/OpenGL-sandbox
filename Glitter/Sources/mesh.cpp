@@ -1,5 +1,7 @@
 #include "mesh.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
+#include <limits>
 
 
 Mesh::Mesh()
@@ -25,6 +27,10 @@ Mesh::Mesh(const std::string& filename)
 
 	// Walk the Tree of Scene Nodes
 	auto index = filename.find_last_of("/");
+
+	constexpr float posInf = std::numeric_limits<float>::infinity();
+	mMinCoord = glm::vec3(posInf);
+	mMaxCoord = glm::vec3(-posInf);
 
 	if (!scene)
 		fprintf(stderr, "%s\n", loader.GetErrorString());
@@ -93,7 +99,30 @@ void Mesh::draw(GLuint shader)
 }
 
 
-void Mesh::parse(std::string const & path, aiNode const * node, aiScene const * scene)
+glm::vec3 Mesh::getCenter() const
+{
+	return mMinCoord + 0.5f * (mMaxCoord - mMinCoord);
+}
+
+
+float Mesh::getMaxAxisSize() const
+{
+	const auto size = mMaxCoord - mMinCoord;
+	return std::max({size.x, size.y, size.z});
+}
+
+
+glm::mat4 Mesh::centerAtAndNormalize(const glm::vec3& _pos) const
+{
+	glm::mat4 model(1.f);
+	model = glm::translate(model, _pos);
+	model = glm::scale(model, glm::vec3(1.f / getMaxAxisSize()));
+	model = glm::translate(model, -getCenter());
+	return model;
+}
+
+
+void Mesh::parse(const std::string& path, const aiNode* node, const aiScene* scene)
 {
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 		parse(path, scene->mMeshes[node->mMeshes[i]], scene);
@@ -103,7 +132,7 @@ void Mesh::parse(std::string const & path, aiNode const * node, aiScene const * 
 }
 
 
-void Mesh::parse(std::string const & path, aiMesh const * mesh, aiScene const * scene)
+void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* scene)
 {
 	// Create Vertex Data from Mesh Node
 	std::vector<Vertex> vertices; Vertex vertex;
@@ -116,6 +145,14 @@ void Mesh::parse(std::string const & path, aiMesh const * mesh, aiScene const * 
 		vertex.position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 		vertex.normal	= glm::vec3(mesh->mNormals[i].x,  mesh->mNormals[i].y,	mesh->mNormals[i].z);
 		vertices.push_back(vertex);
+
+		mMaxCoord.x = std::max(mMaxCoord.x, vertex.position.x);
+		mMaxCoord.y = std::max(mMaxCoord.y, vertex.position.y);
+		mMaxCoord.z = std::max(mMaxCoord.z, vertex.position.z);
+		
+		mMinCoord.x = std::min(mMinCoord.x, vertex.position.x);
+		mMinCoord.y = std::min(mMinCoord.y, vertex.position.y);
+		mMinCoord.z = std::min(mMinCoord.z, vertex.position.z);
 	}
 
 	// Create Mesh Indices for Indexed Drawing
