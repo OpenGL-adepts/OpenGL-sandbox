@@ -56,5 +56,7 @@ private:
 
 	glm::vec3 mMaxCoord;
 	glm::vec3 mMinCoord;
+
+	std::unique_ptr<Texture> m_solidColor;
 };
 

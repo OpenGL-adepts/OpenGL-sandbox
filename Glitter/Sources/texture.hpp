@@ -15,6 +15,7 @@ public:
 	Texture(const Texture& _copy) = delete;
 	Texture& operator=(const Texture& _copy) = delete;
 
+	void createColorPlaceholder();
 	bool loadFromFile(const std::string& _file);
 	void bind() const;
 
