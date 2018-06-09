@@ -124,6 +124,8 @@ int Engine::run()
 	float specularStrength = 0.5f;
 	int specularExponent = 32;
 
+	int depthExponent = 4;
+
 	const char* const modes[] = { "Phong", "Normals", "Depth" };
 	int currentMode = 0;
 
@@ -166,6 +168,7 @@ int Engine::run()
 			shaderDepth.activate();
 			shaderDepth.bind("uProjection", glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
 			shaderDepth.bind("uView", camera.getViewMatrix());
+			shaderDepth.bind("uDepthExponent", depthExponent);
 			scene.draw(shaderDepth);
 			break;
 		}
@@ -191,12 +194,18 @@ int Engine::run()
 			ImGui::EndCombo();
 		}
 		
-		if(currentMode == 0)
+		switch(currentMode)
 		{
+		case 0:
 			ImGui::SliderFloat("Ambient", &ambientStrength, 0.f, 1.f);
 			ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.f, 1.f);
 			ImGui::SliderFloat("Specular", &specularStrength, 0.f, 1.f);
 			ImGui::SliderInt("Specular exponent", &specularExponent, 2, 256);
+			break;
+
+		case 2:
+			ImGui::SliderInt("Depth exponent", &depthExponent, 1, 32);
+			break;
 		}
 
 		ImGui::Render();
