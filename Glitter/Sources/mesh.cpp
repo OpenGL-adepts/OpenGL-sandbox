@@ -116,15 +116,16 @@ void Mesh::draw(GLuint shader)
 
 	if(diffuse == 0)
 	{
-		if(!m_solidColor)
-		{
-			m_solidColor = std::make_unique<Texture>();
-			m_solidColor->createColorPlaceholder();
-		}
-
 		glActiveTexture(GL_TEXTURE0 + unit);
-		m_solidColor->bind();
-		glUniform1f(glGetUniformLocation(shader, "texture_diffuse"), unit);
+		bindTexturePlaceholder();
+		glUniform1f(glGetUniformLocation(shader, "texture_diffuse"), unit++);
+	}
+
+	if(specular == 0)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		bindTexturePlaceholder();
+		glUniform1f(glGetUniformLocation(shader, "texture_specular"), unit++);
 	}
 	
 	glBindVertexArray(mVertexArray);
@@ -232,4 +233,16 @@ void Mesh::process(const std::string& path, aiMaterial* material, aiTextureType 
 
 		outTextures.emplace_back(std::move(texture), std::move(mode));
 	}
+}
+
+
+void Mesh::bindTexturePlaceholder()
+{
+	if(!m_solidColor)
+	{
+		m_solidColor = std::make_unique<Texture>();
+		m_solidColor->createColorPlaceholder();
+	}
+
+	m_solidColor->bind();
 }

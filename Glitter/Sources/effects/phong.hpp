@@ -18,4 +18,5 @@ protected:
 	float m_specularStrength = 0.5f;
 	int m_specularExponent = 32;
 	bool m_bEnableNormalMapping = false;
+	bool m_bUseBlinnPhong = false;
 };

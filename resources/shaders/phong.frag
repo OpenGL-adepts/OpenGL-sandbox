@@ -4,6 +4,7 @@ uniform float uDiffuseStrength;
 uniform float uSpecularStrength;
 uniform int uSpecularExponent;
 uniform int uEnableNormalMapping;
+uniform int uUseBlinnPhong;
 uniform vec3 uLightPos;
 uniform vec3 uViewPos;
 uniform sampler2D texture_diffuse;
@@ -48,8 +49,20 @@ void main()
 	vec3 diffuse = vec3(diffuseStrength);
 	
 	// Specular
-	vec3 reflectDir = reflect(-lightDir, norm);
-	float specularStrength = pow(max(0.0, dot(viewDir, reflectDir)), uSpecularExponent) * uSpecularStrength;
+	float specAngle;
+	
+	if(uUseBlinnPhong != 0)
+	{
+		vec3 halfDir = normalize(lightDir + viewDir);
+		specAngle = pow(max(0.0, dot(halfDir, norm)), 4);
+	}
+	else
+	{
+		vec3 reflectDir = reflect(-lightDir, norm);
+		specAngle = max(0.0, dot(viewDir, reflectDir));
+	}
+	
+	float specularStrength = pow(specAngle, uSpecularExponent) * uSpecularStrength;
 	vec3 specular = vec3(specularStrength * texture(texture_specular, TexCoords));
 	
 	FragColor = objectColor * vec4(ambient + diffuse + specular, 1.0);
