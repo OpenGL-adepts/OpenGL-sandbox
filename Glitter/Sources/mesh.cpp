@@ -136,7 +136,7 @@ void Mesh::draw(GLuint shader)
 
 glm::vec3 Mesh::getCenter() const
 {
-	return mMinCoord + 0.5f * (mMaxCoord - mMinCoord);
+	return 0.5f * (mMaxCoord + mMinCoord);
 }
 
 
@@ -147,13 +147,9 @@ float Mesh::getMaxAxisSize() const
 }
 
 
-glm::mat4 Mesh::centerAtAndNormalize(const glm::vec3& _pos) const
+glm::mat4 Mesh::centerAndNormalize() const
 {
-	glm::mat4 model(1.f);
-	model = glm::translate(model, _pos);
-	model = glm::scale(model, glm::vec3(1.f / getMaxAxisSize()));
-	model = glm::translate(model, -getCenter());
-	return model;
+	return glm::scale(glm::mat4(1.f), glm::vec3(1.f / getMaxAxisSize())) * glm::translate(glm::mat4(1.f), -getCenter());
 }
 
 

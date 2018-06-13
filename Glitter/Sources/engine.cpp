@@ -141,10 +141,10 @@ int Engine::run()
 		effects.render(scene, camera, m_projMatrix);
 
 		ImGui_ImplGlfwGL3_NewFrame();
-		ImGui::SliderAngle("Rotation X", &objRotation.x, 0);
-		ImGui::SliderAngle("Rotation Y", &objRotation.y, 0);
-		ImGui::SliderAngle("Rotation Z", &objRotation.z, 0);
-		ImGui::SliderFloat("Scale", &objScale, 1.f, 1000.f);
+		ImGui::SliderAngle("Rotation X", &objRotation.x);
+		ImGui::SliderAngle("Rotation Y", &objRotation.y);
+		ImGui::SliderAngle("Rotation Z", &objRotation.z);
+		ImGui::SliderFloat("Scale", &objScale, 0.01f, 20.f);
 		configPerspecive();
 		effects.config();
 		ImGui::Render();

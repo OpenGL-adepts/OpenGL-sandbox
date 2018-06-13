@@ -33,7 +33,7 @@ public:
 
 	glm::vec3 getCenter() const;
 	float getMaxAxisSize() const;
-	glm::mat4 centerAtAndNormalize(const glm::vec3& _pos) const;
+	glm::mat4 centerAndNormalize() const;
 
 private:
 	// Disable Copying and Assignment
