@@ -41,11 +41,9 @@ const std::string& SceneObject::getModelPath() const
 
 glm::mat4 SceneObject::getModelMatrix() const
 {
-	glm::mat4 model = m_model.centerAtAndNormalize(m_position);
-	//model = glm::translate(model, m_position);
-	model = glm::rotate(model, m_rotation.x, glm::vec3(1.f, 0.f, 0.f));
-	model = glm::rotate(model, m_rotation.y, glm::vec3(0.f, 1.f, 0.f));
-	model = glm::rotate(model, m_rotation.z, glm::vec3(0.f, 0.f, 1.f));
-	model = glm::scale(model, m_scale);
-	return model;
+	glm::mat4 model = m_model.centerAtAndNormalize(glm::vec3(0.f));
+	glm::mat4 rot = glm::rotate(glm::mat4(1.f), m_rotation.x, glm::vec3(1.f, 0.f, 0.f));
+	rot = glm::rotate(rot, m_rotation.y, glm::vec3(0.f, 1.f, 0.f));
+	rot = glm::rotate(rot, m_rotation.z, glm::vec3(0.f, 0.f, 1.f));
+	return glm::translate(glm::mat4(1.f), m_position) * glm::scale(rot * model, m_scale);
 }
