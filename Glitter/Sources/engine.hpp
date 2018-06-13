@@ -19,6 +19,7 @@ public:
 	void onScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 protected:
+	void configPerspecive();
 	void processInput();
 
 protected:
@@ -30,4 +31,6 @@ protected:
 	bool dragCamera = false;
 	float deltaTime = 0;
 	float lastFrame = 0;
+	glm::mat4 m_projMatrix;
+	int m_projection = 0;
 };

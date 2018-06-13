@@ -10,8 +10,9 @@ public:
 	void draw(GLuint _shader);
 	bool loadFromFile(const std::string& _path);
 
-	void setRotation(float _angle);
+	void setRotation(glm::vec3 _angles);
 	void setPosition(glm::vec3 _pos);
+	void setScale(glm::vec3 _scale);
 	const std::string& getModelPath() const;
 	glm::mat4 getModelMatrix() const;
 
@@ -20,6 +21,5 @@ protected:
 	std::string m_modelPath;
 	glm::vec3 m_position = glm::vec3(0.f);
 	glm::vec3 m_scale = glm::vec3(1.f);
-	glm::vec3 m_rotAxis = glm::vec3(0.0f, 1.0f, 0.0f);
-	float m_rotation = 0.f;
+	glm::vec3 m_rotation = glm::vec3(0.f);
 };

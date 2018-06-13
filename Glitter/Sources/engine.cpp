@@ -107,6 +107,9 @@ int Engine::run()
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/cyborg/cyborg.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
 
+	glm::vec3 objRotation(0.f);
+	float objScale = 1.f;
+
 	EffectManager effects;
 	effects.registerEffect(std::make_shared<Phong>());
 	effects.registerEffect(std::make_shared<Gouraud>());
@@ -129,10 +132,20 @@ int Engine::run()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//TODO: put perspective matrix in camera
-		effects.render(scene, camera, glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f));
+		for(int i = 0; i < scene.size(); ++i)
+		{
+			scene[i].setRotation(objRotation);
+			scene[i].setScale(glm::vec3(objScale));
+		}
+
+		effects.render(scene, camera, m_projMatrix);
 
 		ImGui_ImplGlfwGL3_NewFrame();
+		ImGui::SliderAngle("Rotation X", &objRotation.x, 0);
+		ImGui::SliderAngle("Rotation Y", &objRotation.y, 0);
+		ImGui::SliderAngle("Rotation Z", &objRotation.z, 0);
+		ImGui::SliderFloat("Scale", &objScale, 1.f, 1000.f);
+		configPerspecive();
 		effects.config();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
@@ -183,6 +196,38 @@ void Engine::onMouseButtonCallback(GLFWwindow* window, int button, int action, i
 void Engine::onScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera.handleScroll(yoffset);
+}
+
+
+void Engine::configPerspecive()
+{
+	const char* const tab[] = {"Perspective", "Orthogonal" };
+	const char* current = tab[m_projection];
+
+	if(ImGui::BeginCombo("Projection", current))
+	{
+		for(int i = 0; i < sizeof tab / sizeof *tab; ++i)
+		{
+			if(ImGui::Selectable(tab[i], current == tab[m_projection]))
+				m_projection = i;
+
+			if(current == tab[m_projection])
+				ImGui::SetItemDefaultFocus();
+		}
+
+		ImGui::EndCombo();
+	}
+
+	switch(m_projection)
+	{
+	case 0: // Perspective
+		m_projMatrix = glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f);
+		break;
+
+	case 1: // Ortho
+		m_projMatrix = glm::ortho(0.f, (float)mWidth, (float)mHeight, 0.f, 0.1f, 100.f);
+		break;
+	}
 }
 
 
