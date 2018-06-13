@@ -225,7 +225,9 @@ void Engine::configPerspecive()
 		break;
 
 	case 1: // Ortho
-		m_projMatrix = glm::ortho(0.f, (float)mWidth, (float)mHeight, 0.f, 0.1f, 100.f);
+		m_projMatrix = glm::ortho(0.f, (float)mWidth, 0.f, (float)mHeight, -10000.f, 10000.f);
+		m_projMatrix = glm::translate(m_projMatrix, glm::vec3(mWidth / 2.f, mHeight / 2.f, 0.f));
+		m_projMatrix = glm::scale(m_projMatrix, glm::vec3(250.f));
 		break;
 	}
 }
