@@ -11,6 +11,10 @@ void SceneObject::draw(GLuint _shader)
 bool SceneObject::loadFromFile(const std::string& _path)
 {
 	m_modelPath = _path;
+
+	auto i = m_modelPath.find_last_of("/\\");
+	m_displayName = i != std::string::npos ? m_modelPath.substr(i + 1) : m_modelPath;
+
 	return m_model.loadFromFile(m_modelPath);
 }
 
@@ -33,9 +37,21 @@ void SceneObject::setScale(glm::vec3 _scale)
 }
 
 
+void SceneObject::setDisplayName(std::string _name)
+{
+	m_displayName = std::move(_name);
+}
+
+
 const std::string& SceneObject::getModelPath() const
 {
 	return m_modelPath;
+}
+
+
+const std::string& SceneObject::getDisplayName() const
+{
+	return m_displayName;
 }
 
 
@@ -46,4 +62,16 @@ glm::mat4 SceneObject::getModelMatrix() const
 	rot = glm::rotate(rot, m_rotation.y, glm::vec3(0.f, 1.f, 0.f));
 	rot = glm::rotate(rot, m_rotation.z, glm::vec3(0.f, 0.f, 1.f));
 	return glm::translate(glm::mat4(1.f), m_position) * glm::scale(rot, m_scale) * model;
+}
+
+
+glm::vec3 SceneObject::getRotation() const
+{
+	return m_rotation;
+}
+
+
+glm::vec3 SceneObject::getScale() const
+{
+	return m_scale;
 }

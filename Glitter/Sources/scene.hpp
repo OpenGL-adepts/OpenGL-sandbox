@@ -15,6 +15,7 @@ public:
 	std::shared_ptr<SceneObject> addObject(const std::string& _modelPath);
 
 	void draw(const Shader& _shader) const;
+	void configObjects();
 
 	size_t size() const;
 	SceneObject& operator[](size_t _i);
@@ -22,5 +23,6 @@ public:
 
 protected:
 	std::vector<std::shared_ptr<SceneObject>> m_objects;
+	int m_currentObject = 0;
 
 };

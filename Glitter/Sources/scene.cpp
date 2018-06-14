@@ -3,7 +3,9 @@
 #include <string>
 #include <fstream>
 #include <filesystem>
+#include <algorithm>
 #include <glm/gtc/type_ptr.hpp>
+#include <imgui.h>
 
 
 bool Scene::loadFromFile(const std::string& _path)
@@ -82,6 +84,41 @@ void Scene::draw(const Shader& _shader) const
 	{
 		_shader.bind("uModel", obj->getModelMatrix());
 		obj->draw(_shader.get());
+	}
+}
+
+
+void Scene::configObjects()
+{
+	std::vector<std::string> options;
+	
+	for(auto& obj : m_objects)
+		options.push_back(obj->getDisplayName());
+
+	std::vector<const char*> optionsCstr;
+	optionsCstr.resize(options.size());
+	std::transform(options.begin(), options.end(), optionsCstr.begin(), [](const std::string& _str) { return _str.c_str(); });
+	ImGui::Combo("Selected object", &m_currentObject, optionsCstr.data(), optionsCstr.size());
+
+	if(m_currentObject >= 0 && m_currentObject < m_objects.size())
+	{
+		auto& obj = m_objects[m_currentObject];
+
+		glm::vec3 objRotation = obj->getRotation();
+		float objScale = obj->getScale().x;
+		char nameBuf[128] = {};
+		memcpy(nameBuf, obj->getDisplayName().c_str(), std::min(obj->getDisplayName().size(), 127u));
+
+		if(ImGui::InputText("Name", nameBuf, sizeof nameBuf))
+			obj->setDisplayName(nameBuf);
+
+		ImGui::SliderAngle("Rotation X", &objRotation.x);
+		ImGui::SliderAngle("Rotation Y", &objRotation.y);
+		ImGui::SliderAngle("Rotation Z", &objRotation.z);
+		ImGui::SliderFloat("Scale", &objScale, 0.01f, 20.f);
+
+		obj->setRotation(objRotation);
+		obj->setScale(glm::vec3(objScale));
 	}
 }
 

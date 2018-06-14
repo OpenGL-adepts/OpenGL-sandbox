@@ -107,9 +107,6 @@ int Engine::run()
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/cyborg/cyborg.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
 
-	glm::vec3 objRotation(0.f);
-	float objScale = 1.f;
-
 	EffectManager effects;
 	effects.registerEffect(std::make_shared<Phong>());
 	effects.registerEffect(std::make_shared<Gouraud>());
@@ -132,19 +129,10 @@ int Engine::run()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		for(int i = 0; i < scene.size(); ++i)
-		{
-			scene[i].setRotation(objRotation);
-			scene[i].setScale(glm::vec3(objScale));
-		}
-
 		effects.render(scene, camera, m_projMatrix);
 
 		ImGui_ImplGlfwGL3_NewFrame();
-		ImGui::SliderAngle("Rotation X", &objRotation.x);
-		ImGui::SliderAngle("Rotation Y", &objRotation.y);
-		ImGui::SliderAngle("Rotation Z", &objRotation.z);
-		ImGui::SliderFloat("Scale", &objScale, 0.01f, 20.f);
+		scene.configObjects();
 		configPerspecive();
 		effects.config();
 		ImGui::Render();
