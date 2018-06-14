@@ -4,7 +4,8 @@
 
 void SceneObject::draw(GLuint _shader)
 {
-	m_model.draw(_shader);
+	if(m_bEnabled)
+		m_model.draw(_shader);
 }
 
 
@@ -43,6 +44,12 @@ void SceneObject::setDisplayName(std::string _name)
 }
 
 
+void SceneObject::setEnabled(bool _enabled)
+{
+	m_bEnabled = _enabled;
+}
+
+
 const std::string& SceneObject::getModelPath() const
 {
 	return m_modelPath;
@@ -65,6 +72,12 @@ glm::mat4 SceneObject::getModelMatrix() const
 }
 
 
+glm::vec3 SceneObject::getPosition() const
+{
+	return m_position;
+}
+
+
 glm::vec3 SceneObject::getRotation() const
 {
 	return m_rotation;
@@ -74,4 +87,10 @@ glm::vec3 SceneObject::getRotation() const
 glm::vec3 SceneObject::getScale() const
 {
 	return m_scale;
+}
+
+
+bool SceneObject::isEnabled() const
+{
+	return m_bEnabled;
 }

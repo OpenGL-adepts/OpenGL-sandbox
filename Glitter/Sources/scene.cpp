@@ -55,6 +55,15 @@ bool Scene::saveToFile(const std::string& _path) const
 	{
 		nlohmann::json tmp;
 		tmp["model"] = std::filesystem::relative(obj->getModelPath(), std::filesystem::path(_path).parent_path()).string();
+		tmp["name"] = obj->getDisplayName();
+
+		auto vec = obj->getPosition();
+		tmp["position"] = {vec.x, vec.y, vec.z};
+		vec = obj->getRotation();
+		tmp["rotation"] = {vec.x, vec.y, vec.z};
+		vec = obj->getScale();
+		tmp["scale"] = {vec.x, vec.y, vec.z};
+
 		objArr.push_back(tmp);
 	}
 
@@ -90,10 +99,20 @@ void Scene::draw(const Shader& _shader) const
 
 void Scene::configObjects()
 {
+	if(ImGui::Button("Save scene"))
+		saveToFile(PROJECT_SOURCE_DIR "/testscene.json");
+
 	std::vector<std::string> options;
 	
 	for(auto& obj : m_objects)
-		options.push_back(obj->getDisplayName());
+	{
+		auto name = obj->getDisplayName();
+
+		if(!obj->isEnabled())
+			name += " (disabled)";
+
+		options.push_back(name);
+	}
 
 	std::vector<const char*> optionsCstr;
 	optionsCstr.resize(options.size());
@@ -104,7 +123,6 @@ void Scene::configObjects()
 	{
 		auto& obj = m_objects[m_currentObject];
 
-		glm::vec3 objRotation = obj->getRotation();
 		float objScale = obj->getScale().x;
 		char nameBuf[128] = {};
 		memcpy(nameBuf, obj->getDisplayName().c_str(), std::min(obj->getDisplayName().size(), 127u));
@@ -112,12 +130,24 @@ void Scene::configObjects()
 		if(ImGui::InputText("Name", nameBuf, sizeof nameBuf))
 			obj->setDisplayName(nameBuf);
 
-		ImGui::SliderAngle("Rotation X", &objRotation.x);
-		ImGui::SliderAngle("Rotation Y", &objRotation.y);
-		ImGui::SliderAngle("Rotation Z", &objRotation.z);
+		bool enabled = obj->isEnabled();
+		ImGui::Checkbox("Enabled", &enabled);
+		obj->setEnabled(enabled);
+
+		glm::vec3 vec = obj->getPosition();
+		ImGui::SliderFloat("Position X", &vec.x, -20.f, 20.f);
+		ImGui::SliderFloat("Position Y", &vec.y, -20.f, 20.f);
+		ImGui::SliderFloat("Position Z", &vec.z, -20.f, 20.f);
+		obj->setPosition(vec);
+
+		vec = obj->getRotation();
+		ImGui::SliderAngle("Rotation X", &vec.x);
+		ImGui::SliderAngle("Rotation Y", &vec.y);
+		ImGui::SliderAngle("Rotation Z", &vec.z);
+		obj->setRotation(vec);
+
 		ImGui::SliderFloat("Scale", &objScale, 0.01f, 20.f);
 
-		obj->setRotation(objRotation);
 		obj->setScale(glm::vec3(objScale));
 	}
 }
