@@ -1,5 +1,4 @@
 #include "scene.hpp"
-#include <json.hpp>
 #include <string>
 #include <fstream>
 #include <filesystem>
@@ -27,14 +26,23 @@ bool Scene::loadFromFile(const std::string& _path)
 
 		for(auto& elem : json.at("objects"))
 		{
-			auto tmpObj = std::make_shared<SceneObject>();
+			try
+			{
+				auto tmpObj = std::make_shared<SceneObject>();
 
-			//TODO: gdzies to walnac indziej:
-			tmpObj->setPosition(glm::vec3(debugOffset++ * 1.f, 0, 0));
-			/////
+				tmpObj->loadFromFile((root / elem.at("model").get<std::string>()).make_preferred().string());
 
-			tmpObj->loadFromFile((root / elem.at("model").get<std::string>()).make_preferred().string());
-			m_objects.push_back(std::move(tmpObj));
+				try { tmpObj->setDisplayName(elem.at("name").get<std::string>()); } catch(...) {}
+				try { tmpObj->setEnabled(elem.at("enabled")); } catch (...) {}
+
+				tmpObj->setPosition (loadVector(elem, "position"));
+				tmpObj->setRotation (loadVector(elem, "rotation"));
+				tmpObj->setScale	(loadVector(elem, "scale"));
+
+				m_objects.push_back(std::move(tmpObj));
+			}
+			catch(...)
+			{}
 		}
 	}
 	catch(...)
@@ -56,6 +64,7 @@ bool Scene::saveToFile(const std::string& _path) const
 		nlohmann::json tmp;
 		tmp["model"] = std::filesystem::relative(obj->getModelPath(), std::filesystem::path(_path).parent_path()).string();
 		tmp["name"] = obj->getDisplayName();
+		tmp["enabled"] = obj->isEnabled();
 
 		auto vec = obj->getPosition();
 		tmp["position"] = {vec.x, vec.y, vec.z};
@@ -101,6 +110,11 @@ void Scene::configObjects()
 {
 	if(ImGui::Button("Save scene"))
 		saveToFile(PROJECT_SOURCE_DIR "/testscene.json");
+
+	ImGui::SameLine();
+
+	if(ImGui::Button("Load scene"))
+		loadFromFile(PROJECT_SOURCE_DIR "/testscene.json");
 
 	std::vector<std::string> options;
 	
@@ -168,4 +182,24 @@ SceneObject& Scene::operator[](size_t _i)
 const SceneObject& Scene::operator[](size_t _i) const
 {
 	return *m_objects[_i];
+}
+
+
+//static
+glm::vec3 Scene::loadVector(const nlohmann::json& _obj, const std::string& _vectName)
+{
+	auto vect = _obj.find(_vectName);
+
+	if(vect != _obj.end())
+	if(vect->is_array())
+	{
+		glm::vec3 result(0.f);
+		auto it = vect->begin();
+		result.x = (it++)->get<float>();
+		result.y = (it++)->get<float>();
+		result.z = (it++)->get<float>();
+		return result;
+	}
+
+	return {};
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include "shader.hpp"
 #include "sceneobject.hpp"
+#include <json.hpp>
 #include <string>
 #include <vector>
 #include <memory>
@@ -20,6 +21,9 @@ public:
 	size_t size() const;
 	SceneObject& operator[](size_t _i);
 	const SceneObject& operator[](size_t _i) const;
+
+protected:
+	static glm::vec3 loadVector(const nlohmann::json& _obj, const std::string& _vectName);
 
 protected:
 	std::vector<std::shared_ptr<SceneObject>> m_objects;
