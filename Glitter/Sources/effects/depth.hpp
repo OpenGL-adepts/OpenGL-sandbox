@@ -7,7 +7,7 @@ class Depth
 {
 public:
 	Depth();
-	const char* getName() const override;
+	std::string getName() const override;
 	void config() override;
 
 protected:

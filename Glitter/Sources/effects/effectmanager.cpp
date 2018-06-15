@@ -1,4 +1,5 @@
 #include "effectmanager.hpp"
+#include "../gui.hpp"
 #include <imgui.h>
 
 
@@ -46,25 +47,12 @@ void EffectManager::registerEffect(const std::shared_ptr<Effect>& _effect)
 
 void EffectManager::config()
 {
-	auto* currentName = m_effects[m_currentEffect]->getName();
+	std::vector<std::string> modes;
 
-	if(ImGui::BeginCombo("Mode", currentName))
-	{
-		for(int i = 0; i < m_effects.size(); ++i)
-		{
-			auto* eff = m_effects[i]->getName();
-			bool selected = currentName = eff;
+	for(auto& eff : m_effects)
+		modes.push_back(eff->getName());
 
-			if(ImGui::Selectable(eff, selected))
-				m_currentEffect = i;
-
-			if(selected)
-				ImGui::SetItemDefaultFocus();
-		}
-
-		ImGui::EndCombo();
-	}
-
+	Gui::combo("Mode", m_currentEffect, modes);
 	m_effects[m_currentEffect]->config();
 }
 

@@ -8,7 +8,7 @@ Gouraud::Gouraud()
 }
 
 
-const char* Gouraud::getName() const //override
+std::string Gouraud::getName() const //override
 {
 	return "Gouraud";
 }

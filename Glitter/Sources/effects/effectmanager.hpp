@@ -13,8 +13,8 @@ public:
 	virtual ~Effect()
 	{}
 
-	// Return displayed name of the effect. Must return static address!
-	virtual const char* getName() const = 0;
+	// Return displayed name of the effect.
+	virtual std::string getName() const = 0;
 
 	// Handle ImGui controls for changing effect configuration
 	virtual void config() {}

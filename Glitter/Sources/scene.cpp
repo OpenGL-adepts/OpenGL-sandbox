@@ -1,4 +1,5 @@
 #include "scene.hpp"
+#include "gui.hpp"
 #include <string>
 #include <fstream>
 #include <filesystem>
@@ -142,10 +143,7 @@ void Scene::configObjects()
 		options.push_back(name);
 	}
 
-	std::vector<const char*> optionsCstr;
-	optionsCstr.resize(options.size());
-	std::transform(options.begin(), options.end(), optionsCstr.begin(), [](const std::string& _str) { return _str.c_str(); });
-	ImGui::Combo("Selected object", &m_currentObject, optionsCstr.data(), optionsCstr.size());
+	Gui::combo("Selected object", m_currentObject, options);
 
 	if(m_currentObject >= 0 && m_currentObject < m_objects.size())
 	{

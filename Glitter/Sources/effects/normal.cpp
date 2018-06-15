@@ -8,7 +8,7 @@ Normal::Normal()
 }
 
 
-const char* Normal::getName() const //override
+std::string Normal::getName() const //override
 {
 	return "Normal";
 }

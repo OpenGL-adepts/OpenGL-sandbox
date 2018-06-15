@@ -8,7 +8,7 @@ Phong::Phong()
 }
 
 
-const char* Phong::getName() const //override
+std::string Phong::getName() const //override
 {
 	return "Phong";
 }

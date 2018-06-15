@@ -8,7 +8,7 @@ Flat::Flat()
 }
 
 
-const char* Flat::getName() const //override
+std::string Flat::getName() const //override
 {
 	return "Flat";
 }

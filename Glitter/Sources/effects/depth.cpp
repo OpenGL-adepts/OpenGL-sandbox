@@ -8,7 +8,7 @@ Depth::Depth()
 }
 
 
-const char* Depth::getName() const //override
+std::string Depth::getName() const //override
 {
 	return "Depth";
 }
