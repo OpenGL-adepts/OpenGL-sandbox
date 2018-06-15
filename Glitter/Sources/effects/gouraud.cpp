@@ -1,5 +1,4 @@
 #include "gouraud.hpp"
-#include <imgui.h>
 
 
 Gouraud::Gouraud()

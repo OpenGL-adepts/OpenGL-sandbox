@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <stb_image.h>
+#include <glad/glad.h>
+#include <iostream>
 
 
 class Texture

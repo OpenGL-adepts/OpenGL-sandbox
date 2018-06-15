@@ -2,6 +2,7 @@
 #include "mesh.hpp"
 #include <glm/glm.hpp>
 #include <string>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 class SceneObject

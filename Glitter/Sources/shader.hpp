@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <string>
+#include <cassert>
+#include <fstream>
+#include <memory>
 
 
 class Shader

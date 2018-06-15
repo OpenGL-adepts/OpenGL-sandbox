@@ -1,6 +1,6 @@
 #pragma once
 #include "effectmanager.hpp"
-
+#include <imgui.h>
 
 class Phong
 	: public Effect

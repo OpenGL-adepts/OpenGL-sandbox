@@ -1,7 +1,4 @@
 #include "mesh.hpp"
-#include <glm/gtc/matrix_transform.hpp>
-#include <stb_image.h>
-#include <limits>
 
 
 Mesh::Mesh()

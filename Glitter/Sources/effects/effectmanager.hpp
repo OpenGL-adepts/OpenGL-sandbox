@@ -5,6 +5,8 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include "../gui.hpp"
+#include <imgui.h>
 
 
 class Effect

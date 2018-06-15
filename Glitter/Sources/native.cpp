@@ -1,8 +1,4 @@
 #include "native.hpp"
-#include <Windows.h>
-#include <Commdlg.h>
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
 
 
 Native::Native(GLFWwindow* _window)

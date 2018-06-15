@@ -1,7 +1,4 @@
 #include "shader.hpp"
-#include <cassert>
-#include <fstream>
-#include <memory>
 
 
 void Shader::activate() const

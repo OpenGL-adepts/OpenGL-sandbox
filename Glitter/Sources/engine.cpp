@@ -1,20 +1,4 @@
 #include "engine.hpp"
-#include "shader.hpp"
-#include "mesh.hpp"
-#include "scene.hpp"
-#include "effects/effectmanager.hpp"
-#include "effects/phong.hpp"
-#include "effects/gouraud.hpp"
-#include "effects/flat.hpp"
-#include "effects/depth.hpp"
-#include "effects/normal.hpp"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <imgui.h>
-#include <imgui_impl_glfw_gl3.h>
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

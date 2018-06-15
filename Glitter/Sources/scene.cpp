@@ -1,11 +1,4 @@
 #include "scene.hpp"
-#include "gui.hpp"
-#include <string>
-#include <fstream>
-#include <filesystem>
-#include <algorithm>
-#include <glm/gtc/type_ptr.hpp>
-#include <imgui.h>
 
 
 Scene::Scene(GLFWwindow* _window)

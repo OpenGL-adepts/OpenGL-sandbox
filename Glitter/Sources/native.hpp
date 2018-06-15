@@ -1,6 +1,10 @@
 #pragma once
 #include <GLFW/glfw3.h>
 #include <filesystem>
+#include <Windows.h>
+#include <Commdlg.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 
 
 class Native

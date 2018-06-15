@@ -1,5 +1,4 @@
 #include "SceneObject.hpp"
-#include <glm/gtc/matrix_transform.hpp>
 
 
 void SceneObject::draw(GLuint _shader)

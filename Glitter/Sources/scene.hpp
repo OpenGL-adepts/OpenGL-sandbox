@@ -6,7 +6,13 @@
 #include <string>
 #include <vector>
 #include <memory>
-
+#include "gui.hpp"
+#include <string>
+#include <fstream>
+#include <filesystem>
+#include <algorithm>
+#include <glm/gtc/type_ptr.hpp>
+#include <imgui.h>
 
 class Scene
 {
