@@ -19,7 +19,8 @@ public:
 	void onScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 protected:
-	void configPerspecive();
+	void configPerspective();
+	void recalcPerspective();
 	void processInput();
 
 protected:

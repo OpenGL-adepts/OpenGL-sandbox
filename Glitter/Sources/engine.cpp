@@ -129,13 +129,54 @@ int Engine::run()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		recalcPerspective();
 		effects.render(scene, camera, m_projMatrix);
 
 		ImGui_ImplGlfwGL3_NewFrame();
-		ImGui::Text("OpenGL version: %s", glGetString(GL_VERSION));
-		scene.configObjects();
-		configPerspecive();
-		effects.config();
+		//ImGui::ShowDemoWindow();
+
+		if(ImGui::Begin("OpenGL sandbox"))
+		{
+			if(ImGui::CollapsingHeader("About"))
+			{
+				ImGui::Text("OpenGL version: %s", glGetString(GL_VERSION));
+
+				if(ImGui::Button("About this software"))
+					ImGui::OpenPopup("About this software");
+			}
+
+			if(ImGui::BeginPopupModal("About this software"))
+			{
+				ImGui::Text("OpenGL sandbox");
+				ImGui::Separator();
+
+				ImGui::Text("Distributed under MIT license, available at\nhttps://github.com/OpenGL-adepts/OpenGL-sandbox\n\nAuthors:");
+				ImGui::BulletText("Karolina Olszewska");
+				ImGui::BulletText("Kasia Kidula");
+				ImGui::BulletText("Pawel Koziol");
+				ImGui::BulletText("Michal Martyniak");
+				ImGui::BulletText("Przemyslaw Roguski");
+				ImGui::Text("Developed as academic project in Gdansk University of Technology, 2018");
+
+				if(ImGui::Button("Ok"))
+					ImGui::CloseCurrentPopup();
+
+				ImGui::EndPopup();
+			}
+
+			if(ImGui::CollapsingHeader("Scene"))
+				scene.configObjects();
+
+			if(ImGui::CollapsingHeader("Effects"))
+			{
+				configPerspective();
+				ImGui::Separator();
+				effects.config();
+			}
+		}
+		
+		ImGui::End();
+
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -188,7 +229,7 @@ void Engine::onScrollCallback(GLFWwindow* window, double xoffset, double yoffset
 }
 
 
-void Engine::configPerspecive()
+void Engine::configPerspective()
 {
 	const char* const tab[] = {"Perspective", "Orthogonal" };
 	const char* current = tab[m_projection];
@@ -206,7 +247,11 @@ void Engine::configPerspecive()
 
 		ImGui::EndCombo();
 	}
+}
 
+
+void Engine::recalcPerspective()
+{
 	switch(m_projection)
 	{
 	case 0: // Perspective
