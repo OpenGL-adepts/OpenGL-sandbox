@@ -14,7 +14,7 @@ std::string Phong::getName() const //override
 }
 
 
-void Phong::config() //override
+void Phong::doConfig() //override
 {
 	ImGui::Checkbox("Blinn-Phong", &m_bUseBlinnPhong);
 	ImGui::SliderFloat("Ambient", &m_ambientStrength, 0.f, 1.f);

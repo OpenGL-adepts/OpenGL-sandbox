@@ -14,7 +14,7 @@ std::string Gouraud::getName() const //override
 }
 
 
-void Gouraud::config() //override
+void Gouraud::doConfig() //override
 {
 	ImGui::SliderFloat("Ambient", &m_ambientStrength, 0.f, 1.f);
 	ImGui::SliderFloat("Diffuse", &m_diffuseStrength, 0.f, 1.f);

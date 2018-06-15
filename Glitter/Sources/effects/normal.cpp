@@ -14,7 +14,7 @@ std::string Normal::getName() const //override
 }
 
 
-void Normal::config() //override
+void Normal::doConfig() //override
 {
 	ImGui::Checkbox("Normal mapping", &m_bEnableNormalMapping);
 }

@@ -14,7 +14,7 @@ std::string Flat::getName() const //override
 }
 
 
-void Flat::config() //override
+void Flat::doConfig() //override
 {
 	ImGui::SliderFloat("Ambient", &m_ambientStrength, 0.f, 1.f);
 	ImGui::SliderFloat("Diffuse", &m_diffuseStrength, 0.f, 1.f);

@@ -14,7 +14,7 @@ std::string Depth::getName() const //override
 }
 
 
-void Depth::config() //override
+void Depth::doConfig() //override
 {
 	ImGui::SliderInt("Depth exponent", &m_exponent, 1, 64);
 }

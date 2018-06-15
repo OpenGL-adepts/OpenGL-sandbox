@@ -17,7 +17,7 @@ public:
 	virtual std::string getName() const = 0;
 
 	// Handle ImGui controls for changing effect configuration
-	virtual void config() {}
+	void config();
 
 	// Handle scene rendering
 	void render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const;
@@ -25,11 +25,13 @@ public:
 	bool isInvalid() const;
 
 protected:
+	virtual void doConfig() {}
 	virtual void doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const = 0;
 	void loadShader(const std::string& _vertex, const std::string& _fragment);
 
 protected:
 	bool m_bInvalid = true;
+	std::string m_errorString;
 	Shader m_shader;
 
 };

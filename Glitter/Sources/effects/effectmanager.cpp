@@ -3,6 +3,15 @@
 #include <imgui.h>
 
 
+void Effect::config()
+{
+	if(m_bInvalid)
+		ImGui::TextWrapped("Shader failed to compile with following error:\n%s", m_errorString.c_str());
+	else
+		doConfig();
+}
+
+
 void Effect::render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const
 {
 	if(!m_bInvalid)
@@ -26,9 +35,10 @@ void Effect::loadShader(const std::string& _vertex, const std::string& _fragment
 		m_shader.attach(_fragment);
 		m_shader.link();
 	}
-	catch(...)
+	catch(std::exception& _e)
 	{
 		m_bInvalid = true;
+		m_errorString = _e.what();
 	}
 }
 
@@ -50,7 +60,14 @@ void EffectManager::config()
 	std::vector<std::string> modes;
 
 	for(auto& eff : m_effects)
-		modes.push_back(eff->getName());
+	{
+		auto name = eff->getName();
+
+		if(eff->isInvalid())
+			name += " (error)";
+
+		modes.push_back(name);
+	}
 
 	Gui::combo("Mode", m_currentEffect, modes);
 	m_effects[m_currentEffect]->config();
