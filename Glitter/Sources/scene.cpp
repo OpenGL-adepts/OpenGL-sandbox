@@ -174,6 +174,9 @@ void Scene::configObjects()
 
 		ImGui::SliderFloat("Scale", &objScale, 0.01f, 20.f);
 
+		glm::vec3 c;
+		ImGui::ColorEdit3("Color", (float*)&c);
+
 		obj->setScale(glm::vec3(objScale));
 	}
 }
