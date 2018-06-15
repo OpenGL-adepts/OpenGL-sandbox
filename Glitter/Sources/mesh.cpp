@@ -68,7 +68,7 @@ bool Mesh::loadFromFile(const std::string& _filename)
 	if(const aiScene* scene = loader.ReadFile(_filename, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_OptimizeGraph | aiProcess_FlipUVs | aiProcess_CalcTangentSpace))
 	{
 		// Walk the Tree of Scene Nodes
-		auto index = _filename.find_last_of("/");
+		auto index = _filename.find_last_of("/\\");
 
 		constexpr float posInf = std::numeric_limits<float>::infinity();
 		mMinCoord = glm::vec3(posInf);

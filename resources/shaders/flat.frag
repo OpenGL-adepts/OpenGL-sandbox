@@ -8,17 +8,17 @@ uniform vec3 uLightPos;
 uniform vec3 uViewPos;
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_specular;
+uniform mat4 uModel;
 
 in vec3 FragPos;
 in vec2 TexCoords;
-in vec3 FragViewPos;
 
 out vec4 FragColor;
 
 
 void main()
 {
-	vec3 norm = normalize(cross(dFdx(FragViewPos), dFdy(FragViewPos)));
+	vec3 norm = normalize(cross(dFdx(FragPos), dFdy(FragPos)));
 	
 	vec3 lightDir = normalize(uLightPos - FragPos);
 	vec3 viewDir = normalize(uViewPos - FragPos);

@@ -4,19 +4,17 @@
 
 Gouraud::Gouraud()
 {
-	m_shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/gouraud.vert");
-	m_shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/gouraud.frag");
-	m_shader.link();
+	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/gouraud.vert", PROJECT_SOURCE_DIR "/resources/shaders/gouraud.frag");
 }
 
 
-const char* Gouraud::getName() const //override
+std::string Gouraud::getName() const //override
 {
 	return "Gouraud";
 }
 
 
-void Gouraud::config() //override
+void Gouraud::doConfig() //override
 {
 	ImGui::SliderFloat("Ambient", &m_ambientStrength, 0.f, 1.f);
 	ImGui::SliderFloat("Diffuse", &m_diffuseStrength, 0.f, 1.f);
@@ -25,7 +23,7 @@ void Gouraud::config() //override
 }
 
 
-void Gouraud::render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
+void Gouraud::doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
 {
 	m_shader.activate();
 	m_shader.bind("uProjection", _perspective);

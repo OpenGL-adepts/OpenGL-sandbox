@@ -1,5 +1,46 @@
 #include "effectmanager.hpp"
+#include "../gui.hpp"
 #include <imgui.h>
+
+
+void Effect::config()
+{
+	if(m_bInvalid)
+		ImGui::TextWrapped("Shader failed to compile with following error:\n%s", m_errorString.c_str());
+	else
+		doConfig();
+}
+
+
+void Effect::render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const
+{
+	if(!m_bInvalid)
+		doRender(_scene, _camera, _perspective);
+}
+
+
+bool Effect::isInvalid() const
+{
+	return m_bInvalid;
+}
+
+
+void Effect::loadShader(const std::string& _vertex, const std::string& _fragment)
+{
+	m_bInvalid = false;
+
+	try
+	{
+		m_shader.attach(_vertex);
+		m_shader.attach(_fragment);
+		m_shader.link();
+	}
+	catch(std::exception& _e)
+	{
+		m_bInvalid = true;
+		m_errorString = _e.what();
+	}
+}
 
 
 EffectManager::EffectManager()
@@ -16,25 +57,19 @@ void EffectManager::registerEffect(const std::shared_ptr<Effect>& _effect)
 
 void EffectManager::config()
 {
-	auto* currentName = m_effects[m_currentEffect]->getName();
+	std::vector<std::string> modes;
 
-	if(ImGui::BeginCombo("Mode", currentName))
+	for(auto& eff : m_effects)
 	{
-		for(int i = 0; i < m_effects.size(); ++i)
-		{
-			auto* eff = m_effects[i]->getName();
-			bool selected = currentName = eff;
+		auto name = eff->getName();
 
-			if(ImGui::Selectable(eff, selected))
-				m_currentEffect = i;
+		if(eff->isInvalid())
+			name += " (error)";
 
-			if(selected)
-				ImGui::SetItemDefaultFocus();
-		}
-
-		ImGui::EndCombo();
+		modes.push_back(name);
 	}
 
+	Gui::combo("Mode", m_currentEffect, modes);
 	m_effects[m_currentEffect]->config();
 }
 
