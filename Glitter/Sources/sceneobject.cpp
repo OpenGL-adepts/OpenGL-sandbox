@@ -4,7 +4,7 @@
 void SceneObject::draw(GLuint _shader)
 {
 	if(m_bEnabled)
-		m_model.draw(_shader);
+		m_model.draw(_shader, m_color);
 }
 
 
@@ -48,6 +48,11 @@ void SceneObject::setEnabled(bool _enabled)
 	m_bEnabled = _enabled;
 }
 
+void SceneObject::setColor(glm::vec3 _color)
+{
+	m_color = _color;
+
+}
 
 const std::string& SceneObject::getModelPath() const
 {
@@ -88,6 +93,10 @@ glm::vec3 SceneObject::getScale() const
 	return m_scale;
 }
 
+glm::vec3 SceneObject::getColor() const
+{
+	return m_color;
+}
 
 bool SceneObject::isEnabled() const
 {

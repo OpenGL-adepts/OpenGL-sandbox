@@ -35,7 +35,7 @@ public:
 	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<std::pair<Texture, std::string>> textures);
 
 	bool loadFromFile(const std::string& _filename);
-	void draw(GLuint shader);
+	void draw(GLuint shader, glm::vec3 color);
 
 	glm::vec3 getCenter() const;
 	float getMaxAxisSize() const;

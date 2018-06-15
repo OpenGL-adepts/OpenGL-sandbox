@@ -79,12 +79,12 @@ bool Mesh::loadFromFile(const std::string& _filename)
 }
 
 
-void Mesh::draw(GLuint shader)
+void Mesh::draw(GLuint shader, glm::vec3 color)
 {
 	unsigned int unit = 0, diffuse = 0, specular = 0, normal = 0;
 
 	for (auto& i : mSubMeshes)
-		i->draw(shader);
+		i->draw(shader, color);
 
 	for(int i = 0; i < 16; ++i)
 	{
@@ -124,7 +124,7 @@ void Mesh::draw(GLuint shader)
 		bindTexturePlaceholder();
 		glUniform1f(glGetUniformLocation(shader, "texture_specular"), unit++);
 	}
-	
+
 	glBindVertexArray(mVertexArray);
 	glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
 	glActiveTexture(GL_TEXTURE0);

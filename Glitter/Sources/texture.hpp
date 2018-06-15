@@ -20,6 +20,7 @@ public:
 	Texture& operator=(const Texture& _copy) = delete;
 
 	void createColorPlaceholder();
+	void changeColor(glm::vec3 color);
 	bool loadFromFile(const std::string& _file);
 	void bind() const;
 
