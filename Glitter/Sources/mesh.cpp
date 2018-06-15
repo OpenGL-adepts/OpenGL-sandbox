@@ -65,7 +65,7 @@ bool Mesh::loadFromFile(const std::string& _filename)
 {
 	Assimp::Importer loader;
 	
-	if(const aiScene* scene = loader.ReadFile(_filename, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_OptimizeGraph | aiProcess_FlipUVs | aiProcess_CalcTangentSpace))
+	if(const aiScene* scene = loader.ReadFile(_filename, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_OptimizeGraph | aiProcess_FlipUVs | aiProcess_Triangulate | aiProcess_CalcTangentSpace))
 	{
 		// Walk the Tree of Scene Nodes
 		auto index = _filename.find_last_of("/\\");
@@ -166,21 +166,24 @@ void Mesh::parse(const std::string& path, const aiNode* node, const aiScene* sce
 void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* scene)
 {
 	// Create Vertex Data from Mesh Node
-	std::vector<Vertex> vertices; Vertex vertex;
+	std::vector<Vertex> vertices;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
-		vertex.uv		 = mesh->mTextureCoords[0] ? glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y) : glm::vec2(0.f);
-		vertex.position  = glm::vec3(mesh->mVertices[i].x,	 mesh->mVertices[i].y,	 mesh->mVertices[i].z);
-		vertex.normal	 = glm::vec3(mesh->mNormals[i].x,	 mesh->mNormals[i].y,	 mesh->mNormals[i].z);
+		Vertex vertex;
+		vertex.position  = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
+		
+		if(mesh->mTextureCoords[0])
+			vertex.uv = glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y);
+		
+		if(mesh->mNormals)
+			vertex.normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 
 		if(mesh->mTangents && mesh->mBitangents)
 		{
-			vertex.tangent	 = glm::vec3(mesh->mTangents[i].x,	 mesh->mTangents[i].y,	 mesh->mTangents[i].z);
+			vertex.tangent	 = glm::vec3(mesh->mTangents  [i].x, mesh->mTangents  [i].y, mesh->mTangents  [i].z);
 			vertex.bitangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
 		}
-		else
-			vertex.tangent = vertex.bitangent = glm::vec3(0.f);
 
 		vertices.push_back(vertex);
 
@@ -205,6 +208,7 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
 	process(path, scene->mMaterials[mesh->mMaterialIndex], aiTextureType_DIFFUSE, textures);
 	process(path, scene->mMaterials[mesh->mMaterialIndex], aiTextureType_SPECULAR, textures);
 	process(path, scene->mMaterials[mesh->mMaterialIndex], aiTextureType_HEIGHT, textures);
+
 	mSubMeshes.push_back(std::make_unique<Mesh>(std::move(vertices), std::move(indices), std::move(textures)));
 }
 

@@ -11,12 +11,13 @@
 
 
 // Vertex Format
-struct Vertex {
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 uv; // texture coords
-	glm::vec3 tangent; // for normal mapping
-	glm::vec3 bitangent; // for normal mapping
+struct Vertex
+{
+	glm::vec3 position	= glm::vec3(0.f);
+	glm::vec3 normal	= glm::vec3(0.f);
+	glm::vec2 uv		= glm::vec2(0.f); // texture coords
+	glm::vec3 tangent	= glm::vec3(0.f); // for normal mapping
+	glm::vec3 bitangent	= glm::vec3(0.f); // for normal mapping
 };
 
 
