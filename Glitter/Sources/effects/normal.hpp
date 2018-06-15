@@ -13,6 +13,6 @@ protected:
 	void doConfig() override;
 	void doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const override;
 
-	bool m_bEnableNormalMapping;
+	bool m_bEnableNormalMapping = false;
 
 };
