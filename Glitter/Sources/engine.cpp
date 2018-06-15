@@ -132,6 +132,7 @@ int Engine::run()
 		effects.render(scene, camera, m_projMatrix);
 
 		ImGui_ImplGlfwGL3_NewFrame();
+		ImGui::Text("OpenGL version: %s", glGetString(GL_VERSION));
 		scene.configObjects();
 		configPerspecive();
 		effects.config();

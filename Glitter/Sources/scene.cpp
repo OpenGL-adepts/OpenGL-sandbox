@@ -147,7 +147,7 @@ void Scene::configObjects()
 
 	if(m_currentObject >= 0 && m_currentObject < m_objects.size())
 	{
-		auto& obj = m_objects[m_currentObject];
+		auto obj = m_objects[m_currentObject];
 
 		float objScale = obj->getScale().x;
 		char nameBuf[128] = {};
@@ -159,6 +159,31 @@ void Scene::configObjects()
 		bool enabled = obj->isEnabled();
 		ImGui::Checkbox("Enabled", &enabled);
 		obj->setEnabled(enabled);
+
+		ImGui::SameLine();
+
+		if(ImGui::Button("Delete object"))
+			ImGui::OpenPopup("Confirm deletion");
+
+		if(ImGui::BeginPopupModal("Confirm deletion", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+		{
+			ImGui::Text("Are you sure to delete object?");
+
+			if(ImGui::Button("Yes"))
+			{
+				ImGui::CloseCurrentPopup();
+				m_objects.erase(m_objects.begin() + m_currentObject);
+				
+				if(m_currentObject > 0 && m_currentObject == m_objects.size())
+					--m_currentObject;
+			}
+			ImGui::SameLine();
+
+			if(ImGui::Button("No", ImVec2(100, 0)))
+				ImGui::CloseCurrentPopup();
+
+			ImGui::EndPopup();
+		}
 
 		glm::vec3 vec = obj->getPosition();
 		ImGui::SliderFloat("Position X", &vec.x, -20.f, 20.f);
