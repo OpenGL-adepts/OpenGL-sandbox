@@ -1,8 +1,10 @@
 #pragma once
-#include "mesh.hpp"
+
 #include <glm/glm.hpp>
 #include <string>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "mesh.hpp"
 
 
 class SceneObject

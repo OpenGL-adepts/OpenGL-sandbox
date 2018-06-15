@@ -1,12 +1,14 @@
 #pragma once
-#include "../scene.hpp"
-#include "../camera.hpp"
-#include "../shader.hpp"
+
 #include <string>
 #include <memory>
 #include <vector>
-#include "../gui.hpp"
 #include <imgui.h>
+
+#include "../scene.hpp"
+#include "../camera.hpp"
+#include "../shader.hpp"
+#include "../gui.hpp"
 
 
 class Effect

@@ -1,5 +1,6 @@
 #include "effectmanager.hpp"
 
+
 void Effect::config()
 {
 	if(m_bInvalid)

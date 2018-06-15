@@ -1,7 +1,16 @@
 #pragma once
+
+#include <GLFW/glfw3.h>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <imgui.h>
+#include <imgui_impl_glfw_gl3.h>
+
 #include "glitter.hpp"
 #include "camera.hpp"
-#include <GLFW/glfw3.h>
 #include "shader.hpp"
 #include "mesh.hpp"
 #include "scene.hpp"
@@ -11,13 +20,6 @@
 #include "effects/flat.hpp"
 #include "effects/depth.hpp"
 #include "effects/normal.hpp"
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <imgui.h>
-#include <imgui_impl_glfw_gl3.h>
 
 
 class Engine

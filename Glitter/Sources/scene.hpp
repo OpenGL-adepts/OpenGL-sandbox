@@ -1,18 +1,20 @@
 #pragma once
-#include "shader.hpp"
-#include "sceneobject.hpp"
-#include "native.hpp"
+
 #include <json.hpp>
 #include <string>
 #include <vector>
 #include <memory>
-#include "gui.hpp"
 #include <string>
 #include <fstream>
 #include <filesystem>
 #include <algorithm>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
+
+#include "shader.hpp"
+#include "sceneobject.hpp"
+#include "native.hpp"
+#include "gui.hpp"
 
 class Scene
 {

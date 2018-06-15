@@ -1,6 +1,9 @@
 #pragma once
-#include "effectmanager.hpp"
+
 #include <imgui.h>
+
+#include "effectmanager.hpp"
+
 
 class Gouraud
 	: public Effect
