@@ -125,7 +125,7 @@ void Scene::configObjects()
 
 		float objScale = obj->getScale().x;
 		char nameBuf[128] = {};
-		memcpy(nameBuf, obj->getDisplayName().c_str(), std::min(obj->getDisplayName().size(), 127u));
+		memcpy(nameBuf, obj->getDisplayName().c_str(), std::min<size_t>(obj->getDisplayName().size(), sizeof nameBuf - 1));
 
 		if(ImGui::InputText("Name", nameBuf, sizeof nameBuf))
 			obj->setDisplayName(nameBuf);
