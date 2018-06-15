@@ -102,7 +102,7 @@ int Engine::run()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	
-	Scene scene;
+	Scene scene(m_window);
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj")->setPosition(glm::vec3(1.f, 0.f, 0.f));
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
 	scene.addObject(PROJECT_SOURCE_DIR "/resources/models/cyborg/cyborg.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));

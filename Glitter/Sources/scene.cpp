@@ -7,12 +7,21 @@
 #include <imgui.h>
 
 
+Scene::Scene(GLFWwindow* _window)
+	: m_native(_window)
+{
+}
+
+
 bool Scene::loadFromFile(const std::string& _path)
 {
 	std::ifstream file(_path);
-	m_objects.clear();
 
-	int debugOffset = 0;
+	if(!file)
+		return false;
+
+	m_objects.clear();
+	m_currentObject = 0;
 
 	try
 	{
@@ -37,7 +46,7 @@ bool Scene::loadFromFile(const std::string& _path)
 
 				tmpObj->setPosition (loadVector(elem, "position"));
 				tmpObj->setRotation (loadVector(elem, "rotation"));
-				tmpObj->setScale	(loadVector(elem, "scale"));
+				tmpObj->setScale	(loadVector(elem, "scale", glm::vec3(1.f)));
 
 				m_objects.push_back(std::move(tmpObj));
 			}
@@ -109,12 +118,17 @@ void Scene::draw(const Shader& _shader) const
 void Scene::configObjects()
 {
 	if(ImGui::Button("Save scene"))
-		saveToFile(PROJECT_SOURCE_DIR "/testscene.json");
+		saveToFile(m_native.saveSceneDialog().string());
 
 	ImGui::SameLine();
 
 	if(ImGui::Button("Load scene"))
-		loadFromFile(PROJECT_SOURCE_DIR "/testscene.json");
+		loadFromFile(m_native.openSceneDialog().string());
+
+	ImGui::SameLine();
+
+	if(ImGui::Button("Add object"))
+		addObject(m_native.openModelDialog().string());
 
 	std::vector<std::string> options;
 	
@@ -186,7 +200,7 @@ const SceneObject& Scene::operator[](size_t _i) const
 
 
 //static
-glm::vec3 Scene::loadVector(const nlohmann::json& _obj, const std::string& _vectName)
+glm::vec3 Scene::loadVector(const nlohmann::json& _obj, const std::string& _vectName, const glm::vec3& _default)
 {
 	auto vect = _obj.find(_vectName);
 
@@ -201,5 +215,5 @@ glm::vec3 Scene::loadVector(const nlohmann::json& _obj, const std::string& _vect
 		return result;
 	}
 
-	return {};
+	return _default;
 }
