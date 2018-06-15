@@ -57,7 +57,10 @@ Shader& Shader::attach(std::string const & filename)
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length);
 		std::unique_ptr<char[]> buffer(new char[length]);
 		glGetShaderInfoLog(shader, length, nullptr, buffer.get());
-		fprintf(stderr, "%s\n%s", filename.c_str(), buffer.get());
+		auto msg = filename + ": " + buffer.get();
+		fprintf(stderr, "%s", msg.c_str());
+		throw std::runtime_error(msg);
+		
 	}
 
 	// Attach the Shader and Free Allocated Memory
@@ -92,6 +95,7 @@ Shader& Shader::link()
 		std::unique_ptr<char[]> buffer(new char[length]);
 		glGetProgramInfoLog(mProgram, length, nullptr, buffer.get());
 		fprintf(stderr, "%s", buffer.get());
+		throw std::runtime_error(buffer.get());
 	}
 
 	assert(mStatus == true);

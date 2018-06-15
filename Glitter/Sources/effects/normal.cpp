@@ -4,9 +4,7 @@
 
 Normal::Normal()
 {
-	m_shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/normals.vert");
-	m_shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/normals.frag");
-	m_shader.link();
+	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/normals.vert", PROJECT_SOURCE_DIR "/resources/shaders/normals.frag");
 }
 
 
@@ -22,7 +20,7 @@ void Normal::config() //override
 }
 
 
-void Normal::render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
+void Normal::doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
 {
 	m_shader.activate();
 	m_shader.bind("uProjection", _perspective);

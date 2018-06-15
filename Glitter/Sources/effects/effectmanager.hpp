@@ -20,7 +20,17 @@ public:
 	virtual void config() {}
 
 	// Handle scene rendering
-	virtual void render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const = 0;
+	void render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const;
+
+	bool isInvalid() const;
+
+protected:
+	virtual void doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const = 0;
+	void loadShader(const std::string& _vertex, const std::string& _fragment);
+
+protected:
+	bool m_bInvalid = true;
+	Shader m_shader;
 
 };
 

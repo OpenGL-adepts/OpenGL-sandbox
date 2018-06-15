@@ -4,9 +4,7 @@
 
 Flat::Flat()
 {
-	m_shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/flat.vert");
-	m_shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/flat.frag");
-	m_shader.link();
+	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/flat.vert", PROJECT_SOURCE_DIR "/resources/shaders/flat.frag");
 }
 
 
@@ -25,7 +23,7 @@ void Flat::config() //override
 }
 
 
-void Flat::render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
+void Flat::doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
 {
 	m_shader.activate();
 	m_shader.bind("uProjection", _perspective);

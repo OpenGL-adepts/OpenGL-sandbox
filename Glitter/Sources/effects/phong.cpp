@@ -4,9 +4,7 @@
 
 Phong::Phong()
 {
-	m_shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/phong.vert");
-	m_shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/phong.frag");
-	m_shader.link();
+	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/phong.vert", PROJECT_SOURCE_DIR "/resources/shaders/phong.frag");
 }
 
 
@@ -27,7 +25,7 @@ void Phong::config() //override
 }
 
 
-void Phong::render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
+void Phong::doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
 {
 	m_shader.activate();
 	m_shader.bind("uProjection", _perspective);

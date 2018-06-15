@@ -2,6 +2,36 @@
 #include <imgui.h>
 
 
+void Effect::render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const
+{
+	if(!m_bInvalid)
+		doRender(_scene, _camera, _perspective);
+}
+
+
+bool Effect::isInvalid() const
+{
+	return m_bInvalid;
+}
+
+
+void Effect::loadShader(const std::string& _vertex, const std::string& _fragment)
+{
+	m_bInvalid = false;
+
+	try
+	{
+		m_shader.attach(_vertex);
+		m_shader.attach(_fragment);
+		m_shader.link();
+	}
+	catch(...)
+	{
+		m_bInvalid = true;
+	}
+}
+
+
 EffectManager::EffectManager()
 	: m_currentEffect(0)
 {

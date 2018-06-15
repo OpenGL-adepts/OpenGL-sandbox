@@ -9,9 +9,9 @@ public:
 	Depth();
 	const char* getName() const override;
 	void config() override;
-	void render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const override;
 
 protected:
-	Shader m_shader;
+	void doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const override;
+
 	int m_exponent = 4;
 };

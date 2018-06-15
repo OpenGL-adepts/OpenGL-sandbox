@@ -4,9 +4,7 @@
 
 Gouraud::Gouraud()
 {
-	m_shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/gouraud.vert");
-	m_shader.attach(PROJECT_SOURCE_DIR "/resources/shaders/gouraud.frag");
-	m_shader.link();
+	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/gouraud.vert", PROJECT_SOURCE_DIR "/resources/shaders/gouraud.frag");
 }
 
 
@@ -25,7 +23,7 @@ void Gouraud::config() //override
 }
 
 
-void Gouraud::render(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
+void Gouraud::doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
 {
 	m_shader.activate();
 	m_shader.bind("uProjection", _perspective);
