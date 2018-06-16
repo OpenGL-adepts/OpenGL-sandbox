@@ -104,7 +104,7 @@ void Scene::draw(const Shader& _shader) const
 	for (auto& obj : m_objects)
 	{
 		_shader.bind("uModel", obj->getModelMatrix());
-		obj->draw(_shader.get(), obj->getColor());
+		obj->draw(_shader);
 	}
 }
 
@@ -166,6 +166,10 @@ void Scene::configObjects()
 		obj->setRotation(vec);
 
 		ImGui::SliderFloat("Scale", &objScale, 0.01f, 20.f);
+
+		bool etextures = obj->isTextureEnabled();
+		ImGui::Checkbox("Textures", &etextures);
+		obj->setEnableTextures(etextures);
 
 		glm::vec3 color = obj->getColor();
 		ImGui::ColorEdit3("Color", (float*)&color);

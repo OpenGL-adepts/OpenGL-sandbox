@@ -1,11 +1,11 @@
 #include "SceneObject.hpp"
 
 
-void SceneObject::draw(GLuint _shader, glm::vec3 color)
+void SceneObject::draw(const Shader& _shader)
 {
 	
 	if(m_bEnabled)
-		m_model.draw(_shader, color);
+		m_model.draw(_shader, m_color, m_bEnableTextures);
 }
 
 
@@ -49,11 +49,18 @@ void SceneObject::setEnabled(bool _enabled)
 	m_bEnabled = _enabled;
 }
 
+
 void SceneObject::setColor(glm::vec3 _color)
 {
 	m_color = _color;
-
 }
+
+
+void SceneObject::setEnableTextures(bool _bTextures)
+{
+	m_bEnableTextures = _bTextures;
+}
+
 
 const std::string& SceneObject::getModelPath() const
 {
@@ -94,12 +101,20 @@ glm::vec3 SceneObject::getScale() const
 	return m_scale;
 }
 
+
 glm::vec3 SceneObject::getColor() const
 {
 	return m_color;
 }
 
+
 bool SceneObject::isEnabled() const
 {
 	return m_bEnabled;
+}
+
+
+bool SceneObject::isTextureEnabled() const
+{
+	return m_bEnableTextures;
 }

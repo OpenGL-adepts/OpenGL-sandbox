@@ -10,7 +10,7 @@
 class SceneObject
 {
 public:
-	void draw(GLuint _shader, glm::vec3 color);
+	void draw(const Shader& _shader);
 	bool loadFromFile(const std::string& _path);
 
 	void setRotation(glm::vec3 _angles);
@@ -19,6 +19,7 @@ public:
 	void setDisplayName(std::string _name);
 	void setEnabled(bool _enabled);
 	void setColor(glm::vec3 _color);
+	void setEnableTextures(bool _bTextures);
 	const std::string& getModelPath() const;
 	const std::string& getDisplayName() const;
 	glm::mat4 getModelMatrix() const;
@@ -27,10 +28,12 @@ public:
 	glm::vec3 getScale() const;
 	glm::vec3 getColor() const;
 	bool isEnabled() const;
+	bool isTextureEnabled() const;
 
 protected:
 	Mesh m_model;
 	bool m_bEnabled = true;
+	bool m_bEnableTextures = true;
 	std::string m_modelPath;
 	std::string m_displayName;
 	glm::vec3 m_position = glm::vec3(0.f);

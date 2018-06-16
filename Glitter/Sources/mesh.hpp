@@ -1,6 +1,7 @@
 #pragma once
 
 #include "texture.hpp"
+#include "shader.hpp"
 
 #include <assimp/importer.hpp>
 #include <assimp/postprocess.h>
@@ -35,7 +36,7 @@ public:
 	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<std::pair<Texture, std::string>> textures);
 
 	bool loadFromFile(const std::string& _filename);
-	void draw(GLuint shader, glm::vec3 color);
+	void draw(const Shader& shader, glm::vec3 _color, bool _bTextures);
 
 	glm::vec3 getCenter() const;
 	float getMaxAxisSize() const;
@@ -51,6 +52,7 @@ private:
 	void parse(const std::string& path, const aiMesh* mesh, const aiScene* scene);
 	void process(const std::string& path, aiMaterial* material, aiTextureType type, std::vector<std::pair<Texture, std::string>>& outTextures);
 	void bindTexturePlaceholder();
+	void bindNormalPlaceholder();
 	void bindColor(glm::vec3 color);
 
 	// Private Member Containers
@@ -69,5 +71,6 @@ private:
 
 	std::unique_ptr<Texture> m_solidColor;
 	std::unique_ptr<Texture> m_customColor;
+	std::unique_ptr<Texture> m_normalPlaceholder;
 };
 

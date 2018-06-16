@@ -10,11 +10,11 @@
 #include <algorithm>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
-
 #include "shader.hpp"
 #include "sceneobject.hpp"
 #include "native.hpp"
 #include "gui.hpp"
+
 
 class Scene
 {

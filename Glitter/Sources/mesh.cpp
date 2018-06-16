@@ -62,7 +62,8 @@ bool Mesh::loadFromFile(const std::string& _filename)
 {
 	Assimp::Importer loader;
 	
-	if(const aiScene* scene = loader.ReadFile(_filename, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_OptimizeGraph | aiProcess_FlipUVs | aiProcess_Triangulate | aiProcess_CalcTangentSpace))
+	if(const aiScene* scene = loader.ReadFile(_filename,
+		aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_OptimizeGraph | aiProcess_FlipUVs | aiProcess_Triangulate | aiProcess_CalcTangentSpace))
 	{
 		// Walk the Tree of Scene Nodes
 		auto index = _filename.find_last_of("/\\");
@@ -79,13 +80,12 @@ bool Mesh::loadFromFile(const std::string& _filename)
 }
 
 
-void Mesh::draw(GLuint shader, glm::vec3 color)
+void Mesh::draw(const Shader& shader, glm::vec3 _color, bool _bTextures)
 {
-
-	unsigned int unit = 0, diffuse = 0, specular = 0, normal = 0;
+	int unit = 0, diffuse = 0, specular = 0, normal = 0;
 
 	for (auto& i : mSubMeshes)
-		i->draw(shader, color);
+		i->draw(shader, _color, _bTextures);
 
 	for (int i = 0; i < 16; ++i)
 	{
@@ -98,32 +98,48 @@ void Mesh::draw(GLuint shader, glm::vec3 color)
 		// Set Correct Uniform Names Using Texture Type (Omit ID for 0th Texture)
 		std::string uniform = "texture_" + i.second;
 
-		if (i.second == "diffuse")	 uniform += (diffuse++ > 0) ? std::to_string(diffuse) : "";
+		if (i.second == "diffuse")
+		{
+			if(!_bTextures)
+				continue;
+
+			uniform += (diffuse++ > 0)  ? std::to_string(diffuse)  : "";
+		}
 		else if (i.second == "specular") uniform += (specular++ > 0) ? std::to_string(specular) : "";
-		else if (i.second == "normal")	 uniform += (normal++ > 0) ? std::to_string(normal) : "";
+		else if (i.second == "normal")	 uniform += (normal++   > 0) ? std::to_string(normal)   : "";
+		else
+			continue;
 
 		// Bind Correct Textures and Vertex Array Before Drawing
-		glActiveTexture(GL_TEXTURE0 + unit);
-		i.first.bind();
-
-		auto uniformloc = glGetUniformLocation(shader, uniform.c_str());
+		auto uniformloc = glGetUniformLocation(shader.get(), uniform.c_str());
 
 		if (uniformloc != -1)
+		{
+			glActiveTexture(GL_TEXTURE0 + unit);
+			i.first.bind();
 			glUniform1i(uniformloc, unit++);
+		}
 	}
 
 	if (diffuse == 0)
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
-		bindColor(color);
-		glUniform1f(glGetUniformLocation(shader, "texture_diffuse"), unit++);
+		bindColor(_color);
+		shader.bind("texture_diffuse", unit++);
 	}
 
 	if (specular == 0)
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		bindTexturePlaceholder();
-		glUniform1f(glGetUniformLocation(shader, "texture_specular"), unit++);
+		shader.bind("texture_specular", unit++);
+	}
+
+	if (normal == 0)
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+		bindNormalPlaceholder();
+		shader.bind("texture_normal", unit++);
 	}
 
 	glBindVertexArray(mVertexArray);
@@ -179,8 +195,8 @@ void Mesh::parse(const std::string& path, const aiMesh* mesh, const aiScene* sce
 
 		if(mesh->mTangents && mesh->mBitangents)
 		{
-			vertex.tangent	 = glm::vec3(mesh->mTangents  [i].x, mesh->mTangents  [i].y, mesh->mTangents  [i].z);
 			vertex.bitangent = glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+			vertex.tangent	 = glm::vec3(mesh->mTangents  [i].x, mesh->mTangents  [i].y, mesh->mTangents  [i].z);
 		}
 
 		vertices.push_back(vertex);
@@ -235,8 +251,10 @@ void Mesh::process(const std::string& path, aiMaterial* material, aiTextureType 
 
 void Mesh::bindColor(glm::vec3 color)
 {
-	m_customColor = std::make_unique<Texture>();
-	m_customColor->changeColor(color);
+	if(!m_customColor)
+		m_customColor = std::make_unique<Texture>();
+
+	m_customColor->createColorPlaceholder(color);
 	m_customColor->bind();
 }
 
@@ -249,4 +267,16 @@ void Mesh::bindTexturePlaceholder()
 	}
 
 	m_solidColor->bind();
+}
+
+
+void Mesh::bindNormalPlaceholder()
+{
+	if(!m_normalPlaceholder)
+	{
+		m_normalPlaceholder = std::make_unique<Texture>();
+		m_normalPlaceholder->createColorPlaceholder(glm::vec3(0, 0, 1));
+	}
+
+	m_normalPlaceholder->bind();
 }

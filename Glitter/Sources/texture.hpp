@@ -19,8 +19,7 @@ public:
 	Texture(const Texture& _copy) = delete;
 	Texture& operator=(const Texture& _copy) = delete;
 
-	void createColorPlaceholder();
-	void changeColor(glm::vec3 color);
+	void createColorPlaceholder(const glm::vec3& color = glm::vec3(1.f));
 	bool loadFromFile(const std::string& _file);
 	void bind() const;
 
