@@ -1,11 +1,11 @@
 #include "SceneObject.hpp"
-#include <glm/gtc/matrix_transform.hpp>
 
 
-void SceneObject::draw(GLuint _shader)
+void SceneObject::draw(const Shader& _shader)
 {
+	
 	if(m_bEnabled)
-		m_model.draw(_shader);
+		m_model.draw(_shader, m_color, m_bEnableTextures);
 }
 
 
@@ -50,6 +50,18 @@ void SceneObject::setEnabled(bool _enabled)
 }
 
 
+void SceneObject::setColor(glm::vec3 _color)
+{
+	m_color = _color;
+}
+
+
+void SceneObject::setEnableTextures(bool _bTextures)
+{
+	m_bEnableTextures = _bTextures;
+}
+
+
 const std::string& SceneObject::getModelPath() const
 {
 	return m_modelPath;
@@ -90,7 +102,19 @@ glm::vec3 SceneObject::getScale() const
 }
 
 
+glm::vec3 SceneObject::getColor() const
+{
+	return m_color;
+}
+
+
 bool SceneObject::isEnabled() const
 {
 	return m_bEnabled;
+}
+
+
+bool SceneObject::isTextureEnabled() const
+{
+	return m_bEnableTextures;
 }

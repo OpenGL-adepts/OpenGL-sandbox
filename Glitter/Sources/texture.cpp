@@ -1,7 +1,4 @@
 #include "texture.hpp"
-#include <stb_image.h>
-#include <glad/glad.h>
-#include <iostream>
 
 
 Texture::Texture()
@@ -14,6 +11,7 @@ Texture::Texture(const std::string& _file)
 	: Texture()
 {
 	loadFromFile(_file);
+
 }
 
 
@@ -30,16 +28,16 @@ Texture::~Texture()
 }
 
 
-void Texture::createColorPlaceholder()
+void Texture::createColorPlaceholder(const glm::vec3& color)
 {
 	bind();
-	unsigned char color[3] = { 255, 255, 255 };
+	GLfloat c[3] = { color.r, color.g, color.b };
+	glColorPointer(3, GL_FLOAT, 0, c);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, color);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_FLOAT, c);
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
-
 
 bool Texture::loadFromFile(const std::string& _file)
 {

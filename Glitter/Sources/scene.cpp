@@ -1,11 +1,4 @@
 #include "scene.hpp"
-#include "gui.hpp"
-#include <string>
-#include <fstream>
-#include <filesystem>
-#include <algorithm>
-#include <glm/gtc/type_ptr.hpp>
-#include <imgui.h>
 
 
 Scene::Scene(GLFWwindow* _window)
@@ -44,10 +37,12 @@ bool Scene::loadFromFile(const std::string& _path)
 
 				try { tmpObj->setDisplayName(elem.at("name").get<std::string>()); } catch(...) {}
 				try { tmpObj->setEnabled(elem.at("enabled")); } catch (...) {}
+				try { tmpObj->setEnableTextures(elem.at("enableTextures")); } catch (...) {}
 
 				tmpObj->setPosition (loadVector(elem, "position"));
 				tmpObj->setRotation (loadVector(elem, "rotation"));
 				tmpObj->setScale	(loadVector(elem, "scale", glm::vec3(1.f)));
+				tmpObj->setColor	(loadVector(elem, "color", glm::vec3(1.f)));
 
 				m_objects.push_back(std::move(tmpObj));
 			}
@@ -75,6 +70,7 @@ bool Scene::saveToFile(const std::string& _path) const
 		tmp["model"] = std::filesystem::relative(obj->getModelPath(), std::filesystem::path(_path).parent_path()).string();
 		tmp["name"] = obj->getDisplayName();
 		tmp["enabled"] = obj->isEnabled();
+		tmp["enableTextures"] = obj->isTextureEnabled();
 
 		auto vec = obj->getPosition();
 		tmp["position"] = {vec.x, vec.y, vec.z};
@@ -82,6 +78,8 @@ bool Scene::saveToFile(const std::string& _path) const
 		tmp["rotation"] = {vec.x, vec.y, vec.z};
 		vec = obj->getScale();
 		tmp["scale"] = {vec.x, vec.y, vec.z};
+		vec = obj->getColor();
+		tmp["color"] = {vec.x, vec.y, vec.z};
 
 		objArr.push_back(tmp);
 	}
@@ -111,7 +109,7 @@ void Scene::draw(const Shader& _shader) const
 	for (auto& obj : m_objects)
 	{
 		_shader.bind("uModel", obj->getModelMatrix());
-		obj->draw(_shader.get());
+		obj->draw(_shader);
 	}
 }
 
@@ -198,6 +196,14 @@ void Scene::configObjects()
 		obj->setRotation(vec);
 
 		ImGui::SliderFloat("Scale", &objScale, 0.01f, 20.f);
+
+		bool etextures = obj->isTextureEnabled();
+		ImGui::Checkbox("Textures", &etextures);
+		obj->setEnableTextures(etextures);
+
+		glm::vec3 color = obj->getColor();
+		ImGui::ColorEdit3("Color", (float*)&color);
+		obj->setColor(color);
 
 		obj->setScale(glm::vec3(objScale));
 	}

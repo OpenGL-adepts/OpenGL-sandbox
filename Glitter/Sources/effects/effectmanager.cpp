@@ -1,6 +1,4 @@
 #include "effectmanager.hpp"
-#include "../gui.hpp"
-#include <imgui.h>
 
 
 void Effect::config()

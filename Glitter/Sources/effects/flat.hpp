@@ -1,4 +1,7 @@
 #pragma once
+
+#include <imgui.h>
+
 #include "effectmanager.hpp"
 
 

@@ -1,6 +1,10 @@
 #pragma once
+
 #include <vector>
 #include <string>
+#include <imgui.h>
+#include <algorithm>
+
 
 // ImGui helpers
 struct Gui

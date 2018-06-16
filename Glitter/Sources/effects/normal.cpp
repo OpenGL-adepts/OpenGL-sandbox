@@ -1,5 +1,4 @@
 #include "normal.hpp"
-#include <imgui.h>
 
 
 Normal::Normal()

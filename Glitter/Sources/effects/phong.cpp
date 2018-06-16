@@ -1,5 +1,4 @@
 #include "phong.hpp"
-#include <imgui.h>
 
 
 Phong::Phong()
