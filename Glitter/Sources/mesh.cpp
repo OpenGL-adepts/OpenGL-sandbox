@@ -81,12 +81,13 @@ bool Mesh::loadFromFile(const std::string& _filename)
 
 void Mesh::draw(GLuint shader, glm::vec3 color)
 {
+
 	unsigned int unit = 0, diffuse = 0, specular = 0, normal = 0;
 
 	for (auto& i : mSubMeshes)
 		i->draw(shader, color);
 
-	for(int i = 0; i < 16; ++i)
+	for (int i = 0; i < 16; ++i)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -97,9 +98,9 @@ void Mesh::draw(GLuint shader, glm::vec3 color)
 		// Set Correct Uniform Names Using Texture Type (Omit ID for 0th Texture)
 		std::string uniform = "texture_" + i.second;
 
-			 if (i.second == "diffuse")	 uniform += (diffuse++	> 0) ? std::to_string(diffuse)	: "";
+		if (i.second == "diffuse")	 uniform += (diffuse++ > 0) ? std::to_string(diffuse) : "";
 		else if (i.second == "specular") uniform += (specular++ > 0) ? std::to_string(specular) : "";
-		else if (i.second == "normal")	 uniform += (normal++	> 0) ? std::to_string(normal)	: "";
+		else if (i.second == "normal")	 uniform += (normal++ > 0) ? std::to_string(normal) : "";
 
 		// Bind Correct Textures and Vertex Array Before Drawing
 		glActiveTexture(GL_TEXTURE0 + unit);
@@ -107,24 +108,27 @@ void Mesh::draw(GLuint shader, glm::vec3 color)
 
 		auto uniformloc = glGetUniformLocation(shader, uniform.c_str());
 
-		if(uniformloc != -1)
+		if (uniformloc != -1)
 			glUniform1i(uniformloc, unit++);
 	}
 
-	if(diffuse == 0)
+	if (diffuse == 0)
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		bindTexturePlaceholder();
 		glUniform1f(glGetUniformLocation(shader, "texture_diffuse"), unit++);
 	}
 
-	if(specular == 0)
+	if (specular == 0)
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 		bindTexturePlaceholder();
 		glUniform1f(glGetUniformLocation(shader, "texture_specular"), unit++);
 	}
 
+	bindColor(color);
+	GLfloat abc[3] = { color.r, color.g, color.b };
+	glColorPointer(3, GL_UNSIGNED_BYTE, 0, abc);
 	glBindVertexArray(mVertexArray);
 	glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -232,6 +236,12 @@ void Mesh::process(const std::string& path, aiMaterial* material, aiTextureType 
 	}
 }
 
+void Mesh::bindColor(glm::vec3 color)
+{
+	m_customColor = std::make_unique<Texture>();
+	m_customColor->changeColor(color);
+	m_customColor->bind();
+}
 
 void Mesh::bindTexturePlaceholder()
 {

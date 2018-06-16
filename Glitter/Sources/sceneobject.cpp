@@ -1,10 +1,11 @@
 #include "SceneObject.hpp"
 
 
-void SceneObject::draw(GLuint _shader)
+void SceneObject::draw(GLuint _shader, glm::vec3 color)
 {
+	
 	if(m_bEnabled)
-		m_model.draw(_shader, m_color);
+		m_model.draw(_shader, color);
 }
 
 

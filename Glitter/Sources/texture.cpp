@@ -11,6 +11,7 @@ Texture::Texture(const std::string& _file)
 	: Texture()
 {
 	loadFromFile(_file);
+
 }
 
 
@@ -40,7 +41,8 @@ void Texture::createColorPlaceholder()
 void Texture::changeColor(glm::vec3 color)
 {
 	bind();
-	unsigned char c[3] = { color.r, color.g, color.b };
+	GLfloat c[3] = { color.r, color.g, color.b };
+	glColorPointer(3, GL_UNSIGNED_BYTE, 0, c);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, GL_UNSIGNED_BYTE, c);

@@ -51,6 +51,7 @@ private:
 	void parse(const std::string& path, const aiMesh* mesh, const aiScene* scene);
 	void process(const std::string& path, aiMaterial* material, aiTextureType type, std::vector<std::pair<Texture, std::string>>& outTextures);
 	void bindTexturePlaceholder();
+	void bindColor(glm::vec3 color);
 
 	// Private Member Containers
 	std::vector<std::unique_ptr<Mesh>> mSubMeshes;
@@ -67,5 +68,6 @@ private:
 	glm::vec3 mMinCoord;
 
 	std::unique_ptr<Texture> m_solidColor;
+	std::unique_ptr<Texture> m_customColor;
 };
 

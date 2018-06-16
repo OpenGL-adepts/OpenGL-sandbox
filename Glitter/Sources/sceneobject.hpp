@@ -10,7 +10,7 @@
 class SceneObject
 {
 public:
-	void draw(GLuint _shader);
+	void draw(GLuint _shader, glm::vec3 color);
 	bool loadFromFile(const std::string& _path);
 
 	void setRotation(glm::vec3 _angles);
@@ -36,5 +36,5 @@ protected:
 	glm::vec3 m_position = glm::vec3(0.f);
 	glm::vec3 m_scale = glm::vec3(1.f);
 	glm::vec3 m_rotation = glm::vec3(0.f);
-	glm::vec3 m_color = glm::vec3(0.f);
+	glm::vec3 m_color = glm::vec3(1,2,3);
 };

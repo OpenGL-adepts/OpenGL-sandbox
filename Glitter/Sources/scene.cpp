@@ -104,7 +104,7 @@ void Scene::draw(const Shader& _shader) const
 	for (auto& obj : m_objects)
 	{
 		_shader.bind("uModel", obj->getModelMatrix());
-		obj->draw(_shader.get());
+		obj->draw(_shader.get(), obj->getColor());
 	}
 }
 
