@@ -115,7 +115,7 @@ void Mesh::draw(GLuint shader, glm::vec3 color)
 	if (diffuse == 0)
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
-		bindTexturePlaceholder();
+		bindColor(color);
 		glUniform1f(glGetUniformLocation(shader, "texture_diffuse"), unit++);
 	}
 
@@ -126,9 +126,6 @@ void Mesh::draw(GLuint shader, glm::vec3 color)
 		glUniform1f(glGetUniformLocation(shader, "texture_specular"), unit++);
 	}
 
-	bindColor(color);
-	GLfloat abc[3] = { color.r, color.g, color.b };
-	glColorPointer(3, GL_UNSIGNED_BYTE, 0, abc);
 	glBindVertexArray(mVertexArray);
 	glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
 	glActiveTexture(GL_TEXTURE0);
