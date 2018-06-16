@@ -11,6 +11,7 @@ class Depth
 public:
 	Depth();
 	std::string getName() const override;
+	std::string getTutorialPage() const override;
 
 protected:
 	void doConfig() override;

@@ -12,6 +12,11 @@ std::string Flat::getName() const //override
 	return "Flat";
 }
 
+std::string Flat::getTutorialPage() const //override
+{
+	return PROJECT_SOURCE_DIR "/resources/pages/flat.html";
+}
+
 
 void Flat::doConfig() //override
 {

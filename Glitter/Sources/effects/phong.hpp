@@ -11,6 +11,7 @@ class Phong
 public:
 	Phong();
 	std::string getName() const override;
+	std::string getTutorialPage() const override;
 
 protected:
 	void doConfig() override;

@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <imgui.h>
+#include <windows.h>
 
 #include "../scene.hpp"
 #include "../camera.hpp"
@@ -19,6 +20,9 @@ public:
 
 	// Return displayed name of the effect.
 	virtual std::string getName() const = 0;
+
+	// Get tutorial page of the effect.
+	virtual std::string getTutorialPage() const = 0;
 
 	// Handle ImGui controls for changing effect configuration
 	void config();

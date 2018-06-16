@@ -119,7 +119,8 @@ int Engine::run()
 		ImGui_ImplGlfwGL3_NewFrame();
 		//ImGui::ShowDemoWindow();
 
-		if(ImGui::Begin("OpenGL sandbox"))
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
+		if(ImGui::Begin("OpenGL sandbox", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			if(ImGui::CollapsingHeader("About"))
 			{
@@ -157,10 +158,10 @@ int Engine::run()
 				ImGui::Separator();
 				effects.config();
 			}
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		}
 		
 		ImGui::End();
-
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 

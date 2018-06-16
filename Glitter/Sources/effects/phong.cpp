@@ -12,6 +12,10 @@ std::string Phong::getName() const //override
 	return "Phong";
 }
 
+std::string Phong::getTutorialPage() const //override
+{
+	return PROJECT_SOURCE_DIR "/resources/pages/phong.html";
+}
 
 void Phong::doConfig() //override
 {
