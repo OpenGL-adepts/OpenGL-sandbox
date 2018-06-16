@@ -2,7 +2,7 @@
 #include "glitter.hpp"
 #include "camera.hpp"
 #include <GLFW/glfw3.h>
-
+#include "framebuffer.hpp"
 
 class Engine
 {
@@ -34,4 +34,6 @@ protected:
 	float lastFrame = 0;
 	glm::mat4 m_projMatrix;
 	int m_projection = 0;
+
+	Framebuffer m_fbo;
 };

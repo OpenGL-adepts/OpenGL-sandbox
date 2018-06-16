@@ -45,6 +45,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 Engine::Engine()
 	: m_window(nullptr)
 	, camera(glm::vec3(0.0f, 0.0f, 3.0f))
+	, m_fbo(mWidth, mHeight)
 {
 	glfwInit();
 }
@@ -113,6 +114,8 @@ int Engine::run()
 	effects.registerEffect(std::make_shared<Flat>());
 	effects.registerEffect(std::make_shared<Normal>());
 	effects.registerEffect(std::make_shared<Depth>());
+
+	m_fbo.GenerateFBO();
 
 	lastFrame = glfwGetTime();
 
