@@ -41,6 +41,8 @@ public:
 	void handleMouseMove(GLfloat xoffset, GLfloat yoffset, GLboolean constrainPitch = true);
 	void handleScroll(GLfloat yoffset);
 
+	glm::mat4 getViewMatrixA();
+
 private:
 	void updateCameraVectors();
 
