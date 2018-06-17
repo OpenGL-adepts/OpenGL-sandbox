@@ -72,7 +72,7 @@ static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>&
 
 Scene::Scene(GLFWwindow* _window)
 	: m_native(_window)
-	, m_lamp(new Mesh(RELATIVE_PATH_ROOT "/resources/models/sheep.obj"))
+	, m_lamp(new Mesh(RELATIVE_PATH_ROOT "/resources/models/cube/cube.obj"))
 {
 	try
 	{
@@ -285,7 +285,7 @@ void Scene::drawLights(const Camera& _camera, const glm::mat4& _perspective) con
 	for(auto& light : m_lights)
 	if(light->isEnabled())
 	{
-		m_lampShader.bind("uModel", glm::scale(glm::translate(glm::mat4(1.f), light->getPosition()), glm::vec3(0.25f)));
+		m_lampShader.bind("uModel", glm::scale(glm::translate(glm::mat4(1.f), light->getPosition()), glm::vec3(0.05f)));
 		m_lampShader.bind("uLightColor", light->getColor());
 		m_lamp->draw(m_lampShader);
 	}
