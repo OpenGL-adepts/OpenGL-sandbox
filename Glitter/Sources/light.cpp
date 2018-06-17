@@ -36,6 +36,7 @@ LightContainer::LightContainer()
 
 	//TODO:
 	m_lights.emplace_back();
+	m_lights.emplace_back();
 }
 
 
@@ -63,41 +64,17 @@ void LightContainer::config()
 
 void LightContainer::bind(const Shader& _shader) const
 {
-	if(!m_lights.empty())
+	char tmp[64];
+
+	for(size_t i = 0; i < m_lights.size(); ++i)
 	{
-		_shader.bind("uLightPos",   m_lights[0].getPosition());
-		_shader.bind("uLightColor", m_lights[0].getColor());
+		sprintf(tmp, "uLight[%u].active",   i); _shader.bind(tmp, 1);
+		sprintf(tmp, "uLight[%u].position", i); _shader.bind(tmp, m_lights[i].getPosition());
+		sprintf(tmp, "uLight[%u].color",    i); _shader.bind(tmp, m_lights[i].getColor());
 	}
-}
 
-
-//static
-std::unique_ptr<Mesh> LightContainer::buildCube()
-{
-	//auto lamp = std::make_unique<Mesh>(PROJECT_SOURCE_DIR "/resources/models/sheep.obj");
-	//return lamp;
-
-	glm::vec3 positions[] =
+	for(size_t i = m_lights.size(); i < MaxLights; ++i)
 	{
-		{-0.5f, 0.5f,  0.5f}, {0.5f, 0.5f,  0.5f}, {0.5f, -0.5f,  0.5f}, {-0.5f, -0.5f,  0.5f},
-		{-0.5f, 0.5f, -0.5f}, {0.5f, 0.5f, -0.5f}, {0.5f, -0.5f, -0.5f}, {-0.5f, -0.5f, -0.5f},
-	};
-
-	std::vector<Vertex> vertices;
-	vertices.resize(8);
-	
-	for(int i = 0; i < 8; ++i)
-		vertices[i].position = positions[i];
-
-	return std::unique_ptr<Mesh>(new Mesh(std::move(vertices),
-		{
-			0, 1, 2, 0, 2, 3, // front
-			0, 4, 1, 4, 5, 1, // top
-			1, 5, 6, 1, 6, 2, // right
-			2, 6, 7, 2, 7, 3, // bottom
-			0, 3, 7, 0, 7, 4, // left
-			//4, 7, 6, 4, 6, 5  // back
-			6, 7, 4, 5, 6, 4  // back
-		},
-		{}));
+		sprintf(tmp, "uLight[%u].active",   i); _shader.bind(tmp, 0);
+	}
 }

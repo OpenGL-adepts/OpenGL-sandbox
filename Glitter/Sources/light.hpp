@@ -23,13 +23,13 @@ protected:
 class LightContainer
 {
 public:
+	// Number of light uniforms in shader
+	static constexpr int MaxLights = 16;
+
 	LightContainer();
 	void draw(const Camera& _camera, const glm::mat4& _perspective) const;
 	void config();
 	void bind(const Shader& _shader) const;
-
-protected:
-	static std::unique_ptr<Mesh> buildCube();
 
 protected:
 	Shader m_lampShader;
