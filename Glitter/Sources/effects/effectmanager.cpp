@@ -78,9 +78,13 @@ void EffectManager::config()
 	}
 
 	Gui::combo("Mode", m_currentEffect, modes);
-	if (ImGui::Button("See tutorial")) {
-		ShellExecute(NULL, "open", (m_effects[m_currentEffect]->getTutorialPath()).c_str(), NULL, NULL, SW_SHOWNORMAL);
-	}
+
+	auto tutorialPath = m_effects[m_currentEffect]->getTutorialPath();
+
+	if(!tutorialPath.empty())
+	if (ImGui::Button("See tutorial"))
+		ShellExecute(NULL, "open", tutorialPath.c_str(), NULL, NULL, SW_SHOWNORMAL);
+
 	m_effects[m_currentEffect]->config();
 }
 
