@@ -40,6 +40,8 @@ protected:
 protected:
 	GLFWwindow* m_window;
 	Camera camera;
+	int m_wndWidth;
+	int m_wndHeight;
 	float lastX = 0;
 	float lastY = 0;
 	bool firstMouse = true;

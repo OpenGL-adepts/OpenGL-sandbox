@@ -61,8 +61,10 @@ int Engine::run()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 	m_window = glfwCreateWindow(mWidth, mHeight, "OpenGL", nullptr, nullptr);
+	m_wndWidth = mWidth;
+	m_wndHeight = mHeight;
 
 	// Check for Valid Context
 	if (!m_window)
@@ -225,6 +227,8 @@ int Engine::run()
 void Engine::onFramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
+	m_wndWidth = width;
+	m_wndHeight = height;
 }
 
 
@@ -266,12 +270,12 @@ void Engine::recalcPerspective()
 	switch(m_projection)
 	{
 	case 0: // Perspective
-		m_projMatrix = glm::perspective(camera.getFOV(), (float)mWidth / (float)mHeight, 0.1f, 100.0f);
+		m_projMatrix = glm::perspective(camera.getFOV(), (float)m_wndWidth / (float)m_wndHeight, 0.1f, 100.0f);
 		break;
 
 	case 1: // Ortho
-		m_projMatrix = glm::ortho(0.f, (float)mWidth, 0.f, (float)mHeight, -10000.f, 10000.f);
-		m_projMatrix = glm::translate(m_projMatrix, glm::vec3(mWidth / 2.f, mHeight / 2.f, 0.f));
+		m_projMatrix = glm::ortho(0.f, (float)m_wndWidth, 0.f, (float)m_wndHeight, -10000.f, 10000.f);
+		m_projMatrix = glm::translate(m_projMatrix, glm::vec3(m_wndWidth / 2.f, m_wndHeight / 2.f, 0.f));
 		m_projMatrix = glm::scale(m_projMatrix, glm::vec3(250.f));
 		break;
 	}
