@@ -17,6 +17,8 @@ static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>&
 		options.push_back(name);
 	}
 
+	ImGui::PushID(_elemType.c_str());
+
 	Gui::combo("Selected " + _elemType, _selectedObject, options);
 
 	if(_selectedObject >= 0 && _selectedObject < _objects.size())
@@ -58,9 +60,11 @@ static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>&
 			ImGui::EndPopup();
 		}
 
+		ImGui::PopID();
 		return obj;
 	}
 
+	ImGui::PopID();
 	return nullptr;
 }
 
@@ -204,7 +208,8 @@ void Scene::configObjects()
 	ImGui::SameLine();
 
 	if(ImGui::Button("Add object"))
-		addActor(m_native.openModelDialog().string());
+	if(addActor(m_native.openModelDialog().string()))
+		m_currentActor = m_actors.size() - 1;
 
 	if(auto obj = _configBasicObjects(m_actors, m_currentActor, "object"))
 	{
@@ -219,6 +224,12 @@ void Scene::configObjects()
 
 void Scene::configLights()
 {
+	if(ImGui::Button("Add light"))
+	{
+		m_lights.push_back(std::make_shared<Light>());
+		m_currentLight = m_lights.size() - 1;
+	}
+
 	if(auto light = _configBasicObjects(m_lights, m_currentLight, "light"))
 		light->config();
 }
