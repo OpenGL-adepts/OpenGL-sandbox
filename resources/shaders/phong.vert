@@ -14,9 +14,7 @@ layout (location = 4) in vec3 aBitangent;
 out vec2 TexCoords;
 out vec3 Normal;
 out vec3 FragPos;
-out vec3 TangentLightPos;
-out vec3 TangentViewPos;
-out vec3 TangentFragPos;
+out mat3 TBN;
 
 
 void main()
@@ -31,10 +29,7 @@ void main()
 	vec3 Tangent = normalize(normalMat * aTangent);
 	Tangent = normalize(Tangent - dot(Tangent, Normal) * Normal);
 	vec3 Bitangent = cross(Normal, Tangent);
-	mat3 TBN = transpose(mat3(Tangent, Bitangent, Normal));
-	TangentLightPos = TBN * uLightPos;
-	TangentViewPos  = TBN * uViewPos;
-	TangentFragPos  = TBN * FragPos;
+	TBN = transpose(mat3(Tangent, Bitangent, Normal));
 	
     gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);
 }
