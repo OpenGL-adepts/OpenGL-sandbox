@@ -22,8 +22,6 @@ void Depth::doConfig() //override
 void Depth::doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
 {
 	m_shader.activate();
-	m_shader.bind("uProjection", _perspective);
-	m_shader.bind("uView", _camera.getViewMatrix());
 	m_shader.bind("uDepthExponent", m_exponent);
-	_scene.draw(m_shader);
+	_scene.draw(m_shader, _camera, _perspective);
 }
