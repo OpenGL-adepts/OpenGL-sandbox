@@ -29,7 +29,8 @@ public:
 	bool loadFromFile(const std::string& _path);
 	bool saveToFile(const std::string& _path) const;
 
-	std::shared_ptr<SceneObject> addObject(const std::string& _modelPath);
+	std::shared_ptr<Actor> addActor(const std::string& _modelPath);
+	std::shared_ptr<Light> addLight();
 
 	void draw(const Shader& _shader, const Camera& _camera, const glm::mat4& _perspective) const;
 	void configObjects();

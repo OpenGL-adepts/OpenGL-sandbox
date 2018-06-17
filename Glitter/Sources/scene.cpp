@@ -3,7 +3,7 @@
 
 
 template <class SO>
-static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>& _objects, int& _selectedObject)
+static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>& _objects, int& _selectedObject, const std::string& _elemType)
 {
 	std::vector<std::string> options;
 	
@@ -17,7 +17,7 @@ static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>&
 		options.push_back(name);
 	}
 
-	Gui::combo("Selected object", _selectedObject, options);
+	Gui::combo("Selected " + _elemType, _selectedObject, options);
 
 	if(_selectedObject >= 0 && _selectedObject < _objects.size())
 	{
@@ -76,9 +76,6 @@ Scene::Scene(GLFWwindow* _window)
 		m_lampShader.link();
 	}
 	catch(...) {}
-
-	m_lights.push_back(std::make_shared<Light>());
-	m_lights.push_back(std::make_shared<Light>());
 }
 
 
@@ -90,6 +87,7 @@ bool Scene::loadFromFile(const std::string& _path)
 		return false;
 
 	m_actors.clear();
+	m_lights.clear();
 	m_currentActor = 0;
 	m_currentLight = 0;
 
@@ -115,6 +113,18 @@ bool Scene::loadFromFile(const std::string& _path)
 			catch(...)
 			{}
 		}
+
+		for(auto& elem : json.at("lights"))
+		{
+			try
+			{
+				auto tmpObj = std::make_shared<Light>();
+				tmpObj->fromJSON(elem);
+				m_lights.push_back(std::move(tmpObj));
+			}
+			catch(...)
+			{}
+		}
 	}
 	catch(...)
 	{
@@ -133,13 +143,18 @@ bool Scene::saveToFile(const std::string& _path) const
 	for(auto& obj : m_actors)
 		objArr.push_back(obj->toJSON(_path));
 
+	auto& lgtArr = json["lights"];
+
+	for(auto& lgt : m_lights)
+		lgtArr.push_back(lgt->toJSON(_path));
+
 	std::ofstream file(_path);
 	file << json;
 	return !!file;
 }
 
 
-std::shared_ptr<SceneObject> Scene::addObject(const std::string& _modelPath)
+std::shared_ptr<Actor> Scene::addActor(const std::string& _modelPath)
 {
 	auto obj = std::make_shared<Actor>();
 
@@ -150,6 +165,14 @@ std::shared_ptr<SceneObject> Scene::addObject(const std::string& _modelPath)
 	}
 
 	return nullptr;
+}
+
+
+std::shared_ptr<Light> Scene::addLight()
+{
+	auto obj = std::make_shared<Light>();
+	m_lights.push_back(obj);
+	return obj;
 }
 
 
@@ -181,9 +204,9 @@ void Scene::configObjects()
 	ImGui::SameLine();
 
 	if(ImGui::Button("Add object"))
-		addObject(m_native.openModelDialog().string());
+		addActor(m_native.openModelDialog().string());
 
-	if(auto obj = _configBasicObjects(m_actors, m_currentActor))
+	if(auto obj = _configBasicObjects(m_actors, m_currentActor, "object"))
 	{
 		obj->config();
 		
@@ -196,7 +219,7 @@ void Scene::configObjects()
 
 void Scene::configLights()
 {
-	if(auto light = _configBasicObjects(m_lights, m_currentLight))
+	if(auto light = _configBasicObjects(m_lights, m_currentLight, "light"))
 		light->config();
 }
 
