@@ -83,7 +83,7 @@ GLuint Shader::create(std::string const & filename)
 	else if (ext == "frag") return glCreateShader(GL_FRAGMENT_SHADER);
 	else if (ext == "geom") return glCreateShader(GL_GEOMETRY_SHADER);
 	else if (ext == "vert") return glCreateShader(GL_VERTEX_SHADER);
-	else					return false;
+	else					return 0;
 }
 
 

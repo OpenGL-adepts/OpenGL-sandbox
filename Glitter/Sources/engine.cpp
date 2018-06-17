@@ -93,11 +93,6 @@ int Engine::run()
 	scene.addActor(PROJECT_SOURCE_DIR "/resources/models/cyborg/cyborg.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
 	scene.addLight()->setPosition(glm::vec3(3.f, 0.f, 0.f));
 
-	glEnable(GL_DEPTH_TEST);
-	Shader shader;
-	shader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/cubemap.vert");
-	shader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/cubemap.frag");
-	shader.link();
 	Shader skyboxShader;
 	skyboxShader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.vert");
 	skyboxShader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.frag");
@@ -140,9 +135,6 @@ int Engine::run()
 	unsigned int cubemapTexture = cubeMap->loadCubemap(faces);
 	cubeMap->textureId = cubemapTexture;
 
-	shader.activate();
-	shader.bind("skybox", 0);
-
 	skyboxShader.activate();
 	skyboxShader.bind("skybox", 0);
 
@@ -168,26 +160,12 @@ int Engine::run()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader.activate();
-		glm::mat4 model(1.f);
-		glm::mat4 view = camera.getViewMatrixA();
-		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		shader.bind("model", model);
-		shader.bind("view", view);
-		shader.bind("projection", projection);
-		shader.bind("cameraPos", camera.getPosition());
-
-		glBindVertexArray(cubeVAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
-
+		///////////////////
+		//TODO: move this
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		skyboxShader.activate();
-		view = glm::mat4(glm::mat3(camera.getViewMatrixA())); // remove translation from the view matrix
-		skyboxShader.bind("view", view);
-		skyboxShader.bind("projection", projection);
+		skyboxShader.bind("view", glm::mat4(glm::mat3(camera.getViewMatrix()))); // remove translation from the view matrix
+		skyboxShader.bind("projection", m_projMatrix);
 		// skybox cube
 		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
@@ -195,7 +173,7 @@ int Engine::run()
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 		glBindVertexArray(0);
 		glDepthFunc(GL_LESS); // set depth function back to default
-
+		/////////////////////////////////
 
 		recalcPerspective();
 		effects.render(scene, camera, m_projMatrix);

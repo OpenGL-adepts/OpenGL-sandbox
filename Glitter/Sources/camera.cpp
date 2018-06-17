@@ -18,7 +18,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, GLfloat yaw, GLfloat pitch)
 
 glm::mat4 Camera::getViewMatrix() const
 {
-    return glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+	return glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
 }
 
 
@@ -90,10 +90,4 @@ void Camera::updateCameraVectors()
     cameraFront = glm::normalize(front);
     cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
-}
-
-
-glm::mat4 Camera::getViewMatrixA()
-{
-	return glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
 }
