@@ -11,6 +11,7 @@ class Normal
 public:
 	Normal();
 	std::string getName() const override;
+	std::string getTutorialPath() const override;
 
 protected:
 	void doConfig() override;

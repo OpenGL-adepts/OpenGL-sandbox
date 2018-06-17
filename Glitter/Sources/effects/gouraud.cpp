@@ -12,6 +12,10 @@ std::string Gouraud::getName() const //override
 	return "Gouraud";
 }
 
+std::string Gouraud::getTutorialPath() const //override
+{
+	return PROJECT_SOURCE_DIR "/resources/tutorials/Gouraud.pdf";
+}
 
 void Gouraud::doConfig() //override
 {
