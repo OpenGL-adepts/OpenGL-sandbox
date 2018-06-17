@@ -1,5 +1,6 @@
 #include "SceneObject.hpp"
 #include <imgui.h>
+#include <filesystem>
 
 
 void SceneObject::draw(const Shader& _shader)
@@ -58,6 +59,38 @@ void SceneObject::config()
 	ImGui::Checkbox("Textures", &m_bEnableTextures);
 
 	m_material.config();
+}
+
+
+nlohmann::json SceneObject::toJSON(const std::string& _savePath) const
+{
+	nlohmann::json tmp;
+
+	tmp["model"] = std::filesystem::relative(getModelPath(), std::filesystem::path(_savePath).parent_path()).string();
+	tmp["name"] = m_displayName;
+	tmp["enabled"] = m_bEnabled;
+	tmp["enableTextures"] = m_bEnableTextures;
+	tmp["position"] = {m_position.x, m_position.y, m_position.z};
+	tmp["rotation"] = {m_rotation.x, m_rotation.y, m_rotation.z};
+	tmp["scale"]	= {m_scale.x,    m_scale.y,	   m_scale.z};
+	tmp["material"] = m_material.toJSON();
+
+	return tmp;
+}
+
+
+void SceneObject::fromJSON(const nlohmann::json& _json)
+{
+	try { setDisplayName(_json.at("name").get<std::string>()); } catch(...) {}
+	try { setEnabled(_json.at("enabled")); } catch (...) {}
+	try { setEnableTextures(_json.at("enableTextures")); } catch (...) {}
+
+	setPosition (JSON::loadVector3(_json, "position"));
+	setRotation (JSON::loadVector3(_json, "rotation"));
+	setScale	(JSON::loadVector3(_json, "scale", glm::vec3(1.f)));
+
+	m_material = Material();
+	try { m_material.fromJSON(_json.at("material")); } catch(...) {}
 }
 
 

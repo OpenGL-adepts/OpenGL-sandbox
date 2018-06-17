@@ -32,17 +32,8 @@ bool Scene::loadFromFile(const std::string& _path)
 			try
 			{
 				auto tmpObj = std::make_shared<SceneObject>();
-
 				tmpObj->loadFromFile((root / elem.at("model").get<std::string>()).make_preferred().string());
-
-				try { tmpObj->setDisplayName(elem.at("name").get<std::string>()); } catch(...) {}
-				try { tmpObj->setEnabled(elem.at("enabled")); } catch (...) {}
-				try { tmpObj->setEnableTextures(elem.at("enableTextures")); } catch (...) {}
-
-				tmpObj->setPosition (loadVector(elem, "position"));
-				tmpObj->setRotation (loadVector(elem, "rotation"));
-				tmpObj->setScale	(loadVector(elem, "scale", glm::vec3(1.f)));
-
+				tmpObj->fromJSON(elem);
 				m_objects.push_back(std::move(tmpObj));
 			}
 			catch(...)
@@ -64,22 +55,7 @@ bool Scene::saveToFile(const std::string& _path) const
 	auto& objArr = json["objects"];
 
 	for(auto& obj : m_objects)
-	{
-		nlohmann::json tmp;
-		tmp["model"] = std::filesystem::relative(obj->getModelPath(), std::filesystem::path(_path).parent_path()).string();
-		tmp["name"] = obj->getDisplayName();
-		tmp["enabled"] = obj->isEnabled();
-		tmp["enableTextures"] = obj->isTextureEnabled();
-
-		auto vec = obj->getPosition();
-		tmp["position"] = {vec.x, vec.y, vec.z};
-		vec = obj->getRotation();
-		tmp["rotation"] = {vec.x, vec.y, vec.z};
-		vec = obj->getScale();
-		tmp["scale"] = {vec.x, vec.y, vec.z};
-
-		objArr.push_back(tmp);
-	}
+		objArr.push_back(obj->toJSON(_path));
 
 	std::ofstream file(_path);
 	file << json;
@@ -199,24 +175,4 @@ SceneObject& Scene::operator[](size_t _i)
 const SceneObject& Scene::operator[](size_t _i) const
 {
 	return *m_objects[_i];
-}
-
-
-//static
-glm::vec3 Scene::loadVector(const nlohmann::json& _obj, const std::string& _vectName, const glm::vec3& _default)
-{
-	auto vect = _obj.find(_vectName);
-
-	if(vect != _obj.end())
-	if(vect->is_array())
-	{
-		glm::vec3 result(0.f);
-		auto it = vect->begin();
-		result.x = (it++)->get<float>();
-		result.y = (it++)->get<float>();
-		result.z = (it++)->get<float>();
-		return result;
-	}
-
-	return _default;
 }

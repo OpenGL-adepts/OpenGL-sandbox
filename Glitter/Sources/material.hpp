@@ -1,5 +1,6 @@
 #pragma once
 #include "shader.hpp"
+#include "json.hpp"
 #include <glm/glm.hpp>
 
 
@@ -8,6 +9,9 @@ class Material
 public:
 	void bind(const Shader& _shader) const;
 	void config();
+
+	nlohmann::json toJSON() const;
+	void fromJSON(const nlohmann::json& _json);
 
 	glm::vec3 getColor() const;
 	glm::vec3 getAmbient() const;

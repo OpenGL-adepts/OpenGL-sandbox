@@ -1,6 +1,7 @@
 #pragma once
 #include "mesh.hpp"
 #include "material.hpp"
+#include "json.hpp"
 #include <glm/glm.hpp>
 #include <string>
 #include <glm/gtc/matrix_transform.hpp>
@@ -12,6 +13,9 @@ public:
 	void draw(const Shader& _shader);
 	bool loadFromFile(const std::string& _path);
 	void config();
+
+	nlohmann::json toJSON(const std::string& _savePath) const;
+	void fromJSON(const nlohmann::json& _json);
 
 	void setRotation(glm::vec3 _angles);
 	void setPosition(glm::vec3 _pos);
@@ -25,7 +29,6 @@ public:
 	glm::vec3 getPosition() const;
 	glm::vec3 getRotation() const;
 	glm::vec3 getScale() const;
-	glm::vec3 getColor() const;
 	bool isEnabled() const;
 	bool isTextureEnabled() const;
 

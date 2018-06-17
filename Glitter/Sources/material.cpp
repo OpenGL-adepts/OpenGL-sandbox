@@ -22,6 +22,28 @@ void Material::config()
 }
 
 
+nlohmann::json Material::toJSON() const
+{
+	nlohmann::json mat;
+	mat["baseColor"] = {m_color.x,	  m_color.y,    m_color.z};
+	mat["ambient"]	 = {m_ambient.x,  m_ambient.y,  m_ambient.z};
+	mat["diffuse"]	 = {m_diffuse.x,  m_diffuse.y,  m_diffuse.z};
+	mat["specular"]	 = {m_specular.x, m_specular.y, m_specular.z};
+	mat["shininess"] = m_shininess;
+	return mat;
+}
+
+
+void Material::fromJSON(const nlohmann::json& _json)
+{
+	m_color		= JSON::loadVector3(_json, "baseColor", glm::vec3(1.f));
+	m_ambient	= JSON::loadVector3(_json, "ambient",   glm::vec3(1.f));
+	m_diffuse	= JSON::loadVector3(_json, "diffuse",   glm::vec3(1.f));
+	m_specular  = JSON::loadVector3(_json, "specular",  glm::vec3(1.f));
+	m_shininess = _json["shininess"];
+}
+
+
 glm::vec3 Material::getColor() const
 {
 	return m_color;
