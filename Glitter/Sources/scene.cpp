@@ -180,3 +180,7 @@ const SceneObject& Scene::operator[](size_t _i) const
 {
 	return *m_objects[_i];
 }
+
+int Scene::getNumberOfObjects() {
+	return m_objects.size();
+}

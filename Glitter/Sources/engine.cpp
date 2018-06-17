@@ -160,7 +160,11 @@ int Engine::run()
 				ImGui::Separator();
 				effects.config();
 			}
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+			if (ImGui::CollapsingHeader("Misc"))
+			{
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+				ImGui::Text("Total number of objects in the scene: %d", scene.getNumberOfObjects());
+			}
 		}
 		
 		ImGui::End();

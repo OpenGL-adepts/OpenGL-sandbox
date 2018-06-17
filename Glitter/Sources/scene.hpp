@@ -22,6 +22,7 @@ public:
 	Scene(GLFWwindow* _window);
 	bool loadFromFile(const std::string& _path);
 	bool saveToFile(const std::string& _path) const;
+	int getNumberOfObjects();
 
 	std::shared_ptr<SceneObject> addObject(const std::string& _modelPath);
 
