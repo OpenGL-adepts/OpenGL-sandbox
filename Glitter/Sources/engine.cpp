@@ -169,7 +169,7 @@ int Engine::run()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		shader.activate();
-		glm::mat4 model;
+		glm::mat4 model(1.f);
 		glm::mat4 view = camera.getViewMatrixA();
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		shader.bind("model", model);
