@@ -14,6 +14,10 @@ struct PointLight
 	int active;
 	vec3 position;
 	vec3 color;
+	
+	float attConstant;
+	float attLinear;
+	float attQuadratic;
 };
 
 uniform float uAmbientStrength;
@@ -65,7 +69,11 @@ vec3 pointLight(PointLight light, vec3 normal, vec3 viewDir)
 	float specularStrength = pow(specAngle, uMaterial.shininess) * uSpecularStrength;
 	vec3 specular = uMaterial.specular * specularStrength * vec3(texture(texture_specular, TexCoords));
 	
-	return light.color * (ambient + diffuse + specular);
+	// Attenuation
+	float distance = length(light.position - FragPos);
+	float attenuation = 1.0 / (light.attConstant + light.attLinear * distance + light.attQuadratic * distance * distance);
+	
+	return light.color * (ambient + diffuse + specular) * attenuation;
 }
 
 

@@ -241,9 +241,12 @@ void Scene::bindLights(const Shader& _shader) const
 
 	for(size_t i = 0; i < m_lights.size() && i < MaxLights; ++i)
 	{
-		sprintf(tmp, "uLight[%u].active",   i); _shader.bind(tmp, (int)m_lights[i]->isEnabled());
-		sprintf(tmp, "uLight[%u].position", i); _shader.bind(tmp, m_lights[i]->getPosition());
-		sprintf(tmp, "uLight[%u].color",    i); _shader.bind(tmp, m_lights[i]->getColor());
+		sprintf(tmp, "uLight[%u].active",		i); _shader.bind(tmp, (int)m_lights[i]->isEnabled());
+		sprintf(tmp, "uLight[%u].position",		i); _shader.bind(tmp, m_lights[i]->getPosition());
+		sprintf(tmp, "uLight[%u].color",		i); _shader.bind(tmp, m_lights[i]->getColor());
+		sprintf(tmp, "uLight[%u].attConstant",	i); _shader.bind(tmp, m_lights[i]->getAttenuationConstant());
+		sprintf(tmp, "uLight[%u].attLinear",	i); _shader.bind(tmp, m_lights[i]->getAttenuationLinear());
+		sprintf(tmp, "uLight[%u].attQuadratic",	i); _shader.bind(tmp, m_lights[i]->getAttenuationQuadratic());
 	}
 
 	for(size_t i = m_lights.size(); i < MaxLights; ++i)

@@ -40,7 +40,7 @@ void Material::fromJSON(const nlohmann::json& _json)
 	m_ambient	= JSON::loadVector3(_json, "ambient",   glm::vec3(1.f));
 	m_diffuse	= JSON::loadVector3(_json, "diffuse",   glm::vec3(1.f));
 	m_specular  = JSON::loadVector3(_json, "specular",  glm::vec3(1.f));
-	m_shininess = _json["shininess"];
+	try { m_shininess = _json.at("shininess"); } catch(...) { m_shininess = 32; }
 }
 
 
