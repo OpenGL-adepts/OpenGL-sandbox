@@ -7,7 +7,7 @@ class Actor
 	: public SceneObject
 {
 public:
-	void draw(const Shader& _shader) override;
+	void draw(const Shader& _shader, int _reservedTUs) override;
 	bool loadFromFile(const std::string& _path);
 	void fromJSON(const nlohmann::json& _json) override;
 	bool setCustomTextureFromFile(const std::string& _path);

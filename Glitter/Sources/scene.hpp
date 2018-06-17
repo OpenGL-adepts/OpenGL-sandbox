@@ -32,7 +32,7 @@ public:
 	std::shared_ptr<Actor> addActor(const std::string& _modelPath);
 	std::shared_ptr<Light> addLight();
 
-	void draw(const Shader& _shader, const Camera& _camera, const glm::mat4& _perspective) const;
+	void draw(const Shader& _shader, const Camera& _camera, const glm::mat4& _perspective, int _reservedTUs = 0) const;
 	void configObjects();
 	void configLights();
 	void bindLights(const Shader& _shader) const;

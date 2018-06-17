@@ -9,7 +9,7 @@ public:
 	CubeMap();
 	~CubeMap();
 	bool loadCubemap(const std::vector<std::string>& faces);
-	void bind();
+	void bind() const;
 	bool loadTextureById(int _id);
 
 protected:

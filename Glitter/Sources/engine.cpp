@@ -1,5 +1,11 @@
 #include "engine.hpp"
-
+#include "effects/effectmanager.hpp"
+#include "effects/phong.hpp"
+#include "effects/gouraud.hpp"
+#include "effects/flat.hpp"
+#include "effects/depth.hpp"
+#include "effects/normal.hpp"
+#include "effects/envmap.hpp"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -92,7 +98,7 @@ int Engine::run()
 	scene.addActor(PROJECT_SOURCE_DIR "/resources/models/cyborg/cyborg.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
 	scene.addLight()->setPosition(glm::vec3(3.f, 0.f, 0.f));
 
-	Skybox skybox;
+	auto skybox = std::make_shared<Skybox>();
 
 	EffectManager effects;
 	effects.registerEffect(std::make_shared<Phong>());
@@ -100,6 +106,7 @@ int Engine::run()
 	effects.registerEffect(std::make_shared<Flat>());
 	effects.registerEffect(std::make_shared<Normal>());
 	effects.registerEffect(std::make_shared<Depth>());
+	effects.registerEffect(std::make_shared<EnvMap>(skybox));
 
 	lastFrame = glfwGetTime();
 
@@ -116,7 +123,7 @@ int Engine::run()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		skybox.draw(camera, m_projMatrix);
+		skybox->draw(camera, m_projMatrix);
 
 		recalcPerspective();
 		effects.render(scene, camera, m_projMatrix);
@@ -184,7 +191,7 @@ int Engine::run()
 			optionsBackgrounds.push_back("Golden Gate Bridge");
 
 			if(Gui::combo("Backgrounds", m_currentBackground, optionsBackgrounds))
-				skybox.loadSkyboxById(m_currentBackground);
+				skybox->loadSkyboxById(m_currentBackground);
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		}

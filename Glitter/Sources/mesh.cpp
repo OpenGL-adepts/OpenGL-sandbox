@@ -95,14 +95,14 @@ bool Mesh::setCustomTextureFromFile(const std::string& _path) {
 	return true;
 }
 
-void Mesh::draw(const Shader& shader, bool _bTextures)
+void Mesh::draw(const Shader& shader, bool _bTextures, int _reservedTUs)
 {
-	int unit = 0, diffuse = 0, specular = 0, normal = 0;
+	int unit = _reservedTUs, diffuse = 0, specular = 0, normal = 0;
 
 	for (auto& i : mSubMeshes)
-		i->draw(shader, _bTextures);
+		i->draw(shader, _bTextures, _reservedTUs);
 
-	for (int i = 0; i < 16; ++i)
+	for (int i = unit; i < 16; ++i)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 		glBindTexture(GL_TEXTURE_2D, 0);

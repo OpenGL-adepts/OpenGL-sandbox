@@ -2,12 +2,12 @@
 #include <imgui.h>
 
 
-void Actor::draw(const Shader& _shader) //override
+void Actor::draw(const Shader& _shader, int _reservedTUs) //override
 {
 	if(m_bEnabled)
 	{
 		m_material.bind(_shader);
-		m_model.draw(_shader, m_bEnableTextures);
+		m_model.draw(_shader, m_bEnableTextures, _reservedTUs);
 	}
 }
 

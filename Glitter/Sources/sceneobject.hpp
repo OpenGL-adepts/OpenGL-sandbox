@@ -13,7 +13,7 @@ class SceneObject
 {
 public:
 	virtual ~SceneObject() {}
-	virtual void draw(const Shader& _shader) {}
+	virtual void draw(const Shader& _shader, int _reservedTUs) {}
 	virtual void config();
 	
 	nlohmann::json toJSON(const std::string& _savePath) const;

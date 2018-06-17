@@ -12,6 +12,7 @@ public:
 	~Skybox();
 	void draw(const Camera& _camera, const glm::mat4& _projection);
 	bool loadSkyboxById(int _id);
+	const CubeMap& getCubeMap() const;
 
 protected:
 	Shader m_skyboxShader;

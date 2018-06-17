@@ -51,7 +51,7 @@ bool CubeMap::loadCubemap(const std::vector<std::string>& faces)
 }
 
 
-void CubeMap::bind()
+void CubeMap::bind() const
 {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_textureId);
 }

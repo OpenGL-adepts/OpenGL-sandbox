@@ -180,7 +180,7 @@ std::shared_ptr<Light> Scene::addLight()
 }
 
 
-void Scene::draw(const Shader& _shader, const Camera& _camera, const glm::mat4& _perspective) const
+void Scene::draw(const Shader& _shader, const Camera& _camera, const glm::mat4& _perspective, int _reservedTUs) const
 {
 	_shader.bind("uProjection", _perspective);
 	_shader.bind("uView", _camera.getViewMatrix());
@@ -188,7 +188,7 @@ void Scene::draw(const Shader& _shader, const Camera& _camera, const glm::mat4& 
 	for (auto& obj : m_actors)
 	{
 		_shader.bind("uModel", obj->getModelMatrix());
-		obj->draw(_shader);
+		obj->draw(_shader, _reservedTUs);
 	}
 
 	drawLights(_camera, _perspective);

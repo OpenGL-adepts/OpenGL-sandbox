@@ -99,3 +99,9 @@ bool Skybox::loadSkyboxById(int _id)
 {
 	return m_cubeMap.loadTextureById(_id);
 }
+
+
+const CubeMap& Skybox::getCubeMap() const
+{
+	return m_cubeMap;
+}

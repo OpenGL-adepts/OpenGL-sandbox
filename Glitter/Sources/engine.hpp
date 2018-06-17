@@ -14,12 +14,7 @@
 #include "mesh.hpp"
 #include "scene.hpp"
 #include "skybox.hpp"
-#include "effects/effectmanager.hpp"
-#include "effects/phong.hpp"
-#include "effects/gouraud.hpp"
-#include "effects/flat.hpp"
-#include "effects/depth.hpp"
-#include "effects/normal.hpp"
+
 
 const unsigned int SCR_WIDTH = 1280;
 const unsigned int SCR_HEIGHT = 720;
