@@ -10,16 +10,20 @@
 
 CubeMap::CubeMap()
 {
-	currentBackground = -1;
-	textureId = -1;
+	m_currentBackground = -1;
+	glGenTextures(1, &m_textureId);
 }
 
 
-unsigned int CubeMap::loadCubemap(const std::vector<std::string>& faces)
+CubeMap::~CubeMap()
 {
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+	glDeleteTextures(1, &m_textureId);
+}
+
+
+bool CubeMap::loadCubemap(const std::vector<std::string>& faces)
+{
+	bind();
 
 	int width, height, nrComponents;
 	for (unsigned int i = 0; i < faces.size(); i++)
@@ -34,22 +38,33 @@ unsigned int CubeMap::loadCubemap(const std::vector<std::string>& faces)
 		{
 			std::cout << "Cubemap texture failed to load at path: " << faces[i].c_str() << std::endl;
 			stbi_image_free(data);
+			return false;
 		}
 	}
+
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	return textureID;
+	return true;
 }
 
-unsigned int CubeMap::getTextureByCurrentBackground()
+
+void CubeMap::bind()
 {
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_textureId);
+}
+
+
+bool CubeMap::loadTextureById(int _id)
+{
+	if(_id == m_currentBackground)
+		return true;
+
 	std::vector<std::string> faces;
 
-	switch (this->currentBackground)
+	switch (_id)
 	{
 	case 0:
 		faces = {
@@ -153,5 +168,9 @@ unsigned int CubeMap::getTextureByCurrentBackground()
 		break;
 	}
 
+	if(faces.empty())
+		return false;
+
+	m_currentBackground = _id;
 	return loadCubemap(faces);
 }

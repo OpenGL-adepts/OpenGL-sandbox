@@ -55,20 +55,8 @@ Skybox::Skybox()
 	m_skyboxShader.link();
 	m_skyboxShader.activate();
 	m_skyboxShader.bind("skybox", 0);
-
-	std::vector<std::string> faces
-	{
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/right.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/left.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/top.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/bottom.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/front.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/back.jpg",
-	};
-
-	m_cubemapTexture = m_cubeMap.loadCubemap(faces);
-	m_cubeMap.textureId = m_cubemapTexture;
-
+	m_cubeMap.loadTextureById(0);
+	
 	// skybox VAO
 	glGenVertexArrays(1, &m_skyboxVAO);
 	glGenBuffers(1, &m_skyboxVBO);
@@ -98,7 +86,7 @@ void Skybox::draw(const Camera& _camera, const glm::mat4& _projection)
 
 	glBindVertexArray(m_skyboxVAO);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, m_cubemapTexture);
+	m_cubeMap.bind();
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 
@@ -107,14 +95,7 @@ void Skybox::draw(const Camera& _camera, const glm::mat4& _projection)
 }
 
 
-GLuint Skybox::getBackgroundTextureFromChoosen(int _currentBackground)
+bool Skybox::loadSkyboxById(int _id)
 {
-	if (m_cubeMap.currentBackground != _currentBackground)
-	{
-		glDeleteTextures(1, &m_cubeMap.textureId);
-		m_cubeMap.currentBackground = _currentBackground;
-		m_cubeMap.textureId = m_cubeMap.getTextureByCurrentBackground();
-	}
-
-	return m_cubemapTexture = m_cubeMap.textureId;
+	return m_cubeMap.loadTextureById(_id);
 }

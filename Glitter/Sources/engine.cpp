@@ -183,7 +183,8 @@ int Engine::run()
 			optionsBackgrounds.push_back("Yokohama");
 			optionsBackgrounds.push_back("Golden Gate Bridge");
 
-			Gui::combo("Backgrounds", m_currentBackground, optionsBackgrounds);
+			if(Gui::combo("Backgrounds", m_currentBackground, optionsBackgrounds))
+				skybox.loadSkyboxById(m_currentBackground);
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		}
@@ -191,9 +192,6 @@ int Engine::run()
 		ImGui::End();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
-
-		skybox.getBackgroundTextureFromChoosen(m_currentBackground);
-		//cubemapTexture = getBackgroundTextureFromChoosen(m_currentBackground);
 
 		// Flip Buffers and Draw
 		glfwSwapBuffers(m_window);
