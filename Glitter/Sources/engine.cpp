@@ -196,6 +196,7 @@ int Engine::run()
 		ImGui_ImplGlfwGL3_NewFrame();
 		//ImGui::ShowDemoWindow();
 
+		ImGui::SetNextWindowPos(ImVec2(0, 0));
 		if(ImGui::Begin("OpenGL sandbox"))
 		{
 			if(ImGui::CollapsingHeader("About"))
@@ -204,6 +205,8 @@ int Engine::run()
 
 				if(ImGui::Button("About this software"))
 					ImGui::OpenPopup("About this software");
+
+				ImGui::Text("Protip: Ctrl+Click controls to manually enter numbers.");
 			}
 
 			if(ImGui::BeginPopupModal("About this software"))
@@ -234,10 +237,10 @@ int Engine::run()
 				ImGui::Separator();
 				effects.config();
 			}
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		}
 		
 		ImGui::End();
-
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 

@@ -1,15 +1,27 @@
 #version 330 core
+
+struct Material
+{
+	vec3 color;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+}; 
+
 uniform float uAmbientStrength;
 uniform float uDiffuseStrength;
 uniform float uSpecularStrength;
-uniform int uSpecularExponent;
 uniform int uEnableNormalMapping;
 uniform int uUseBlinnPhong;
-uniform vec3 uLightPos;
 uniform vec3 uViewPos;
+uniform Material uMaterial;
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_specular;
 uniform sampler2D texture_normal;
+
+uniform vec3 uLightPos;
+uniform vec3 uLightColor;
 
 in vec3 Normal;
 in vec3 FragPos;
@@ -24,7 +36,7 @@ out vec4 FragColor;
 void main()
 {
 	vec3 norm, lightDir, viewDir;
-	vec4 objectColor = texture(texture_diffuse, TexCoords);
+	vec4 objectColor = vec4(vec3(texture(texture_diffuse, TexCoords)) * uMaterial.color, 1.f);
 	
 	if(uEnableNormalMapping != 0)
 	{
@@ -42,11 +54,10 @@ void main()
 	}
 	
 	// Ambient
-	vec3 ambient = vec3(uAmbientStrength);
+	vec3 ambient = uMaterial.ambient * uAmbientStrength;
 	
 	// Diffuse
-	float diffuseStrength = max(0.0, dot(norm, lightDir)) * uDiffuseStrength;
-	vec3 diffuse = vec3(diffuseStrength);
+	vec3 diffuse = uMaterial.diffuse * max(0.0, dot(norm, lightDir)) * uDiffuseStrength;
 	
 	// Specular
 	float specAngle;
@@ -62,8 +73,8 @@ void main()
 		specAngle = max(0.0, dot(viewDir, reflectDir));
 	}
 	
-	float specularStrength = pow(specAngle, uSpecularExponent) * uSpecularStrength;
-	vec3 specular = vec3(specularStrength * texture(texture_specular, TexCoords));
+	float specularStrength = pow(specAngle, uMaterial.shininess) * uSpecularStrength;
+	vec3 specular = uMaterial.specular * specularStrength * vec3(texture(texture_specular, TexCoords));
 	
-	FragColor = objectColor * vec4(ambient + diffuse + specular, 1.0);
+	FragColor = objectColor * vec4(uLightColor * (ambient + diffuse + specular), 1.0);
 }

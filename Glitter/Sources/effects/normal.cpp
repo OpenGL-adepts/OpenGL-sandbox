@@ -12,6 +12,10 @@ std::string Normal::getName() const //override
 	return "Normal";
 }
 
+std::string Normal::getTutorialPath() const //override
+{
+	return PROJECT_SOURCE_DIR "/resources/tutorials/Normal.pdf";
+}
 
 void Normal::doConfig() //override
 {
