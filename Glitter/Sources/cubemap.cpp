@@ -10,8 +10,11 @@
 #include <iostream>
 
 CubeMap::CubeMap() {
-
 }
+
+CubeMap::~CubeMap() {
+}
+
 
 unsigned int CubeMap::loadCubemap(std::vector<std::string> faces)
 {
