@@ -87,6 +87,8 @@ void Scene::draw(const Shader& _shader, const Camera& _camera, const glm::mat4& 
 		_shader.bind("uModel", obj->getModelMatrix());
 		obj->draw(_shader);
 	}
+
+	m_lights.draw(_camera, _perspective);
 }
 
 
@@ -169,14 +171,13 @@ void Scene::configObjects()
 
 void Scene::configLights()
 {
-	m_tmpLight.config();
+	m_lights.config();
 }
 
 
 void Scene::bindLights(const Shader& _shader) const
 {
-	_shader.bind("uLightPos", m_tmpLight.getPosition());
-	_shader.bind("uLightColor", m_tmpLight.getColor());
+	m_lights.bind(_shader);
 }
 
 

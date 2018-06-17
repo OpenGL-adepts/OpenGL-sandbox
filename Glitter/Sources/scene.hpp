@@ -38,7 +38,6 @@ public:
 	const SceneObject& operator[](size_t _i) const;
 
 protected:
-	Light m_tmpLight;
 	LightContainer m_lights;
 	Native m_native;
 	std::vector<std::shared_ptr<SceneObject>> m_objects;

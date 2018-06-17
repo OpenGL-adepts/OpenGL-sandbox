@@ -24,17 +24,49 @@ void Light::config()
 
 
 LightContainer::LightContainer()
-	: m_lamp(buildCube())
+	: m_lamp(new Mesh(PROJECT_SOURCE_DIR "/resources/models/sheep.obj"))
 {
+	try
+	{
+		m_lampShader.attach(PROJECT_SOURCE_DIR "/resources/shaders/lamp.vert");
+		m_lampShader.attach(PROJECT_SOURCE_DIR "/resources/shaders/lamp.frag");
+		m_lampShader.link();
+	}
+	catch(...) {}
+
+	//TODO:
+	m_lights.emplace_back();
 }
 
 
-void LightContainer::draw()
+void LightContainer::draw(const Camera& _camera, const glm::mat4& _perspective) const
 {
+	m_lampShader.activate();
+	m_lampShader.bind("uProjection", _perspective);
+	m_lampShader.bind("uView", _camera.getViewMatrix());
+
 	for(auto& light : m_lights)
 	{
-		// bind model matrix
+		m_lampShader.bind("uModel", glm::scale(glm::translate(glm::mat4(1.f), light.getPosition()), glm::vec3(0.25f)));
+		m_lampShader.bind("uLightColor", light.getColor());
 		m_lamp->draw(m_lampShader);
+	}
+}
+
+
+void LightContainer::config()
+{
+	if(!m_lights.empty())
+		m_lights[0].config();
+}
+
+
+void LightContainer::bind(const Shader& _shader) const
+{
+	if(!m_lights.empty())
+	{
+		_shader.bind("uLightPos",   m_lights[0].getPosition());
+		_shader.bind("uLightColor", m_lights[0].getColor());
 	}
 }
 
@@ -42,6 +74,9 @@ void LightContainer::draw()
 //static
 std::unique_ptr<Mesh> LightContainer::buildCube()
 {
+	//auto lamp = std::make_unique<Mesh>(PROJECT_SOURCE_DIR "/resources/models/sheep.obj");
+	//return lamp;
+
 	glm::vec3 positions[] =
 	{
 		{-0.5f, 0.5f,  0.5f}, {0.5f, 0.5f,  0.5f}, {0.5f, -0.5f,  0.5f}, {-0.5f, -0.5f,  0.5f},
@@ -61,7 +96,8 @@ std::unique_ptr<Mesh> LightContainer::buildCube()
 			1, 5, 6, 1, 6, 2, // right
 			2, 6, 7, 2, 7, 3, // bottom
 			0, 3, 7, 0, 7, 4, // left
-			4, 7, 6, 4, 6, 5  // back
+			//4, 7, 6, 4, 6, 5  // back
+			6, 7, 4, 5, 6, 4  // back
 		},
 		{}));
 }
