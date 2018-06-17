@@ -1,22 +1,28 @@
 #version 330 core
 
+struct Material
+{
+	vec3 color;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+};
+
 uniform vec3 uLightPos;
 uniform vec3 uViewPos;
+uniform Material uMaterial;
 uniform sampler2D texture_diffuse;
-uniform sampler2D texture_specular;
 
 in vec3 FragPos;
 in vec2 TexCoords;
-in vec3 LightAmbient;
-in vec3 LightDiffuse;
-in float LightSpecular;
+in vec3 Light;
 
 out vec4 FragColor;
 
 
 void main()
 {
-	vec4 objectColor = texture(texture_diffuse, TexCoords);
-	vec3 light = LightAmbient + LightDiffuse + LightSpecular * vec3(texture(texture_specular, TexCoords));
-	FragColor = objectColor * vec4(light, 1.0);
+	vec3 objectColor = texture(texture_diffuse, TexCoords).rgb * uMaterial.color;
+	FragColor = vec4(objectColor * Light, 1.0);
 }

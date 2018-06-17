@@ -22,7 +22,6 @@ void Gouraud::doConfig() //override
 	ImGui::SliderFloat("Ambient", &m_ambientStrength, 0.f, 1.f);
 	ImGui::SliderFloat("Diffuse", &m_diffuseStrength, 0.f, 1.f);
 	ImGui::SliderFloat("Specular", &m_specularStrength, 0.f, 1.f);
-	ImGui::SliderInt("Specular exponent", &m_specularExponent, 2, 256);
 }
 
 
@@ -32,8 +31,7 @@ void Gouraud::doRender(const Scene& _scene, const Camera& _camera, const glm::ma
 	m_shader.bind("uAmbientStrength", m_ambientStrength);
 	m_shader.bind("uDiffuseStrength", m_diffuseStrength);
 	m_shader.bind("uSpecularStrength", m_specularStrength);
-	m_shader.bind("uSpecularExponent", m_specularExponent);
-	m_shader.bind("uLightPos", glm::vec3(5.f, 0, 0));
 	m_shader.bind("uViewPos", _camera.getPosition());
+	_scene.bindLights(m_shader);
 	_scene.draw(m_shader, _camera, _perspective);
 }

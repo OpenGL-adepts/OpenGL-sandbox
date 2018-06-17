@@ -29,7 +29,7 @@ void main()
 	vec3 Tangent = normalize(normalMat * aTangent);
 	Tangent = normalize(Tangent - dot(Tangent, Normal) * Normal);
 	vec3 Bitangent = cross(Normal, Tangent);
-	TBN = transpose(mat3(Tangent, Bitangent, Normal));
+	TBN = mat3(Tangent, Bitangent, Normal);
 	
     gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);
 }

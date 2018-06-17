@@ -3,7 +3,7 @@
 
 
 template <class SO>
-static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>& _objects, int& _selectedObject)
+static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>& _objects, int& _selectedObject, const std::string& _elemType)
 {
 	std::vector<std::string> options;
 	
@@ -17,7 +17,9 @@ static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>&
 		options.push_back(name);
 	}
 
-	Gui::combo("Selected object", _selectedObject, options);
+	ImGui::PushID(_elemType.c_str());
+
+	Gui::combo("Selected " + _elemType, _selectedObject, options);
 
 	if(_selectedObject >= 0 && _selectedObject < _objects.size())
 	{
@@ -47,7 +49,7 @@ static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>&
 				ImGui::CloseCurrentPopup();
 				_objects.erase(_objects.begin() + _selectedObject);
 				
-				if(_selectedObject > 0 && _selectedObject == _objects.size())
+				if(_selectedObject > 0 && _selectedObject == (int)_objects.size())
 					--_selectedObject;
 			}
 			ImGui::SameLine();
@@ -58,9 +60,11 @@ static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>&
 			ImGui::EndPopup();
 		}
 
+		ImGui::PopID();
 		return obj;
 	}
 
+	ImGui::PopID();
 	return nullptr;
 }
 
@@ -76,9 +80,6 @@ Scene::Scene(GLFWwindow* _window)
 		m_lampShader.link();
 	}
 	catch(...) {}
-
-	m_lights.push_back(std::make_shared<Light>());
-	m_lights.push_back(std::make_shared<Light>());
 }
 
 
@@ -90,6 +91,7 @@ bool Scene::loadFromFile(const std::string& _path)
 		return false;
 
 	m_actors.clear();
+	m_lights.clear();
 	m_currentActor = 0;
 	m_currentLight = 0;
 
@@ -115,6 +117,18 @@ bool Scene::loadFromFile(const std::string& _path)
 			catch(...)
 			{}
 		}
+
+		for(auto& elem : json.at("lights"))
+		{
+			try
+			{
+				auto tmpObj = std::make_shared<Light>();
+				tmpObj->fromJSON(elem);
+				m_lights.push_back(std::move(tmpObj));
+			}
+			catch(...)
+			{}
+		}
 	}
 	catch(...)
 	{
@@ -133,13 +147,18 @@ bool Scene::saveToFile(const std::string& _path) const
 	for(auto& obj : m_actors)
 		objArr.push_back(obj->toJSON(_path));
 
+	auto& lgtArr = json["lights"];
+
+	for(auto& lgt : m_lights)
+		lgtArr.push_back(lgt->toJSON(_path));
+
 	std::ofstream file(_path);
 	file << json;
 	return !!file;
 }
 
 
-std::shared_ptr<SceneObject> Scene::addObject(const std::string& _modelPath)
+std::shared_ptr<Actor> Scene::addActor(const std::string& _modelPath)
 {
 	auto obj = std::make_shared<Actor>();
 
@@ -150,6 +169,14 @@ std::shared_ptr<SceneObject> Scene::addObject(const std::string& _modelPath)
 	}
 
 	return nullptr;
+}
+
+
+std::shared_ptr<Light> Scene::addLight()
+{
+	auto obj = std::make_shared<Light>();
+	m_lights.push_back(obj);
+	return obj;
 }
 
 
@@ -181,9 +208,10 @@ void Scene::configObjects()
 	ImGui::SameLine();
 
 	if(ImGui::Button("Add object"))
-		addObject(m_native.openModelDialog().string());
+	if(addActor(m_native.openModelDialog().string()))
+		m_currentActor = m_actors.size() - 1;
 
-	if(auto obj = _configBasicObjects(m_actors, m_currentActor))
+	if(auto obj = _configBasicObjects(m_actors, m_currentActor, "object"))
 	{
 		obj->config();
 		
@@ -196,7 +224,13 @@ void Scene::configObjects()
 
 void Scene::configLights()
 {
-	if(auto light = _configBasicObjects(m_lights, m_currentLight))
+	if(ImGui::Button("Add light"))
+	{
+		m_lights.push_back(std::make_shared<Light>());
+		m_currentLight = m_lights.size() - 1;
+	}
+
+	if(auto light = _configBasicObjects(m_lights, m_currentLight, "light"))
 		light->config();
 }
 
@@ -207,9 +241,12 @@ void Scene::bindLights(const Shader& _shader) const
 
 	for(size_t i = 0; i < m_lights.size() && i < MaxLights; ++i)
 	{
-		sprintf(tmp, "uLight[%u].active",   i); _shader.bind(tmp, (int)m_lights[i]->isEnabled());
-		sprintf(tmp, "uLight[%u].position", i); _shader.bind(tmp, m_lights[i]->getPosition());
-		sprintf(tmp, "uLight[%u].color",    i); _shader.bind(tmp, m_lights[i]->getColor());
+		sprintf(tmp, "uLight[%u].active",		i); _shader.bind(tmp, (int)m_lights[i]->isEnabled());
+		sprintf(tmp, "uLight[%u].position",		i); _shader.bind(tmp, m_lights[i]->getPosition());
+		sprintf(tmp, "uLight[%u].color",		i); _shader.bind(tmp, m_lights[i]->getColor());
+		sprintf(tmp, "uLight[%u].attConstant",	i); _shader.bind(tmp, m_lights[i]->getAttenuationConstant());
+		sprintf(tmp, "uLight[%u].attLinear",	i); _shader.bind(tmp, m_lights[i]->getAttenuationLinear());
+		sprintf(tmp, "uLight[%u].attQuadratic",	i); _shader.bind(tmp, m_lights[i]->getAttenuationQuadratic());
 	}
 
 	for(size_t i = m_lights.size(); i < MaxLights; ++i)

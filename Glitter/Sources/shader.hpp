@@ -22,6 +22,7 @@ public:
 
 	// Public Member Functions
 	void activate() const;
+	void clearProgram();
 	Shader& attach(std::string const& filename);
 	GLuint create(std::string const& filename);
 	GLuint get() const { return mProgram; }

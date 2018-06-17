@@ -14,6 +14,10 @@ struct PointLight
 	int active;
 	vec3 position;
 	vec3 color;
+	
+	float attConstant;
+	float attLinear;
+	float attQuadratic;
 };
 
 uniform float uAmbientStrength;
@@ -38,59 +42,57 @@ in mat3 TBN;
 out vec4 FragColor;
 
 
+vec3 pointLight(PointLight light, vec3 normal, vec3 viewDir)
+{
+	vec3 lightDir = normalize(light.position - FragPos);
+		
+	// Ambient
+	vec3 ambient = uMaterial.ambient * uAmbientStrength;
+	
+	// Diffuse
+	vec3 diffuse = uMaterial.diffuse * max(0.0, dot(normal, lightDir)) * uDiffuseStrength;
+	
+	// Specular
+	float specAngle;
+	
+	if(uUseBlinnPhong != 0)
+	{
+		vec3 halfDir = normalize(lightDir + viewDir);
+		specAngle = pow(max(0.0, dot(halfDir, normal)), 4);
+	}
+	else
+	{
+		vec3 reflectDir = reflect(-lightDir, normal);
+		specAngle = max(0.0, dot(viewDir, reflectDir));
+	}
+	
+	float specularStrength = pow(specAngle, uMaterial.shininess) * uSpecularStrength;
+	vec3 specular = uMaterial.specular * specularStrength * vec3(texture(texture_specular, TexCoords));
+	
+	// Attenuation
+	float distance = length(light.position - FragPos);
+	float attenuation = 1.0 / (light.attConstant + light.attLinear * distance + light.attQuadratic * distance * distance);
+	
+	return light.color * (ambient + diffuse + specular) * attenuation;
+}
+
+
 void main()
 {
-	vec3 norm, lightDir, viewDir;
 	vec4 objectColor = vec4(vec3(texture(texture_diffuse, TexCoords)) * uMaterial.color, 1.f);
 	vec3 lightTotal = vec3(0.f);
+	vec3 norm;
 	
-	for(int iii = 0; iii < MAX_LIGHTS; ++iii)
-	if(uLight[iii].active != 0)
-	{
-		if(uEnableNormalMapping != 0)
-		{
-			vec3 tangentLightPos = TBN * uLight[iii].position;
-			vec3 tangentViewPos  = TBN * uViewPos;
-			vec3 tangentFragPos  = TBN * FragPos;
-			
-			// Normal mapping
-			norm = normalize(texture(texture_normal, TexCoords).rgb * 2.0 - 1.0);
-			lightDir = normalize(tangentLightPos - tangentFragPos);
-			viewDir  = normalize(tangentViewPos  - tangentFragPos);
-		}
-		else
-		{
-			// Standard normals
-			norm = normalize(Normal);
-			lightDir = normalize(uLight[iii].position - FragPos);
-			viewDir = normalize(uViewPos - FragPos);
-		}
-		
-		// Ambient
-		vec3 ambient = uMaterial.ambient * uAmbientStrength;
-		
-		// Diffuse
-		vec3 diffuse = uMaterial.diffuse * max(0.0, dot(norm, lightDir)) * uDiffuseStrength;
-		
-		// Specular
-		float specAngle;
-		
-		if(uUseBlinnPhong != 0)
-		{
-			vec3 halfDir = normalize(lightDir + viewDir);
-			specAngle = pow(max(0.0, dot(halfDir, norm)), 4);
-		}
-		else
-		{
-			vec3 reflectDir = reflect(-lightDir, norm);
-			specAngle = max(0.0, dot(viewDir, reflectDir));
-		}
-		
-		float specularStrength = pow(specAngle, uMaterial.shininess) * uSpecularStrength;
-		vec3 specular = uMaterial.specular * specularStrength * vec3(texture(texture_specular, TexCoords));
-		
-		lightTotal += uLight[iii].color * (ambient + diffuse + specular);
-	}
+	if(uEnableNormalMapping != 0) // Normal mapping
+		norm = normalize(TBN * (texture(texture_normal, TexCoords).rgb * 2.0 - 1.0));
+	else // Standard normals
+		norm = normalize(Normal);
+	
+	vec3 viewDir = normalize(uViewPos - FragPos);
+	
+	for(int i = 0; i < MAX_LIGHTS; ++i)
+	if(uLight[i].active != 0)
+		lightTotal += pointLight(uLight[i], norm, viewDir);
 	
 	FragColor = objectColor * vec4(lightTotal, 1.0);
 }
