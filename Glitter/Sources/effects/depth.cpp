@@ -1,9 +1,10 @@
 #include "depth.hpp"
+#include "../config.hpp"
 
 
 Depth::Depth()
 {
-	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/depth.vert", PROJECT_SOURCE_DIR "/resources/shaders/depth.frag");
+	loadShader(RELATIVE_PATH_ROOT "/resources/shaders/depth.vert", RELATIVE_PATH_ROOT "/resources/shaders/depth.frag");
 }
 
 
@@ -14,7 +15,7 @@ std::string Depth::getName() const //override
 
 std::string Depth::getTutorialPath() const //override
 {
-	return PROJECT_SOURCE_DIR "/resources/tutorials/Depth.pdf";
+	return RELATIVE_PATH_ROOT "/resources/tutorials/Depth.pdf";
 }
 
 

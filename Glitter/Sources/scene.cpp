@@ -1,4 +1,5 @@
 #include "scene.hpp"
+#include "config.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 
@@ -71,12 +72,12 @@ static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>&
 
 Scene::Scene(GLFWwindow* _window)
 	: m_native(_window)
-	, m_lamp(new Mesh(PROJECT_SOURCE_DIR "/resources/models/sheep.obj"))
+	, m_lamp(new Mesh(RELATIVE_PATH_ROOT "/resources/models/sheep.obj"))
 {
 	try
 	{
-		m_lampShader.attach(PROJECT_SOURCE_DIR "/resources/shaders/lamp.vert");
-		m_lampShader.attach(PROJECT_SOURCE_DIR "/resources/shaders/lamp.frag");
+		m_lampShader.attach(RELATIVE_PATH_ROOT "/resources/shaders/lamp.vert");
+		m_lampShader.attach(RELATIVE_PATH_ROOT "/resources/shaders/lamp.frag");
 		m_lampShader.link();
 	}
 	catch(...) {}

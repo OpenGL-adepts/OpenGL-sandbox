@@ -1,9 +1,10 @@
 #include "flat.hpp"
+#include "../config.hpp"
 
 
 Flat::Flat()
 {
-	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/flat.vert", PROJECT_SOURCE_DIR "/resources/shaders/flat.frag");
+	loadShader(RELATIVE_PATH_ROOT "/resources/shaders/flat.vert", RELATIVE_PATH_ROOT "/resources/shaders/flat.frag");
 }
 
 
@@ -14,7 +15,7 @@ std::string Flat::getName() const //override
 
 std::string Flat::getTutorialPath() const //override
 {
-	return PROJECT_SOURCE_DIR "/resources/tutorials/Flat.pdf";
+	return RELATIVE_PATH_ROOT "/resources/tutorials/Flat.pdf";
 }
 
 

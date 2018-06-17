@@ -44,6 +44,9 @@ Shader& Shader::attach(std::string const & filename)
 	std::string path = "";
 	std::ifstream fd(path + filename);
 
+	if(!fd)
+		throw std::runtime_error(filename + ": Could not open file");
+
 	auto src = std::string(std::istreambuf_iterator<char>(fd),
 						  (std::istreambuf_iterator<char>()));
 

@@ -1,9 +1,10 @@
 #include "normal.hpp"
+#include "../config.hpp"
 
 
 Normal::Normal()
 {
-	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/normals.vert", PROJECT_SOURCE_DIR "/resources/shaders/normals.frag");
+	loadShader(RELATIVE_PATH_ROOT "/resources/shaders/normals.vert", RELATIVE_PATH_ROOT "/resources/shaders/normals.frag");
 }
 
 
@@ -14,7 +15,7 @@ std::string Normal::getName() const //override
 
 std::string Normal::getTutorialPath() const //override
 {
-	return PROJECT_SOURCE_DIR "/resources/tutorials/Normal.pdf";
+	return RELATIVE_PATH_ROOT "/resources/tutorials/Normal.pdf";
 }
 
 void Normal::doConfig() //override

@@ -1,4 +1,5 @@
 #include "skybox.hpp"
+#include "config.hpp"
 
 
 const float SkyboxVertices[] =
@@ -49,10 +50,20 @@ const float SkyboxVertices[] =
 
 
 Skybox::Skybox()
+	: m_skyboxVAO(0)
+	, m_skyboxVBO(0)
 {
-	m_skyboxShader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.vert");
-	m_skyboxShader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.frag");
-	m_skyboxShader.link();
+	try
+	{
+		m_skyboxShader.attach(RELATIVE_PATH_ROOT "/resources/skyboxes/cubemap/skybox.vert");
+		m_skyboxShader.attach(RELATIVE_PATH_ROOT "/resources/skyboxes/cubemap/skybox.frag");
+		m_skyboxShader.link();
+	}
+	catch(...)
+	{
+		return;
+	}
+
 	m_skyboxShader.activate();
 	m_skyboxShader.bind("skybox", 0);
 	m_cubeMap.loadTextureById(0);

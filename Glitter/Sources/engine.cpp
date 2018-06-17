@@ -1,4 +1,5 @@
 #include "engine.hpp"
+#include "config.hpp"
 #include "effects/effectmanager.hpp"
 #include "effects/phong.hpp"
 #include "effects/gouraud.hpp"
@@ -93,9 +94,15 @@ int Engine::run()
 	glDepthFunc(GL_LESS);
 	
 	Scene scene(m_window);
-	scene.addActor(PROJECT_SOURCE_DIR "/resources/models/teapot/teapot.obj")->setPosition(glm::vec3(1.f, 0.f, 0.f));
-	scene.addActor(PROJECT_SOURCE_DIR "/resources/models/nanosuit/nanosuit.obj");
-	scene.addActor(PROJECT_SOURCE_DIR "/resources/models/cyborg/cyborg.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
+	
+	if(auto obj = scene.addActor(RELATIVE_PATH_ROOT "/resources/models/teapot/teapot.obj"))
+		obj->setPosition(glm::vec3(1.f, 0.f, 0.f));
+
+	scene.addActor(RELATIVE_PATH_ROOT "/resources/models/nanosuit/nanosuit.obj");
+
+	if(auto obj = scene.addActor(RELATIVE_PATH_ROOT "/resources/models/cyborg/cyborg.obj"))
+		obj->setPosition(glm::vec3(-1.f, 0.f, 0.f));
+
 	scene.addLight()->setPosition(glm::vec3(3.f, 0.f, 0.f));
 
 	auto skybox = std::make_shared<Skybox>();

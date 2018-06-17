@@ -1,9 +1,10 @@
 #include "phong.hpp"
+#include "../config.hpp"
 
 
 Phong::Phong()
 {
-	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/phong.vert", PROJECT_SOURCE_DIR "/resources/shaders/phong.frag");
+	loadShader(RELATIVE_PATH_ROOT "/resources/shaders/phong.vert", RELATIVE_PATH_ROOT "/resources/shaders/phong.frag");
 }
 
 
@@ -14,7 +15,7 @@ std::string Phong::getName() const //override
 
 std::string Phong::getTutorialPath() const //override
 {
-	return PROJECT_SOURCE_DIR "/resources/tutorials/Phong.pdf";
+	return RELATIVE_PATH_ROOT "/resources/tutorials/Phong.pdf";
 
 }
 

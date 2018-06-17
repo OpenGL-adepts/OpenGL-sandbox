@@ -1,9 +1,10 @@
 #include "gouraud.hpp"
+#include "../config.hpp"
 
 
 Gouraud::Gouraud()
 {
-	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/gouraud.vert", PROJECT_SOURCE_DIR "/resources/shaders/gouraud.frag");
+	loadShader(RELATIVE_PATH_ROOT "/resources/shaders/gouraud.vert", RELATIVE_PATH_ROOT "/resources/shaders/gouraud.frag");
 }
 
 
@@ -14,7 +15,7 @@ std::string Gouraud::getName() const //override
 
 std::string Gouraud::getTutorialPath() const //override
 {
-	return PROJECT_SOURCE_DIR "/resources/tutorials/Gouraud.pdf";
+	return RELATIVE_PATH_ROOT "/resources/tutorials/Gouraud.pdf";
 }
 
 void Gouraud::doConfig() //override

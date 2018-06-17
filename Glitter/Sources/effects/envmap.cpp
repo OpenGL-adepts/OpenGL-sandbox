@@ -1,11 +1,12 @@
 #include "envmap.hpp"
 #include "../gui.hpp"
+#include "../config.hpp"
 
 
 EnvMap::EnvMap(const std::shared_ptr<Skybox>& _skybox)
 	: m_skybox(_skybox)
 {
-	loadShader(PROJECT_SOURCE_DIR "/resources/shaders/envmap.vert", PROJECT_SOURCE_DIR "/resources/shaders/envmap.frag");
+	loadShader(RELATIVE_PATH_ROOT "/resources/shaders/envmap.vert", RELATIVE_PATH_ROOT "/resources/shaders/envmap.frag");
 }
 
 
