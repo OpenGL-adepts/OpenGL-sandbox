@@ -127,6 +127,8 @@ int Engine::run()
 
 				if(ImGui::Button("About this software"))
 					ImGui::OpenPopup("About this software");
+
+				ImGui::Text("Protip: Ctrl+Click controls to manually enter numbers.");
 			}
 
 			if(ImGui::BeginPopupModal("About this software"))

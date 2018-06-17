@@ -2,6 +2,7 @@
 
 struct Material
 {
+	vec3 color;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -35,7 +36,7 @@ out vec4 FragColor;
 void main()
 {
 	vec3 norm, lightDir, viewDir;
-	vec4 objectColor = texture(texture_diffuse, TexCoords);
+	vec4 objectColor = vec4(vec3(texture(texture_diffuse, TexCoords)) * uMaterial.color, 1.f);
 	
 	if(uEnableNormalMapping != 0)
 	{

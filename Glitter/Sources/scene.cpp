@@ -42,7 +42,6 @@ bool Scene::loadFromFile(const std::string& _path)
 				tmpObj->setPosition (loadVector(elem, "position"));
 				tmpObj->setRotation (loadVector(elem, "rotation"));
 				tmpObj->setScale	(loadVector(elem, "scale", glm::vec3(1.f)));
-				tmpObj->setColor	(loadVector(elem, "color", glm::vec3(1.f)));
 
 				m_objects.push_back(std::move(tmpObj));
 			}
@@ -78,8 +77,6 @@ bool Scene::saveToFile(const std::string& _path) const
 		tmp["rotation"] = {vec.x, vec.y, vec.z};
 		vec = obj->getScale();
 		tmp["scale"] = {vec.x, vec.y, vec.z};
-		vec = obj->getColor();
-		tmp["color"] = {vec.x, vec.y, vec.z};
 
 		objArr.push_back(tmp);
 	}

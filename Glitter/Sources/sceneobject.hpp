@@ -18,7 +18,6 @@ public:
 	void setScale(glm::vec3 _scale);
 	void setDisplayName(std::string _name);
 	void setEnabled(bool _enabled);
-	void setColor(glm::vec3 _color);
 	void setEnableTextures(bool _bTextures);
 	const std::string& getModelPath() const;
 	const std::string& getDisplayName() const;
@@ -40,5 +39,4 @@ protected:
 	glm::vec3 m_position = glm::vec3(0.f);
 	glm::vec3 m_scale	 = glm::vec3(1.f);
 	glm::vec3 m_rotation = glm::vec3(0.f);
-	glm::vec3 m_color	 = glm::vec3(1.f);
 };

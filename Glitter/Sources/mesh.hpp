@@ -36,7 +36,7 @@ public:
 	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<std::pair<Texture, std::string>> textures);
 
 	bool loadFromFile(const std::string& _filename);
-	void draw(const Shader& shader, glm::vec3 _color, bool _bTextures);
+	void draw(const Shader& shader, bool _bTextures);
 
 	glm::vec3 getCenter() const;
 	float getMaxAxisSize() const;
@@ -53,7 +53,6 @@ private:
 	void process(const std::string& path, aiMaterial* material, aiTextureType type, std::vector<std::pair<Texture, std::string>>& outTextures);
 	void bindTexturePlaceholder();
 	void bindNormalPlaceholder();
-	void bindColor(glm::vec3 color);
 
 	// Private Member Containers
 	std::vector<std::unique_ptr<Mesh>> mSubMeshes;
@@ -70,7 +69,6 @@ private:
 	glm::vec3 mMinCoord;
 
 	std::unique_ptr<Texture> m_solidColor;
-	std::unique_ptr<Texture> m_customColor;
 	std::unique_ptr<Texture> m_normalPlaceholder;
 };
 

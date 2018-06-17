@@ -7,7 +7,7 @@ void SceneObject::draw(const Shader& _shader)
 	if(m_bEnabled)
 	{
 		m_material.bind(_shader);
-		m_model.draw(_shader, m_color, m_bEnableTextures);
+		m_model.draw(_shader, m_bEnableTextures);
 	}
 }
 
@@ -56,7 +56,6 @@ void SceneObject::config()
 	}
 
 	ImGui::Checkbox("Textures", &m_bEnableTextures);
-	ImGui::ColorEdit3("Color", (float*)&m_color);
 
 	m_material.config();
 }
@@ -89,12 +88,6 @@ void SceneObject::setDisplayName(std::string _name)
 void SceneObject::setEnabled(bool _enabled)
 {
 	m_bEnabled = _enabled;
-}
-
-
-void SceneObject::setColor(glm::vec3 _color)
-{
-	m_color = _color;
 }
 
 
@@ -141,12 +134,6 @@ glm::vec3 SceneObject::getRotation() const
 glm::vec3 SceneObject::getScale() const
 {
 	return m_scale;
-}
-
-
-glm::vec3 SceneObject::getColor() const
-{
-	return m_color;
 }
 
 
