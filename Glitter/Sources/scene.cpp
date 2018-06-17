@@ -163,7 +163,7 @@ void Scene::configObjects()
 		if(ImGui::Button("Delete object"))
 			ImGui::OpenPopup("Confirm deletion");
 
-		if(ImGui::BeginPopupModal("Confirm deletion", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+		if(ImGui::BeginPopupModal("Confirm deletion"))
 		{
 			ImGui::Text("Are you sure to delete object?");
 
@@ -182,6 +182,7 @@ void Scene::configObjects()
 
 			ImGui::EndPopup();
 		}
+		
 		glm::vec3 vec = obj->getPosition();
 		ImGui::SliderFloat("Position X", &vec.x, -20.f, 20.f);
 		ImGui::SliderFloat("Position Y", &vec.y, -20.f, 20.f);
