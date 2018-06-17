@@ -1,6 +1,7 @@
 #pragma once
 #include "shader.hpp"
 #include "mesh.hpp"
+#include "camera.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 #include <memory>
@@ -23,7 +24,9 @@ class LightContainer
 {
 public:
 	LightContainer();
-	void draw();
+	void draw(const Camera& _camera, const glm::mat4& _perspective) const;
+	void config();
+	void bind(const Shader& _shader) const;
 
 protected:
 	static std::unique_ptr<Mesh> buildCube();
