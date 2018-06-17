@@ -154,6 +154,9 @@ int Engine::run()
 			if(ImGui::CollapsingHeader("Scene"))
 				scene.configObjects();
 
+			if(ImGui::CollapsingHeader("Lights"))
+				scene.configLights();
+
 			if(ImGui::CollapsingHeader("Effects"))
 			{
 				configPerspective();

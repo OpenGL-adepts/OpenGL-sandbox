@@ -77,8 +77,11 @@ std::shared_ptr<SceneObject> Scene::addObject(const std::string& _modelPath)
 }
 
 
-void Scene::draw(const Shader& _shader) const
+void Scene::draw(const Shader& _shader, const Camera& _camera, const glm::mat4& _perspective) const
 {
+	_shader.bind("uProjection", _perspective);
+	_shader.bind("uView", _camera.getViewMatrix());
+
 	for (auto& obj : m_objects)
 	{
 		_shader.bind("uModel", obj->getModelMatrix());
@@ -161,6 +164,19 @@ void Scene::configObjects()
 			obj->setCustomTextureFromFile(m_native.openSceneDialog().string());
 		}
 	}
+}
+
+
+void Scene::configLights()
+{
+	m_tmpLight.config();
+}
+
+
+void Scene::bindLights(const Shader& _shader) const
+{
+	_shader.bind("uLightPos", m_tmpLight.getPosition());
+	_shader.bind("uLightColor", m_tmpLight.getColor());
 }
 
 
