@@ -91,3 +91,9 @@ void Camera::updateCameraVectors()
     cameraRight = glm::normalize(glm::cross(cameraFront, worldUp));
     cameraUp = glm::normalize(glm::cross(cameraRight, cameraFront));
 }
+
+
+glm::mat4 Camera::getViewMatrixA()
+{
+	return glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
+}

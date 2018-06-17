@@ -14,6 +14,7 @@
 #include "shader.hpp"
 #include "mesh.hpp"
 #include "scene.hpp"
+#include "cubemap.hpp"
 #include "effects/effectmanager.hpp"
 #include "effects/phong.hpp"
 #include "effects/gouraud.hpp"
@@ -21,6 +22,8 @@
 #include "effects/depth.hpp"
 #include "effects/normal.hpp"
 
+const unsigned int SCR_WIDTH = 1280;
+const unsigned int SCR_HEIGHT = 720;
 
 class Engine
 {
@@ -43,6 +46,7 @@ protected:
 
 protected:
 	GLFWwindow* m_window;
+	CubeMap* cubeMap;
 	Camera camera;
 	float lastX = 0;
 	float lastY = 0;
