@@ -65,8 +65,6 @@ int Engine::run()
 		return EXIT_FAILURE;
 	}
 
-
-
 	// Create Context and Load OpenGL Functions
 	glfwMakeContextCurrent(m_window);
 	glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
@@ -96,8 +94,14 @@ int Engine::run()
 	scene.addLight()->setPosition(glm::vec3(3.f, 0.f, 0.f));
 
 	glEnable(GL_DEPTH_TEST);
-	Shader shader(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/cubemap.vs", PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/cubemap.fs");
-	Shader skyboxShader(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.vs", PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.fs");
+	Shader shader;
+	shader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/cubemap.vert");
+	shader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/cubemap.frag");
+	shader.link();
+	Shader skyboxShader;
+	skyboxShader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.vert");
+	skyboxShader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.frag");
+	skyboxShader.link();
 
 	cubeMap = new CubeMap();
 
@@ -112,6 +116,7 @@ int Engine::run()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+
 	// skybox VAO
 	unsigned int skyboxVAO, skyboxVBO;
 	glGenVertexArrays(1, &skyboxVAO);
@@ -133,13 +138,13 @@ int Engine::run()
 	};
 
 	unsigned int cubemapTexture = cubeMap->loadCubemap(faces);
-	this->cubeMap->textureId = cubemapTexture;
+	cubeMap->textureId = cubemapTexture;
 
-	shader.use();
-	shader.setInt("skybox", 0);
+	shader.activate();
+	shader.bind("skybox", 0);
 
-	skyboxShader.use();
-	skyboxShader.setInt("skybox", 0);
+	skyboxShader.activate();
+	skyboxShader.bind("skybox", 0);
 
 	EffectManager effects;
 	effects.registerEffect(std::make_shared<Phong>());
@@ -163,14 +168,14 @@ int Engine::run()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		shader.use();
+		shader.activate();
 		glm::mat4 model;
 		glm::mat4 view = camera.getViewMatrixA();
 		glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-		shader.setMat4("model", model);
-		shader.setMat4("view", view);
-		shader.setMat4("projection", projection);
-		shader.setVec3("cameraPos", camera.getPosition());
+		shader.bind("model", model);
+		shader.bind("view", view);
+		shader.bind("projection", projection);
+		shader.bind("cameraPos", camera.getPosition());
 
 		glBindVertexArray(cubeVAO);
 		glActiveTexture(GL_TEXTURE0);
@@ -179,10 +184,10 @@ int Engine::run()
 		glBindVertexArray(0);
 
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-		skyboxShader.use();
+		skyboxShader.activate();
 		view = glm::mat4(glm::mat3(camera.getViewMatrixA())); // remove translation from the view matrix
-		skyboxShader.setMat4("view", view);
-		skyboxShader.setMat4("projection", projection);
+		skyboxShader.bind("view", view);
+		skyboxShader.bind("projection", projection);
 		// skybox cube
 		glBindVertexArray(skyboxVAO);
 		glActiveTexture(GL_TEXTURE0);
@@ -242,6 +247,8 @@ int Engine::run()
 				ImGui::Separator();
 				effects.config();
 			}
+
+			ImGui::Separator();
 
 			std::vector<std::string> optionsBackgrounds;
 
