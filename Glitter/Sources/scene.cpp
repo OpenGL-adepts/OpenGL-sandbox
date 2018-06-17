@@ -163,7 +163,7 @@ void Scene::configObjects()
 		if(ImGui::Button("Delete object"))
 			ImGui::OpenPopup("Confirm deletion");
 
-		if(ImGui::BeginPopupModal("Confirm deletion"))
+		if(ImGui::BeginPopupModal("Confirm deletion", NULL, ImGuiWindowFlags_AlwaysAutoResize))
 		{
 			ImGui::Text("Are you sure to delete object?");
 

@@ -120,7 +120,7 @@ int Engine::run()
 		//ImGui::ShowDemoWindow();
 
 		ImGui::SetNextWindowPos(ImVec2(0, 0));
-		if(ImGui::Begin("OpenGL sandbox", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+		if(ImGui::Begin("OpenGL sandbox"))
 		{
 			if(ImGui::CollapsingHeader("About"))
 			{
