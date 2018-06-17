@@ -37,6 +37,7 @@ public:
 
 	bool loadFromFile(const std::string& _filename);
 	void draw(const Shader& shader, bool _bTextures);
+	bool setCustomTextureFromFile(const std::string& _path);
 
 	glm::vec3 getCenter() const;
 	float getMaxAxisSize() const;

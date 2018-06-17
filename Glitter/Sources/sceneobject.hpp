@@ -6,6 +6,7 @@
 #include <string>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <filesystem>
 
 class SceneObject
 {
@@ -13,6 +14,7 @@ public:
 	void draw(const Shader& _shader);
 	bool loadFromFile(const std::string& _path);
 	void config();
+	bool setCustomTextureFromFile(const std::string& _path);
 
 	nlohmann::json toJSON(const std::string& _savePath) const;
 	void fromJSON(const nlohmann::json& _json);
