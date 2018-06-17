@@ -190,7 +190,7 @@ int Scene::getNumberOfTriangles()
 {
 	int t_count = 0;
 	for (int i = 0; i < m_objects.size(); i++) {
-		t_count += m_objects.at(i)->getTrianglesForMesh();
+		t_count += m_objects.at(i)->getTrianglesNumber();
 	}
 	return t_count;
 }

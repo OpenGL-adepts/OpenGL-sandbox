@@ -179,7 +179,7 @@ int Mesh::getTrianglesNumber(int t)
 {
 	t += mIndices.size() / 3;
 	for (int i = 0; i < mSubMeshes.size(); i++) {
-		mSubMeshes.at(i)->getTrianglesNumber(t);
+		t += mSubMeshes.at(i)->getTrianglesNumber(t);
 	}
 	return t;
 }

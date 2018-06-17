@@ -31,7 +31,7 @@ public:
 	glm::vec3 getPosition() const;
 	glm::vec3 getRotation() const;
 	glm::vec3 getScale() const;
-	int getTrianglesForMesh();
+	int getTrianglesNumber();
 	bool isEnabled() const;
 	bool isTextureEnabled() const;
 
@@ -40,6 +40,7 @@ protected:
 	Material m_material;
 	bool m_bEnabled = true;
 	bool m_bEnableTextures = true;
+	int m_triangles_number = 0;
 	std::string m_modelPath;
 	std::string m_displayName;
 	glm::vec3 m_position = glm::vec3(0.f);
