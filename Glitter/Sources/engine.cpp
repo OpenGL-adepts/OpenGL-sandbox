@@ -96,7 +96,7 @@ int Engine::run()
 
 	glEnable(GL_DEPTH_TEST);
 	Shader shader(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/cubemap.vs", PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/cubemap.fs");
-	Shader skyboxShader(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.vs", PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.vs");
+	Shader skyboxShader(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.vs", PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.fs");
 
 	cubeMap = new CubeMap();
 
@@ -213,12 +213,12 @@ int Engine::run()
 
 	std::vector<std::string> faces
 	{
-		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/test.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/test.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/test.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/test.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/test.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/test.jpg",
+		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/darkskies_lf.tga",
+		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/darkskies_rt.tga",
+		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/darkskies_up.tga",
+		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/darkskies_dn.tga",
+		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/darkskies_ft.tga",
+		PROJECT_SOURCE_DIR "/resources/skyboxes/darkskies/darkskies_bk.tga",
 	};
 
 	unsigned int cubemapTexture = cubeMap->loadCubemap(faces);
