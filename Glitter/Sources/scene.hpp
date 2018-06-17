@@ -33,9 +33,6 @@ public:
 	const SceneObject& operator[](size_t _i) const;
 
 protected:
-	static glm::vec3 loadVector(const nlohmann::json& _obj, const std::string& _vectName, const glm::vec3& _default = glm::vec3(0.f));
-
-protected:
 	Native m_native;
 	std::vector<std::shared_ptr<SceneObject>> m_objects;
 	int m_currentObject = 0;

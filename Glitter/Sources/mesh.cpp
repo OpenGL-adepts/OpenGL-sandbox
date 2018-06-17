@@ -80,12 +80,12 @@ bool Mesh::loadFromFile(const std::string& _filename)
 }
 
 
-void Mesh::draw(const Shader& shader, glm::vec3 _color, bool _bTextures)
+void Mesh::draw(const Shader& shader, bool _bTextures)
 {
 	int unit = 0, diffuse = 0, specular = 0, normal = 0;
 
 	for (auto& i : mSubMeshes)
-		i->draw(shader, _color, _bTextures);
+		i->draw(shader, _bTextures);
 
 	for (int i = 0; i < 16; ++i)
 	{
@@ -124,7 +124,7 @@ void Mesh::draw(const Shader& shader, glm::vec3 _color, bool _bTextures)
 	if (diffuse == 0)
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
-		bindColor(_color);
+		bindTexturePlaceholder();
 		shader.bind("texture_diffuse", unit++);
 	}
 
@@ -249,14 +249,6 @@ void Mesh::process(const std::string& path, aiMaterial* material, aiTextureType 
 	}
 }
 
-void Mesh::bindColor(glm::vec3 color)
-{
-	if(!m_customColor)
-		m_customColor = std::make_unique<Texture>();
-
-	m_customColor->createColorPlaceholder(color);
-	m_customColor->bind();
-}
 
 void Mesh::bindTexturePlaceholder()
 {

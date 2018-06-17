@@ -36,7 +36,7 @@ public:
 		int location = glGetUniformLocation(mProgram, name.c_str());
 
 		if (location == -1)
-			;//fprintf(stderr, "Missing Uniform: %s\n", name.c_str());
+			fprintf(stderr, "Missing Uniform: %s\n", name.c_str());
 		else
 			bind(location, std::forward<T>(value));
 
