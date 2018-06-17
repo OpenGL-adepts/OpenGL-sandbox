@@ -26,8 +26,6 @@ void Normal::doConfig() //override
 void Normal::doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const //override
 {
 	m_shader.activate();
-	m_shader.bind("uProjection", _perspective);
-	m_shader.bind("uView", _camera.getViewMatrix());
 	m_shader.bind("uEnableNormalMapping", (int)m_bEnableNormalMapping);
-	_scene.draw(m_shader);
+	_scene.draw(m_shader, _camera, _perspective);
 }
