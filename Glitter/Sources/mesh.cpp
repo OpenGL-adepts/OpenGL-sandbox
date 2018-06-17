@@ -175,6 +175,15 @@ float Mesh::getMaxAxisSize() const
 	return std::max({size.x, size.y, size.z});
 }
 
+int Mesh::getTrianglesNumber(int t)
+{
+	t += mIndices.size() / 3;
+	for (int i = 0; i < mSubMeshes.size(); i++) {
+		mSubMeshes.at(i)->getTrianglesNumber(t);
+	}
+	return t;
+}
+
 
 glm::mat4 Mesh::centerAndNormalize() const
 {

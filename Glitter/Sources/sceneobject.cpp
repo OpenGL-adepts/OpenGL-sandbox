@@ -174,6 +174,10 @@ glm::vec3 SceneObject::getScale() const
 	return m_scale;
 }
 
+int SceneObject::getTrianglesForMesh()
+{
+	return m_model.getTrianglesNumber();
+}
 
 bool SceneObject::isEnabled() const
 {

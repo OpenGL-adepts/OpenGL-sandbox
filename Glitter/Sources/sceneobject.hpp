@@ -31,6 +31,7 @@ public:
 	glm::vec3 getPosition() const;
 	glm::vec3 getRotation() const;
 	glm::vec3 getScale() const;
+	int getTrianglesForMesh();
 	bool isEnabled() const;
 	bool isTextureEnabled() const;
 

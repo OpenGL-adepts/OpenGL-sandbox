@@ -164,6 +164,7 @@ int Engine::run()
 			{
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 				ImGui::Text("Total number of objects in the scene: %d", scene.getNumberOfObjects());
+				ImGui::Text("Total number of triangles in the scene: %d", scene.getNumberOfTriangles());
 			}
 		}
 		

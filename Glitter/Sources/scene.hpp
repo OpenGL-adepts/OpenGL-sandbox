@@ -23,6 +23,7 @@ public:
 	bool loadFromFile(const std::string& _path);
 	bool saveToFile(const std::string& _path) const;
 	int getNumberOfObjects();
+	int getNumberOfTriangles();
 
 	std::shared_ptr<SceneObject> addObject(const std::string& _modelPath);
 

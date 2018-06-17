@@ -181,6 +181,16 @@ const SceneObject& Scene::operator[](size_t _i) const
 	return *m_objects[_i];
 }
 
-int Scene::getNumberOfObjects() {
+int Scene::getNumberOfObjects() 
+{
 	return m_objects.size();
+}
+
+int Scene::getNumberOfTriangles()
+{
+	int t_count = 0;
+	for (int i = 0; i < m_objects.size(); i++) {
+		t_count += m_objects.at(i)->getTrianglesForMesh();
+	}
+	return t_count;
 }
