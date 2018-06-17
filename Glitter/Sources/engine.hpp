@@ -8,13 +8,12 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 #include <imgui_impl_glfw_gl3.h>
-
 #include "glitter.hpp"
 #include "camera.hpp"
 #include "shader.hpp"
 #include "mesh.hpp"
 #include "scene.hpp"
-#include "cubemap.hpp"
+#include "skybox.hpp"
 #include "effects/effectmanager.hpp"
 #include "effects/phong.hpp"
 #include "effects/gouraud.hpp"
@@ -40,14 +39,11 @@ public:
 	void onScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 protected:
-	void configPerspective();
 	void recalcPerspective();
 	void processInput();
-	unsigned int getBackgroundTextureFromChoosen(int m_currentBackground, unsigned int *cubeVAO, unsigned int *skyboxVAO);
 
 protected:
 	GLFWwindow* m_window;
-	CubeMap* cubeMap;
 	Camera camera;
 	float lastX = 0;
 	float lastY = 0;

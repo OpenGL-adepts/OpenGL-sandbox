@@ -2,23 +2,20 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <iostream>
 
-CubeMap::CubeMap() {
+
+CubeMap::CubeMap()
+{
 	currentBackground = -1;
 	textureId = -1;
 }
 
-CubeMap::~CubeMap() {
-}
 
-
-unsigned int CubeMap::loadCubemap(std::vector<std::string> faces)
+unsigned int CubeMap::loadCubemap(const std::vector<std::string>& faces)
 {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
@@ -48,8 +45,10 @@ unsigned int CubeMap::loadCubemap(std::vector<std::string> faces)
 	return textureID;
 }
 
-unsigned int CubeMap::getTextureByCurrentBackground() {
+unsigned int CubeMap::getTextureByCurrentBackground()
+{
 	std::vector<std::string> faces;
+
 	switch (this->currentBackground)
 	{
 	case 0:
@@ -153,5 +152,6 @@ unsigned int CubeMap::getTextureByCurrentBackground() {
 		};
 		break;
 	}
-	return this->loadCubemap(faces);
+
+	return loadCubemap(faces);
 }

@@ -44,7 +44,6 @@ Engine& Engine::instance()
 
 Engine::~Engine()
 {
-	delete cubeMap;
 	glfwTerminate();
 }
 
@@ -93,50 +92,7 @@ int Engine::run()
 	scene.addActor(PROJECT_SOURCE_DIR "/resources/models/cyborg/cyborg.obj")->setPosition(glm::vec3(-1.f, 0.f, 0.f));
 	scene.addLight()->setPosition(glm::vec3(3.f, 0.f, 0.f));
 
-	Shader skyboxShader;
-	skyboxShader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.vert");
-	skyboxShader.attach(PROJECT_SOURCE_DIR "/resources/skyboxes/cubemap/skybox.frag");
-	skyboxShader.link();
-
-	cubeMap = new CubeMap();
-
-	// cube VAO
-	unsigned int cubeVAO, cubeVBO;
-	glGenVertexArrays(1, &cubeVAO);
-	glGenBuffers(1, &cubeVBO);
-	glBindVertexArray(cubeVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-
-	// skybox VAO
-	unsigned int skyboxVAO, skyboxVBO;
-	glGenVertexArrays(1, &skyboxVAO);
-	glGenBuffers(1, &skyboxVBO);
-	glBindVertexArray(skyboxVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-	std::vector<std::string> faces
-	{
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/right.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/left.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/top.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/bottom.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/front.jpg",
-		PROJECT_SOURCE_DIR "/resources/skyboxes/skybox/back.jpg",
-	};
-
-	unsigned int cubemapTexture = cubeMap->loadCubemap(faces);
-	cubeMap->textureId = cubemapTexture;
-
-	skyboxShader.activate();
-	skyboxShader.bind("skybox", 0);
+	Skybox skybox;
 
 	EffectManager effects;
 	effects.registerEffect(std::make_shared<Phong>());
@@ -160,20 +116,7 @@ int Engine::run()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		///////////////////
-		//TODO: move this
-		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-		skyboxShader.activate();
-		skyboxShader.bind("view", glm::mat4(glm::mat3(camera.getViewMatrix()))); // remove translation from the view matrix
-		skyboxShader.bind("projection", m_projMatrix);
-		// skybox cube
-		glBindVertexArray(skyboxVAO);
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-		glDrawArrays(GL_TRIANGLES, 0, 36);
-		glBindVertexArray(0);
-		glDepthFunc(GL_LESS); // set depth function back to default
-		/////////////////////////////////
+		skybox.draw(camera, m_projMatrix);
 
 		recalcPerspective();
 		effects.render(scene, camera, m_projMatrix);
@@ -221,7 +164,7 @@ int Engine::run()
 
 			if(ImGui::CollapsingHeader("Effects"))
 			{
-				configPerspective();
+				Gui::combo("Projection", m_projection, {"Perspective", "Orthogonal"});
 				ImGui::Separator();
 				effects.config();
 			}
@@ -249,17 +192,14 @@ int Engine::run()
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
-		cubemapTexture = getBackgroundTextureFromChoosen(m_currentBackground, &cubeVAO, &skyboxVAO);
+		skybox.getBackgroundTextureFromChoosen(m_currentBackground);
+		//cubemapTexture = getBackgroundTextureFromChoosen(m_currentBackground);
+
 		// Flip Buffers and Draw
 		glfwSwapBuffers(m_window);
 		glfwPollEvents();
 	}
 
-	glDeleteVertexArrays(1, &cubeVAO);
-	glDeleteVertexArrays(1, &skyboxVAO);
-	glDeleteBuffers(1, &cubeVBO);
-	glDeleteBuffers(1, &skyboxVAO);
-	
 	ImGui_ImplGlfwGL3_Shutdown();
 	return 0;
 }
@@ -304,27 +244,6 @@ void Engine::onScrollCallback(GLFWwindow* window, double xoffset, double yoffset
 }
 
 
-void Engine::configPerspective()
-{
-	const char* const tab[] = {"Perspective", "Orthogonal" };
-	const char* current = tab[m_projection];
-
-	if(ImGui::BeginCombo("Projection", current))
-	{
-		for(int i = 0; i < sizeof tab / sizeof *tab; ++i)
-		{
-			if(ImGui::Selectable(tab[i], current == tab[m_projection]))
-				m_projection = i;
-
-			if(current == tab[m_projection])
-				ImGui::SetItemDefaultFocus();
-		}
-
-		ImGui::EndCombo();
-	}
-}
-
-
 void Engine::recalcPerspective()
 {
 	switch(m_projection)
@@ -360,13 +279,3 @@ void Engine::processInput()
         camera.handleKeyboard(RIGHT, deltaTime);
 }
 
-unsigned int Engine::getBackgroundTextureFromChoosen(int m_currentBackground, unsigned int *cubeVAO, unsigned int *skyboxVAO)
-{
-	if (this->cubeMap->currentBackground != m_currentBackground)
-	{
-		glDeleteTextures(1, &this->cubeMap->textureId);
-		this->cubeMap->currentBackground = m_currentBackground;
-		this->cubeMap->textureId = this->cubeMap->getTextureByCurrentBackground();
-	}
-	return this->cubeMap->textureId;
-}

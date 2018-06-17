@@ -1,19 +1,20 @@
 #pragma once
-
 #include <vector>
+#include <string>
 
 
-class CubeMap {
+class CubeMap
+{
 public:
 	CubeMap();
-	unsigned int loadCubemap(std::vector<std::string> faces);
+	unsigned int loadCubemap(const std::vector<std::string>& faces);
 	unsigned int getTextureByCurrentBackground();
-	~CubeMap();
 
 	int currentBackground;
 	unsigned int textureId;
 };
 
+/*
 const float cubeVertices[] = {
 	// positions          // normals
 	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -58,47 +59,4 @@ const float cubeVertices[] = {
 	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
 	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 };
-const float skyboxVertices[] = {
-	// positions          
-	-1.0f,  1.0f, -1.0f,
-	-1.0f, -1.0f, -1.0f,
-	1.0f, -1.0f, -1.0f,
-	1.0f, -1.0f, -1.0f,
-	1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f,
-
-	-1.0f, -1.0f,  1.0f,
-	-1.0f, -1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f, -1.0f,
-	-1.0f,  1.0f,  1.0f,
-	-1.0f, -1.0f,  1.0f,
-
-	1.0f, -1.0f, -1.0f,
-	1.0f, -1.0f,  1.0f,
-	1.0f,  1.0f,  1.0f,
-	1.0f,  1.0f,  1.0f,
-	1.0f,  1.0f, -1.0f,
-	1.0f, -1.0f, -1.0f,
-
-	-1.0f, -1.0f,  1.0f,
-	-1.0f,  1.0f,  1.0f,
-	1.0f,  1.0f,  1.0f,
-	1.0f,  1.0f,  1.0f,
-	1.0f, -1.0f,  1.0f,
-	-1.0f, -1.0f,  1.0f,
-
-	-1.0f,  1.0f, -1.0f,
-	1.0f,  1.0f, -1.0f,
-	1.0f,  1.0f,  1.0f,
-	1.0f,  1.0f,  1.0f,
-	-1.0f,  1.0f,  1.0f,
-	-1.0f,  1.0f, -1.0f,
-
-	-1.0f, -1.0f, -1.0f,
-	-1.0f, -1.0f,  1.0f,
-	1.0f, -1.0f, -1.0f,
-	1.0f, -1.0f, -1.0f,
-	-1.0f, -1.0f,  1.0f,
-	1.0f, -1.0f,  1.0f
-};
+// */
