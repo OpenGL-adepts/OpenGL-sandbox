@@ -132,6 +132,7 @@ int Engine::run()
 	};
 
 	unsigned int cubemapTexture = cubeMap->loadCubemap(faces);
+	this->cubeMap->textureId = cubemapTexture;
 
 	shader.use();
 	shader.setInt("skybox", 0);
@@ -240,6 +241,21 @@ int Engine::run()
 				ImGui::Separator();
 				effects.config();
 			}
+
+			std::vector<std::string> optionsBackgrounds;
+
+			optionsBackgrounds.push_back("skybox");
+			optionsBackgrounds.push_back("UFO");
+			optionsBackgrounds.push_back("Nissi Beach");
+			optionsBackgrounds.push_back("Saint Peters Square");
+			optionsBackgrounds.push_back("Santa Maria Dei Miracoli");
+			optionsBackgrounds.push_back("Storforsen");
+			optionsBackgrounds.push_back("Tenerife");
+			optionsBackgrounds.push_back("Yokohama");
+			optionsBackgrounds.push_back("Golden Gate Bridge");
+
+			Gui::combo("Backgrounds", m_currentBackground, optionsBackgrounds);
+
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 		}
 		
@@ -247,6 +263,7 @@ int Engine::run()
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
+		cubemapTexture = getBackgroundTextureFromChoosen(m_currentBackground, &cubeVAO, &skyboxVAO);
 		// Flip Buffers and Draw
 		glfwSwapBuffers(m_window);
 		glfwPollEvents();
@@ -355,4 +372,15 @@ void Engine::processInput()
 
     if (glfwGetKey(m_window, GLFW_KEY_D) == GLFW_PRESS)
         camera.handleKeyboard(RIGHT, deltaTime);
+}
+
+unsigned int Engine::getBackgroundTextureFromChoosen(int m_currentBackground, unsigned int *cubeVAO, unsigned int *skyboxVAO)
+{
+	if (this->cubeMap->currentBackground != m_currentBackground)
+	{
+		glDeleteTextures(1, &this->cubeMap->textureId);
+		this->cubeMap->currentBackground = m_currentBackground;
+		this->cubeMap->textureId = this->cubeMap->getTextureByCurrentBackground();
+	}
+	return this->cubeMap->textureId;
 }

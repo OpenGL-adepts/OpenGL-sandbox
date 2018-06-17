@@ -43,6 +43,7 @@ protected:
 	void configPerspective();
 	void recalcPerspective();
 	void processInput();
+	unsigned int getBackgroundTextureFromChoosen(int m_currentBackground, unsigned int *cubeVAO, unsigned int *skyboxVAO);
 
 protected:
 	GLFWwindow* m_window;
@@ -56,4 +57,5 @@ protected:
 	float lastFrame = 0;
 	glm::mat4 m_projMatrix;
 	int m_projection = 0;
+	int m_currentBackground = 0;
 };

@@ -7,7 +7,11 @@ class CubeMap {
 public:
 	CubeMap();
 	unsigned int loadCubemap(std::vector<std::string> faces);
+	unsigned int getTextureByCurrentBackground();
 	~CubeMap();
+
+	int currentBackground;
+	unsigned int textureId;
 };
 
 const float cubeVertices[] = {
