@@ -79,6 +79,21 @@ bool Mesh::loadFromFile(const std::string& _filename)
 	return false;
 }
 
+bool Mesh::setCustomTextureFromFile(const std::string& _path) {
+	//TODO: Error handling
+	Texture custom_texture(_path);
+	std::string mode = "diffuse";
+
+	// Reset all textures and add custom
+	mTextures.clear();
+	mTextures.emplace_back(std::move(custom_texture), std::move(mode));
+
+	// Replace textures recursively for all submeshes
+	for (auto& i : mSubMeshes) {
+		i->setCustomTextureFromFile(_path);
+	}
+	return true;
+}
 
 void Mesh::draw(const Shader& shader, glm::vec3 _color, bool _bTextures)
 {

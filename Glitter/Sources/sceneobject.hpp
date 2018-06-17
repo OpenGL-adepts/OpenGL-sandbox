@@ -5,13 +5,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "mesh.hpp"
-
+#include <filesystem>
 
 class SceneObject
 {
 public:
 	void draw(const Shader& _shader);
 	bool loadFromFile(const std::string& _path);
+	bool setCustomTextureFromFile(const std::string& _path);
 
 	void setRotation(glm::vec3 _angles);
 	void setPosition(glm::vec3 _pos);

@@ -201,6 +201,10 @@ void Scene::configObjects()
 		ImGui::Checkbox("Textures", &etextures);
 		obj->setEnableTextures(etextures);
 
+		if (ImGui::Button("Load custom texture")){
+			obj->setCustomTextureFromFile(m_native.openSceneDialog().string());
+		}
+
 		glm::vec3 color = obj->getColor();
 		ImGui::ColorEdit3("Color", (float*)&color);
 		obj->setColor(color);

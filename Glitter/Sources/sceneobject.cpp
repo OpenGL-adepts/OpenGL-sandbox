@@ -19,6 +19,11 @@ bool SceneObject::loadFromFile(const std::string& _path)
 	return m_model.loadFromFile(m_modelPath);
 }
 
+bool SceneObject::setCustomTextureFromFile(const std::string& _path)
+{
+	auto path = std::filesystem::path(_path).make_preferred().string();
+	return m_model.setCustomTextureFromFile(path);
+}
 
 void SceneObject::setRotation(glm::vec3 _angles)
 {

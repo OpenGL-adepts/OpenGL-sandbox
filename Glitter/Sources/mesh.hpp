@@ -36,6 +36,7 @@ public:
 	Mesh(std::vector<Vertex> vertices, std::vector<GLuint> indices, std::vector<std::pair<Texture, std::string>> textures);
 
 	bool loadFromFile(const std::string& _filename);
+	bool setCustomTextureFromFile(const std::string& _path);
 	void draw(const Shader& shader, glm::vec3 _color, bool _bTextures);
 
 	glm::vec3 getCenter() const;
