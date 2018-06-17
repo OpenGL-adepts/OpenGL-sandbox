@@ -290,3 +290,20 @@ void Scene::drawLights(const Camera& _camera, const glm::mat4& _perspective) con
 		m_lamp->draw(m_lampShader);
 	}
 }
+
+
+int Scene::getNumberOfObjects() 
+{
+	return m_actors.size();
+}
+
+
+int Scene::getNumberOfTriangles()
+{
+	int t_count = 0;
+
+	for (int i = 0; i < m_actors.size(); i++)
+		t_count += m_actors[i]->getTrianglesNumber();
+
+	return t_count;
+}

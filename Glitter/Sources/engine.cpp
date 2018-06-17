@@ -200,7 +200,12 @@ int Engine::run()
 			if(Gui::combo("Backgrounds", m_currentBackground, optionsBackgrounds))
 				skybox->loadSkyboxById(m_currentBackground);
 
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+			if (ImGui::CollapsingHeader("Misc"))
+			{
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+				ImGui::Text("Total number of objects in the scene: %d", scene.getNumberOfObjects());
+				ImGui::Text("Total number of triangles in the scene: %d", scene.getNumberOfTriangles());
+			}
 		}
 		
 		ImGui::End();

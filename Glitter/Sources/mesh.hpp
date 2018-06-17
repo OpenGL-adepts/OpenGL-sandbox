@@ -41,6 +41,7 @@ public:
 
 	glm::vec3 getCenter() const;
 	float getMaxAxisSize() const;
+	int getTrianglesNumber(int t);
 	glm::mat4 centerAndNormalize() const;
 
 private:

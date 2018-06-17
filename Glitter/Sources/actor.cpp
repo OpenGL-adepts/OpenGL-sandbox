@@ -59,6 +59,12 @@ bool Actor::isTextureEnabled() const
 }
 
 
+int Actor::getTrianglesNumber()
+{
+	return m_model.getTrianglesNumber(0);
+}
+
+
 void Actor::doConfig() //override
 {
 	ImGui::Checkbox("Textures", &m_bEnableTextures);

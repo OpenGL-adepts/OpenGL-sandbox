@@ -28,6 +28,8 @@ public:
 	Scene(GLFWwindow* _window);
 	bool loadFromFile(const std::string& _path);
 	bool saveToFile(const std::string& _path) const;
+	int getNumberOfObjects();
+	int getNumberOfTriangles();
 
 	std::shared_ptr<Actor> addActor(const std::string& _modelPath);
 	std::shared_ptr<Light> addLight();

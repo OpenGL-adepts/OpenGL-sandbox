@@ -14,6 +14,7 @@ public:
 	void setEnableTextures(bool _bTextures);
 	const std::string& getModelPath() const;
 	bool isTextureEnabled() const;
+	int getTrianglesNumber();
 
 protected:
 	void doConfig() override;
