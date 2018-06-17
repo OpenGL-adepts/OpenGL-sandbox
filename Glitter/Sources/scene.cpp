@@ -147,7 +147,6 @@ void Scene::configObjects()
 	{
 		auto obj = m_objects[m_currentObject];
 
-		float objScale = obj->getScale().x;
 		char nameBuf[128] = {};
 		memcpy(nameBuf, obj->getDisplayName().c_str(), std::min<size_t>(obj->getDisplayName().size(), sizeof nameBuf - 1));
 
@@ -183,29 +182,7 @@ void Scene::configObjects()
 			ImGui::EndPopup();
 		}
 
-		glm::vec3 vec = obj->getPosition();
-		ImGui::SliderFloat("Position X", &vec.x, -20.f, 20.f);
-		ImGui::SliderFloat("Position Y", &vec.y, -20.f, 20.f);
-		ImGui::SliderFloat("Position Z", &vec.z, -20.f, 20.f);
-		obj->setPosition(vec);
-
-		vec = obj->getRotation();
-		ImGui::SliderAngle("Rotation X", &vec.x);
-		ImGui::SliderAngle("Rotation Y", &vec.y);
-		ImGui::SliderAngle("Rotation Z", &vec.z);
-		obj->setRotation(vec);
-
-		ImGui::SliderFloat("Scale", &objScale, 0.01f, 20.f);
-
-		bool etextures = obj->isTextureEnabled();
-		ImGui::Checkbox("Textures", &etextures);
-		obj->setEnableTextures(etextures);
-
-		glm::vec3 color = obj->getColor();
-		ImGui::ColorEdit3("Color", (float*)&color);
-		obj->setColor(color);
-
-		obj->setScale(glm::vec3(objScale));
+		obj->config();
 	}
 }
 

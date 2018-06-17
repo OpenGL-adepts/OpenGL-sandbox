@@ -1,6 +1,5 @@
 #pragma once
 #include "effectmanager.hpp"
-#include "../material.hpp"
 #include <imgui.h>
 
 
@@ -20,5 +19,4 @@ protected:
 	float m_specularStrength = 0.5f;
 	bool m_bEnableNormalMapping = false;
 	bool m_bUseBlinnPhong = false;
-	Material mat;
 };

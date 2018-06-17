@@ -1,11 +1,14 @@
 #include "SceneObject.hpp"
+#include <imgui.h>
 
 
 void SceneObject::draw(const Shader& _shader)
 {
-	
 	if(m_bEnabled)
+	{
+		m_material.bind(_shader);
 		m_model.draw(_shader, m_color, m_bEnableTextures);
+	}
 }
 
 
@@ -17,6 +20,45 @@ bool SceneObject::loadFromFile(const std::string& _path)
 	m_displayName = i != std::string::npos ? m_modelPath.substr(i + 1) : m_modelPath;
 
 	return m_model.loadFromFile(m_modelPath);
+}
+
+
+void SceneObject::config()
+{
+	if(ImGui::TreeNode("Position"))
+	{
+		ImGui::SliderFloat("X", &m_position.x, -20.f, 20.f);
+		ImGui::SliderFloat("Y", &m_position.y, -20.f, 20.f);
+		ImGui::SliderFloat("Z", &m_position.z, -20.f, 20.f);
+		ImGui::TreePop();
+	}
+
+	if(ImGui::TreeNode("Rotation"))
+	{
+		ImGui::SliderAngle("X", &m_rotation.x);
+		ImGui::SliderAngle("Y", &m_rotation.y);
+		ImGui::SliderAngle("Z", &m_rotation.z);
+		ImGui::TreePop();
+	}
+
+	if(ImGui::TreeNode("Scale"))
+	{
+		ImGui::SliderFloat("X", &m_scale.x, 0.01f, 20.f);
+		ImGui::SliderFloat("Y", &m_scale.y, 0.01f, 20.f);
+		ImGui::SliderFloat("Z", &m_scale.z, 0.01f, 20.f);
+
+		float objScale = m_scale.x;
+
+		if(ImGui::SliderFloat("uniform", &objScale, 0.01f, 20.f))
+			m_scale = glm::vec3(objScale);
+
+		ImGui::TreePop();
+	}
+
+	ImGui::Checkbox("Textures", &m_bEnableTextures);
+	ImGui::ColorEdit3("Color", (float*)&m_color);
+
+	m_material.config();
 }
 
 
