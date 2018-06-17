@@ -183,7 +183,6 @@ void Scene::configObjects()
 			ImGui::EndPopup();
 		}
 		glm::vec3 vec = obj->getPosition();
-		ImGui::PushItemWidth(200);
 		ImGui::SliderFloat("Position X", &vec.x, -20.f, 20.f);
 		ImGui::SliderFloat("Position Y", &vec.y, -20.f, 20.f);
 		ImGui::SliderFloat("Position Z", &vec.z, -20.f, 20.f);

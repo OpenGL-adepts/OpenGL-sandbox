@@ -22,7 +22,7 @@ public:
 	virtual std::string getName() const = 0;
 
 	// Get tutorial page of the effect.
-	virtual std::string getTutorialPage() const = 0;
+	virtual std::string getTutorialPath() const = 0;
 
 	// Handle ImGui controls for changing effect configuration
 	void config();

@@ -12,9 +12,9 @@ std::string Flat::getName() const //override
 	return "Flat";
 }
 
-std::string Flat::getTutorialPage() const //override
+std::string Flat::getTutorialPath() const //override
 {
-	return PROJECT_SOURCE_DIR "/resources/pages/flat.html";
+	return PROJECT_SOURCE_DIR "/resources/tutorials/Flat.pdf";
 }
 
 

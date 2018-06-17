@@ -12,9 +12,9 @@ std::string Normal::getName() const //override
 	return "Normal";
 }
 
-std::string Normal::getTutorialPage() const //override
+std::string Normal::getTutorialPath() const //override
 {
-	return PROJECT_SOURCE_DIR "/resources/pages/normal.html";
+	return PROJECT_SOURCE_DIR "/resources/tutorials/Normal.pdf";
 }
 
 void Normal::doConfig() //override

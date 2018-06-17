@@ -11,7 +11,7 @@ class Flat
 public:
 	Flat();
 	std::string getName() const override;
-	std::string getTutorialPage() const override;
+	std::string getTutorialPath() const override;
 
 protected:
 	void doConfig() override;

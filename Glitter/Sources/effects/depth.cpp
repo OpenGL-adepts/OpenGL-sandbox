@@ -12,9 +12,9 @@ std::string Depth::getName() const //override
 	return "Depth";
 }
 
-std::string Depth::getTutorialPage() const //override
+std::string Depth::getTutorialPath() const //override
 {
-	return PROJECT_SOURCE_DIR "/resources/pages/depth.html";
+	return PROJECT_SOURCE_DIR "/resources/tutorials/Depth.pdf";
 }
 
 
