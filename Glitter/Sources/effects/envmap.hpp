@@ -18,5 +18,6 @@ protected:
 
 protected:
 	std::shared_ptr<Skybox> m_skybox;
-
+	int m_mode = 0;
+	float m_refraction = 1.5f;
 };

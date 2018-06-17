@@ -1,4 +1,5 @@
 #include "envmap.hpp"
+#include "../gui.hpp"
 
 
 EnvMap::EnvMap(const std::shared_ptr<Skybox>& _skybox)
@@ -22,6 +23,18 @@ std::string EnvMap::getTutorialPath() const //override
 
 void EnvMap::doConfig() //override
 {
+	Gui::combo("Type", m_mode, {"Reflection", "Refraction"});
+
+	if(m_mode == 1)
+	{
+		ImGui::Text("Examples:\n"
+			"Air     - 1.00\n"
+			"Water   - 1.33\n"
+			"Ice     - 1.309\n"
+			"Glass   - 1.52\n"
+			"Diamond - 2.42");
+		ImGui::SliderFloat("Refractive index", &m_refraction, 1.f, 3.f);
+	}
 }
 
 
@@ -32,5 +45,7 @@ void EnvMap::doRender(const Scene& _scene, const Camera& _camera, const glm::mat
 	m_skybox->getCubeMap().bind();
 	m_shader.bind("skybox", 0);
 	m_shader.bind("uViewPos", _camera.getPosition());
+	m_shader.bind("uRefIndex", m_refraction);
+	m_shader.bind("uType", m_mode);
 	_scene.draw(m_shader, _camera, _perspective, 1);
 }
