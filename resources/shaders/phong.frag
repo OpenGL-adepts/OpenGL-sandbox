@@ -40,31 +40,20 @@ out vec4 FragColor;
 
 void main()
 {
-	vec3 norm, lightDir, viewDir;
+	vec3 norm;
 	vec4 objectColor = vec4(vec3(texture(texture_diffuse, TexCoords)) * uMaterial.color, 1.f);
 	vec3 lightTotal = vec3(0.f);
 	
 	for(int iii = 0; iii < MAX_LIGHTS; ++iii)
 	if(uLight[iii].active != 0)
 	{
-		if(uEnableNormalMapping != 0)
-		{
-			vec3 tangentLightPos = TBN * uLight[iii].position;
-			vec3 tangentViewPos  = TBN * uViewPos;
-			vec3 tangentFragPos  = TBN * FragPos;
-			
-			// Normal mapping
-			norm = normalize(texture(texture_normal, TexCoords).rgb * 2.0 - 1.0);
-			lightDir = normalize(tangentLightPos - tangentFragPos);
-			viewDir  = normalize(tangentViewPos  - tangentFragPos);
-		}
-		else
-		{
-			// Standard normals
+		if(uEnableNormalMapping != 0) // Normal mapping
+			norm = normalize(TBN * (texture(texture_normal, TexCoords).rgb * 2.0 - 1.0));
+		else // Standard normals
 			norm = normalize(Normal);
-			lightDir = normalize(uLight[iii].position - FragPos);
-			viewDir = normalize(uViewPos - FragPos);
-		}
+			
+		vec3 lightDir = normalize(uLight[iii].position - FragPos);
+		vec3 viewDir = normalize(uViewPos - FragPos);
 		
 		// Ambient
 		vec3 ambient = uMaterial.ambient * uAmbientStrength;

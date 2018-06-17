@@ -40,6 +40,8 @@ protected:
 protected:
 	bool m_bInvalid = true;
 	std::string m_errorString;
+	std::string m_shaderVertPath;
+	std::string m_shaderFragPath;
 	Shader m_shader;
 
 };

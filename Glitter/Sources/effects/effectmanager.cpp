@@ -4,7 +4,15 @@
 void Effect::config()
 {
 	if(m_bInvalid)
+	{
 		ImGui::TextWrapped("Shader failed to compile with following error:\n%s", m_errorString.c_str());
+
+		if(ImGui::Button("Compile"))
+		{
+			m_shader.clearProgram();
+			loadShader(m_shaderVertPath, m_shaderFragPath);
+		}
+	}
 	else
 		doConfig();
 }
@@ -26,6 +34,8 @@ bool Effect::isInvalid() const
 void Effect::loadShader(const std::string& _vertex, const std::string& _fragment)
 {
 	m_bInvalid = false;
+	m_shaderVertPath = _vertex;
+	m_shaderFragPath = _fragment;
 
 	try
 	{

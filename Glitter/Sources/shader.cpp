@@ -7,6 +7,13 @@ void Shader::activate() const
 }
 
 
+void Shader::clearProgram()
+{
+	glDeleteProgram(mProgram);
+	mProgram = glCreateProgram();
+}
+
+
 void Shader::bind(unsigned int location, float value) const
 {
 	glUniform1f(location, value);

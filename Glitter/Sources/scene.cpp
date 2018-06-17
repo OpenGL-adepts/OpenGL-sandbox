@@ -47,7 +47,7 @@ static std::shared_ptr<SO> _configBasicObjects(std::vector<std::shared_ptr<SO>>&
 				ImGui::CloseCurrentPopup();
 				_objects.erase(_objects.begin() + _selectedObject);
 				
-				if(_selectedObject > 0 && _selectedObject == _objects.size())
+				if(_selectedObject > 0 && _selectedObject == (int)_objects.size())
 					--_selectedObject;
 			}
 			ImGui::SameLine();
