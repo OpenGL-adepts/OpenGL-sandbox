@@ -35,6 +35,16 @@ std::filesystem::path Native::openModelDialog()
 }
 
 
+std::filesystem::path Native::openTextureDialog()
+{
+	auto filter =
+		L"Image file (*.PNG;*.JPG;*.TGA)\0*.PNG;*.JPG;*.TGA\0"
+		L"All files (*.*)\0*.*\0";
+
+	return invokeNativeOpenSaveDialog(filter, false);
+}
+
+
 std::filesystem::path Native::openSceneDialog()
 {
 	auto filter =

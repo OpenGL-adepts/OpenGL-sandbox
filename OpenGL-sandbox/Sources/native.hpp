@@ -13,6 +13,7 @@ class Native
 public:
 	Native(GLFWwindow* _window);
 	std::filesystem::path openModelDialog();
+	std::filesystem::path openTextureDialog();
 	std::filesystem::path openSceneDialog();
 	std::filesystem::path saveSceneDialog();
 

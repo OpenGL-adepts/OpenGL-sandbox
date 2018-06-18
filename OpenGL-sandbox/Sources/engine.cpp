@@ -62,7 +62,7 @@ int Engine::run()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-	m_window = glfwCreateWindow(mWidth, mHeight, "OpenGL", nullptr, nullptr);
+	m_window = glfwCreateWindow(mWidth, mHeight, "OpenGL Sandbox", nullptr, nullptr);
 	m_wndWidth = mWidth;
 	m_wndHeight = mHeight;
 
@@ -155,7 +155,7 @@ int Engine::run()
 
 			if(ImGui::BeginPopupModal("About this software"))
 			{
-				ImGui::Text("OpenGL sandbox");
+				ImGui::Text("OpenGL sandbox\nVersion 1.0");
 				ImGui::Separator();
 
 				ImGui::Text("Distributed under MIT license, available at\nhttps://github.com/OpenGL-adepts/OpenGL-sandbox\n\nAuthors:");

@@ -218,7 +218,7 @@ void Scene::configObjects()
 		
 		//TODO: Move inside obj->config() (pass m_native)
 		if (ImGui::Button("Load custom texture"))
-			obj->setCustomTextureFromFile(m_native.openSceneDialog().string());
+			obj->setCustomTextureFromFile(m_native.openTextureDialog().string());
 	}
 }
 
