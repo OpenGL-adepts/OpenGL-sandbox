@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.0)
-project(Glitter)
+project(OpenGL-sandbox)
 
 option(GLFW_BUILD_DOCS OFF)
 option(GLFW_BUILD_EXAMPLES OFF)
 option(GLFW_BUILD_TESTS OFF)
-add_subdirectory(Glitter/Vendor/glfw)
+add_subdirectory(OpenGL-sandbox/Vendor/glfw)
 
 option(ASSIMP_BUILD_ASSIMP_TOOLS OFF)
 option(ASSIMP_BUILD_SAMPLES OFF)
 option(ASSIMP_BUILD_TESTS OFF)
-add_subdirectory(Glitter/Vendor/assimp)
+add_subdirectory(OpenGL-sandbox/Vendor/assimp)
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /std:c++17")
@@ -20,25 +20,25 @@ else()
     endif()
 endif()
 
-include_directories(Glitter/Headers/
-                    Glitter/Vendor/assimp/include/
-                    Glitter/Vendor/glad/include/
-                    Glitter/Vendor/glfw/include/
-                    Glitter/Vendor/glm/
-                    Glitter/Vendor/stb/
-					Glitter/Vendor/imgui/
-					Glitter/Vendor/json/)
+include_directories(OpenGL-sandbox/Headers/
+                    OpenGL-sandbox/Vendor/assimp/include/
+                    OpenGL-sandbox/Vendor/glad/include/
+                    OpenGL-sandbox/Vendor/glfw/include/
+                    OpenGL-sandbox/Vendor/glm/
+                    OpenGL-sandbox/Vendor/stb/
+					OpenGL-sandbox/Vendor/imgui/
+					OpenGL-sandbox/Vendor/json/)
 
-file(GLOB VENDORS_SOURCES Glitter/Vendor/glad/src/glad.c
-						  Glitter/Vendor/imgui/*.cpp)
+file(GLOB VENDORS_SOURCES OpenGL-sandbox/Vendor/glad/src/glad.c
+						  OpenGL-sandbox/Vendor/imgui/*.cpp)
 						  
-file(GLOB PROJECT_HEADERS Glitter/Headers/*.hpp)
-file(GLOB PROJECT_SOURCES Glitter/Sources/*.cpp
-						  Glitter/Sources/effects/*.cpp)
-file(GLOB PROJECT_SHADERS Glitter/Shaders/*.comp
-                          Glitter/Shaders/*.frag
-                          Glitter/Shaders/*.geom
-                          Glitter/Shaders/*.vert)
+file(GLOB PROJECT_HEADERS OpenGL-sandbox/Headers/*.hpp)
+file(GLOB PROJECT_SOURCES OpenGL-sandbox/Sources/*.cpp
+						  OpenGL-sandbox/Sources/effects/*.cpp)
+file(GLOB PROJECT_SHADERS OpenGL-sandbox/Shaders/*.comp
+                          OpenGL-sandbox/Shaders/*.frag
+                          OpenGL-sandbox/Shaders/*.geom
+                          OpenGL-sandbox/Shaders/*.vert)
 file(GLOB PROJECT_CONFIGS CMakeLists.txt
                           Readme.md
                          .gitattributes
