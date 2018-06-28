@@ -8,6 +8,7 @@
 #include "effects/normal.hpp"
 #include "effects/envmap.hpp"
 
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
 	Engine::instance().onFramebufferSizeCallback(window, width, height);
@@ -132,9 +133,8 @@ int Engine::run()
 		glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		skybox->draw(camera, m_projMatrix);
-
 		recalcPerspective();
+		skybox->draw(camera, m_perspectiveMatrix);
 		effects.render(scene, camera, m_projMatrix);
 
 		ImGui_ImplGlfwGL3_NewFrame();
@@ -267,10 +267,12 @@ void Engine::onScrollCallback(GLFWwindow* window, double xoffset, double yoffset
 
 void Engine::recalcPerspective()
 {
+	m_perspectiveMatrix = glm::perspective(camera.getFOV(), (float)m_wndWidth / (float)m_wndHeight, 0.1f, 100.0f);
+
 	switch(m_projection)
 	{
 	case 0: // Perspective
-		m_projMatrix = glm::perspective(camera.getFOV(), (float)m_wndWidth / (float)m_wndHeight, 0.1f, 100.0f);
+		m_projMatrix = m_perspectiveMatrix;
 		break;
 
 	case 1: // Ortho

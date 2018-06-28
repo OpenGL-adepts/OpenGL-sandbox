@@ -49,6 +49,7 @@ protected:
 	float deltaTime = 0;
 	float lastFrame = 0;
 	glm::mat4 m_projMatrix;
+	glm::mat4 m_perspectiveMatrix;
 	int m_projection = 0;
 	int m_currentBackground = 0;
 };
