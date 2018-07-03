@@ -4,6 +4,7 @@
 #include "effects/phong.hpp"
 #include "effects/gouraud.hpp"
 #include "effects/lambert.hpp"
+#include "effects/orennayar.hpp"
 #include "effects/flat.hpp"
 #include "effects/depth.hpp"
 #include "effects/normal.hpp"
@@ -115,6 +116,7 @@ int Engine::run()
 	effects.registerEffect(std::make_shared<Phong>());
 	effects.registerEffect(std::make_shared<Gouraud>());
 	effects.registerEffect(std::make_shared<Lambert>());
+	effects.registerEffect(std::make_shared<OrenNayar>());
 	effects.registerEffect(std::make_shared<Flat>());
 	effects.registerEffect(std::make_shared<Normal>());
 	effects.registerEffect(std::make_shared<Depth>());

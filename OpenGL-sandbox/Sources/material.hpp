@@ -30,4 +30,5 @@ protected:
 	glm::vec3 m_diffuse  = glm::vec3(1.f);
 	glm::vec3 m_specular = glm::vec3(1.f);
 	float m_shininess    = 32;
+	float m_roughness    = 0;
 };
