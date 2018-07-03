@@ -20,7 +20,7 @@ void Material::config()
 	ImGui::ColorEdit3("Diffuse",    (float*)&m_diffuse);
 	ImGui::ColorEdit3("Specular",   (float*)&m_specular);
 	ImGui::SliderFloat("Shininess", &m_shininess, 2, 256);
-	ImGui::SliderFloat("Roughness", &m_roughness, 0, 1);
+	ImGui::SliderFloat("Roughness", &m_roughness, 0.05f, 1);
 }
 
 
@@ -44,7 +44,7 @@ void Material::fromJSON(const nlohmann::json& _json)
 	m_diffuse	= JSON::loadVector3(_json, "diffuse",   glm::vec3(1.f));
 	m_specular  = JSON::loadVector3(_json, "specular",  glm::vec3(1.f));
 	try { m_shininess = _json.at("shininess"); } catch(...) { m_shininess = 32; }
-	try { m_roughness = _json.at("roughness"); } catch(...) { m_roughness = 0; }
+	try { m_roughness = _json.at("roughness"); } catch(...) { m_roughness = 0.1f; }
 }
 
 
