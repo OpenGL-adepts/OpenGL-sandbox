@@ -142,7 +142,9 @@ int Engine::run()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		recalcPerspective();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		skybox->draw(camera, m_perspectiveMatrix);
+		glPolygonMode(GL_FRONT_AND_BACK, m_renderingMode == 0 ? GL_FILL : GL_LINE);
 		effects.render(scene, camera, m_projMatrix);
 
 		ImGui_ImplGlfwGL3_NewFrame();
@@ -189,6 +191,7 @@ int Engine::run()
 			if(ImGui::CollapsingHeader("Effects"))
 			{
 				Gui::combo("Projection", m_projection, {"Perspective", "Orthogonal"});
+				Gui::combo("Rendering mode", m_renderingMode, {"Filled", "Wireframe"});
 				ImGui::Separator();
 				effects.config();
 			}
