@@ -43,24 +43,14 @@ out vec4 FragColor;
 vec3 pointLight(PointLight light, vec3 normal)
 {
 	vec3 lightDir = normalize(light.position - FragPos);
-		
+
 	// Ambient
 	vec3 ambient = uMaterial.ambient * uAmbientStrength;
 	
 	// Diffuse
-	vec3 viewDir = normalize(uViewPos - FragPos);
-	float sigma2 = uMaterial.roughness * uMaterial.roughness;
-	float A = 1 - 0.5 * sigma2 / (sigma2 + 0.33);
-	float B = 0.45 * sigma2 / (sigma2 + 0.09);
-	float LdotN = dot(lightDir, normal);
-	float VdotN = dot(viewDir, normal);
-	float angleLN = acos(LdotN);
-	float angleVN = acos(VdotN);
-	float alpha = max(angleLN, angleVN);
-	float beta  = min(angleLN, angleVN);
-	float C = clamp(dot(normalize(viewDir - normal * VdotN), normalize(lightDir - normal * LdotN)), 0.0, 1.0);
-	float orenNayarFactor = A + B * C * sin(alpha) * tan(beta);
-	vec3 diffuse = uMaterial.diffuse * max(0.0, LdotN) * orenNayarFactor * uDiffuseStrength;
+	float LdotN = max(0.0, dot(lightDir, normal));
+	float VdotN = max(0.0, dot(normalize(uViewPos - FragPos), normal));
+	vec3 diffuse = uMaterial.diffuse * uDiffuseStrength * LdotN * pow(LdotN * VdotN, max(0.00001f, uMaterial.roughness));
 	
 	// Attenuation
 	float distance = length(light.position - FragPos);

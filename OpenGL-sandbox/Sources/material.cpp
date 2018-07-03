@@ -20,7 +20,7 @@ void Material::config()
 	ImGui::ColorEdit3("Diffuse",    (float*)&m_diffuse);
 	ImGui::ColorEdit3("Specular",   (float*)&m_specular);
 	ImGui::SliderFloat("Shininess", &m_shininess, 2, 256);
-	ImGui::SliderFloat("Roughness (Oren-Nayar)", &m_roughness, 0, 1);
+	ImGui::SliderFloat("Roughness", &m_roughness, 0, 1);
 }
 
 

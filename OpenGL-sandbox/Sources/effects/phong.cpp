@@ -37,7 +37,6 @@ void Phong::doRender(const Scene& _scene, const Camera& _camera, const glm::mat4
 	m_shader.bind("uSpecularStrength", m_specularStrength);
 	m_shader.bind("uEnableNormalMapping", (int)m_bEnableNormalMapping);
 	m_shader.bind("uUseBlinnPhong", (int)m_bUseBlinnPhong);
-	m_shader.bind("uViewPos", _camera.getPosition());
 	_scene.bindLights(m_shader);
 	_scene.draw(m_shader, _camera, _perspective);
 }

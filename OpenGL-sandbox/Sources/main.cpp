@@ -4,6 +4,6 @@
 
 int main()
 {
-	FreeConsole();
+	//FreeConsole();
 	return Engine::instance().run();
 }

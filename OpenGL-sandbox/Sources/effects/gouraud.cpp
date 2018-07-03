@@ -32,7 +32,6 @@ void Gouraud::doRender(const Scene& _scene, const Camera& _camera, const glm::ma
 	m_shader.bind("uAmbientStrength", m_ambientStrength);
 	m_shader.bind("uDiffuseStrength", m_diffuseStrength);
 	m_shader.bind("uSpecularStrength", m_specularStrength);
-	m_shader.bind("uViewPos", _camera.getPosition());
 	_scene.bindLights(m_shader);
 	_scene.draw(m_shader, _camera, _perspective);
 }
