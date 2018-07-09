@@ -185,6 +185,7 @@ void Scene::draw(const Shader& _shader, const Camera& _camera, const glm::mat4& 
 {
 	_shader.bind("uProjection", _perspective);
 	_shader.bind("uView", _camera.getViewMatrix());
+	_shader.bind("uViewPos", _camera.getPosition());
 
 	for (auto& obj : m_actors)
 	{

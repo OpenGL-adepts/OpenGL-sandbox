@@ -3,6 +3,11 @@
 #include "effects/effectmanager.hpp"
 #include "effects/phong.hpp"
 #include "effects/gouraud.hpp"
+#include "effects/lambert.hpp"
+#include "effects/orennayar.hpp"
+#include "effects/minnaert.hpp"
+#include "effects/schlick.hpp"
+#include "effects/cooktorrance.hpp"
 #include "effects/flat.hpp"
 #include "effects/depth.hpp"
 #include "effects/normal.hpp"
@@ -113,6 +118,11 @@ int Engine::run()
 	EffectManager effects;
 	effects.registerEffect(std::make_shared<Phong>());
 	effects.registerEffect(std::make_shared<Gouraud>());
+	effects.registerEffect(std::make_shared<Lambert>());
+	effects.registerEffect(std::make_shared<OrenNayar>());
+	effects.registerEffect(std::make_shared<Minnaert>());
+	effects.registerEffect(std::make_shared<Schlick>());
+	effects.registerEffect(std::make_shared<CookTorrance>());
 	effects.registerEffect(std::make_shared<Flat>());
 	effects.registerEffect(std::make_shared<Normal>());
 	effects.registerEffect(std::make_shared<Depth>());
@@ -134,7 +144,9 @@ int Engine::run()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		recalcPerspective();
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		skybox->draw(camera, m_perspectiveMatrix);
+		glPolygonMode(GL_FRONT_AND_BACK, m_renderingMode == 0 ? GL_FILL : GL_LINE);
 		effects.render(scene, camera, m_projMatrix);
 
 		ImGui_ImplGlfwGL3_NewFrame();
@@ -181,6 +193,7 @@ int Engine::run()
 			if(ImGui::CollapsingHeader("Effects"))
 			{
 				Gui::combo("Projection", m_projection, {"Perspective", "Orthogonal"});
+				Gui::combo("Rendering mode", m_renderingMode, {"Filled", "Wireframe"});
 				ImGui::Separator();
 				effects.config();
 			}
@@ -267,6 +280,9 @@ void Engine::onScrollCallback(GLFWwindow* window, double xoffset, double yoffset
 
 void Engine::recalcPerspective()
 {
+	if(m_wndWidth * m_wndHeight <= 0)
+		return;
+
 	m_perspectiveMatrix = glm::perspective(camera.getFOV(), (float)m_wndWidth / (float)m_wndHeight, 0.1f, 100.0f);
 
 	switch(m_projection)

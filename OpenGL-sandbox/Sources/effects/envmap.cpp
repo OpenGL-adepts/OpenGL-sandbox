@@ -45,7 +45,6 @@ void EnvMap::doRender(const Scene& _scene, const Camera& _camera, const glm::mat
 	glActiveTexture(GL_TEXTURE0);
 	m_skybox->getCubeMap().bind();
 	m_shader.bind("skybox", 0);
-	m_shader.bind("uViewPos", _camera.getPosition());
 	m_shader.bind("uRefIndex", m_refraction);
 	m_shader.bind("uType", m_mode);
 	_scene.draw(m_shader, _camera, _perspective, 1);

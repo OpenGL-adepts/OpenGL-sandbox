@@ -36,6 +36,7 @@ protected:
 	virtual void doConfig() {}
 	virtual void doRender(const Scene& _scene, const Camera& _camera, const glm::mat4& _perspective) const = 0;
 	void loadShader(const std::string& _vertex, const std::string& _fragment);
+	void recompile();
 
 protected:
 	bool m_bInvalid = true;
