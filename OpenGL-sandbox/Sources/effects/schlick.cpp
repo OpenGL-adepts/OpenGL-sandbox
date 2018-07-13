@@ -15,7 +15,7 @@ std::string Schlick::getName() const //override
 
 std::string Schlick::getTutorialPath() const //override
 {
-	return "";
+	return RELATIVE_PATH_ROOT "/resources/tutorials/Schlick.pdf";
 
 }
 

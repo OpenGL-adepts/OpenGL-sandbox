@@ -15,7 +15,7 @@ std::string CookTorrance::getName() const //override
 
 std::string CookTorrance::getTutorialPath() const //override
 {
-	return "";
+	return RELATIVE_PATH_ROOT "/resources/tutorials/Cook-Torrance.pdf";
 
 }
 

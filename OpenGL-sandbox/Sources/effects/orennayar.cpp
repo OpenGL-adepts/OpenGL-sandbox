@@ -15,7 +15,7 @@ std::string OrenNayar::getName() const //override
 
 std::string OrenNayar::getTutorialPath() const //override
 {
-	return "";
+	return RELATIVE_PATH_ROOT "/resources/tutorials/Oren.pdf";
 
 }
 
