@@ -15,7 +15,7 @@ std::string Minnaert::getName() const //override
 
 std::string Minnaert::getTutorialPath() const //override
 {
-	return "";
+	return RELATIVE_PATH_ROOT "/resources/tutorials/Minnaert.pdf";
 
 }
 

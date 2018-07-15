@@ -15,7 +15,7 @@ std::string Lambert::getName() const //override
 
 std::string Lambert::getTutorialPath() const //override
 {
-	return "";
+	return RELATIVE_PATH_ROOT "/resources/tutorials/Lambert.pdf";
 
 }
 
