@@ -89,6 +89,9 @@ void EffectManager::config()
 	Gui::combo("Mode", m_currentEffect, modes);
 
 	auto tutorialPath = m_effects[m_currentEffect]->getTutorialPath();
+	
+	for(size_t i = 0; (i = tutorialPath.find('/', i)) != std::string::npos; )
+		tutorialPath[i] = '\\';
 
 	if(!tutorialPath.empty())
 	if (ImGui::Button("See tutorial"))
