@@ -176,7 +176,7 @@ int Engine::run()
 				ImGui::BulletText("Pawel Koziol");
 				ImGui::BulletText("Michal Martyniak");
 				ImGui::BulletText("Przemyslaw Roguski");
-				ImGui::Text("Developed as academic project in Gdansk University of Technology, 2018");
+				ImGui::Text("Developed as academic project at Gdansk University of Technology, 2018");
 
 				if(ImGui::Button("Ok"))
 					ImGui::CloseCurrentPopup();
