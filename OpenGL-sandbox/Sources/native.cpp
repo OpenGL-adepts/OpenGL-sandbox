@@ -77,6 +77,7 @@ std::filesystem::path Native::invokeNativeOpenSaveDialog(const wchar_t* _filter,
 	wchar_t buffer[MAX_PATH] = {};
 	ofnw.lpstrFile = buffer;
 	ofnw.nMaxFile = MAX_PATH;
+	ofnw.lpstrDefExt = (LPCWSTR)"json";
 
 	if(_save ? GetSaveFileNameW(&ofnw) : GetOpenFileNameW(&ofnw))
 		return buffer;
