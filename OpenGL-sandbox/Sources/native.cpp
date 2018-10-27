@@ -1,5 +1,5 @@
 #include "native.hpp"
-
+#include <windows.h>
 
 Native::Native(GLFWwindow* _window)
 	: m_window(_window)
@@ -75,9 +75,10 @@ std::filesystem::path Native::invokeNativeOpenSaveDialog(const wchar_t* _filter,
 	ofnw.lpstrFilter = _filter;
 
 	wchar_t buffer[MAX_PATH] = {};
+	GetModuleFileNameW(NULL, buffer, MAX_PATH);
 	ofnw.lpstrFile = buffer;
 	ofnw.nMaxFile = MAX_PATH;
-	ofnw.lpstrDefExt = (LPCWSTR)"json";
+	ofnw.lpstrDefExt = L"json";
 
 	if(_save ? GetSaveFileNameW(&ofnw) : GetOpenFileNameW(&ofnw))
 		return buffer;
